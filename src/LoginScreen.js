@@ -1,10 +1,12 @@
 import React from 'react';
-import { StyleSheet, View, KeyboardAvoidingView, Keyboard, Animated, ScrollView } from 'react-native';
+import { StyleSheet, View, KeyboardAvoidingView,
+  Keyboard, Animated, ScrollView
+} from 'react-native';
 import { Text, FormLabel, FormInput, Button } from 'react-native-elements';
 
 import LandingImage from '../assets/pregnancy.png';
 
-export class LoginScreen extends React.Component {
+export default class LoginScreen extends React.Component {
   state = {
     inputFocused: false,
     imageSize: new Animated.Value(200),
@@ -38,8 +40,12 @@ export class LoginScreen extends React.Component {
   }
 
   onLogin = () => {
+    const { username, password } = this.state;
     // some dummy validation here
-    
+    if (username === 'childsupport' && password === 'doggo') {
+      this.props.navigation.navigate('LoggingIn');
+    }
+    console.log('login failed');
   };
 
   onChangeUsername = (username) => this.setState({ username });
@@ -125,4 +131,21 @@ const styles = StyleSheet.create({
   }
 });
 
-export default LoginScreen;
+export class WaitingLoginScreen extends React.Component {
+  componentDidMount() {
+    setTimeout(
+      () => {
+        this.props.navigation.navigate('App');
+      },
+      2000
+    );
+  }
+
+  render() {
+    return (
+      <View style={styles.container} on>
+        <Text h4>logging in, please wait...</Text>
+      </View>
+    );
+  };
+}

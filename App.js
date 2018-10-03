@@ -1,11 +1,10 @@
 import React from 'react';
-import { StyleSheet, View, Image, KeyboardAvoidingView } from 'react-native';
-import { Text, FormLabel, FormInput, Button } from 'react-native-elements';
-import { createStackNavigator } from 'react-navigation';
-import { LoginScreen } from './src/LoginScreen';
+import { createSwitchNavigator, createStackNavigator } from 'react-navigation';
+
+import HomeScreen from './src/HomeScreen';
+import LoginScreen, { WaitingLoginScreen } from './src/LoginScreen';
 
 export default class App extends React.Component {
-
   render() {
     return (
       <RootStacks />
@@ -13,14 +12,30 @@ export default class App extends React.Component {
   }
 }
 
-const RootStacks = createStackNavigator(
+const AppStack = createStackNavigator({
+  Home: HomeScreen
+});
+
+const AuthStack = createStackNavigator(
   {
-    Landing: {
+    Login: {
       screen: LoginScreen,
+      navigationOptions: { header: null }
+    },
+    LoggingIn: {
+      screen: WaitingLoginScreen,
       navigationOptions: { header: null }
     }
   },
+  { initialRouteName: 'Login' }
+);
+
+const RootStacks = createSwitchNavigator(
   {
-    initialRouteName: 'Landing'
+    App: AppStack,
+    Auth: AuthStack
+  },
+  {
+    initialRouteName: 'Auth'
   }
 );
