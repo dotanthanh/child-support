@@ -1,5 +1,9 @@
 import React from 'react';
-import { createSwitchNavigator, createStackNavigator } from 'react-navigation';
+import {
+  createSwitchNavigator,
+  createStackNavigator,
+  createDrawerNavigator
+} from 'react-navigation';
 
 import HomeScreen from './src/HomeScreen';
 import LoginScreen, { WaitingLoginScreen } from './src/LoginScreen';
@@ -13,9 +17,16 @@ export default class App extends React.Component {
   }
 }
 
+const AppDrawer = createDrawerNavigator({
+  Home: HomeScreen
+});
+
 const AppStack = createStackNavigator(
   {
-    Home: HomeScreen,
+    Home: {
+      screen: AppDrawer,
+      navigationOptions: { header: null }
+    },
     DailyQuestion: {
       screen: DailyQuestionScreen,
       navigationOptions: {

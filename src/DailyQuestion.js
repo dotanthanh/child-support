@@ -18,7 +18,10 @@ export default class DailyQuestion extends React.Component {
     this.props.navigation.navigate('Home'); 
   }
 
-  onUserAnswerChange = (value) => this.setState({ userAnswer: value });
+  onUserAnswerChange = (value) => {
+    const roundedValue = Math.round(value);
+    this.setState({ userAnswer: roundedValue });
+  }
 
   onBabyAnswerChange = (value) => this.setState({ babyAnswer: value });
 
