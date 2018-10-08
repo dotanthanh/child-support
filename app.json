@@ -5,7 +5,10 @@
     "slug": "child-support",
     "privacy": "public",
     "sdkVersion": "30.0.0",
-    "platforms": ["ios", "android"],
+    "platforms": [
+      "ios",
+      "android"
+    ],
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
@@ -21,7 +24,21 @@
       "**/*"
     ],
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "com.childsupport",
+      "publishBundlePath": "ios/child-support/Supporting/shell-app.bundle",
+      "publishManifestPath": "ios/child-support/Supporting/shell-app-manifest.json"
+    },
+    "isDetached": true,
+    "detach": {
+      "iosExpoViewUrl": "https://s3.amazonaws.com/exp-exponent-view-code/ios-v2.8.4-sdk30.0.0-3de13133-1adc-4ba1-8569-a84011e570b4.tar.gz",
+      "androidExpoViewUrl": "https://s3.amazonaws.com/exp-exponent-view-code/android-v2.8.1-sdk30.0.0-271c32ab-0715-4dfb-8270-ecead3679bb4.tar.gz"
+    },
+    "scheme": "exp6a6d101cb19d49cea6755cf03511295d",
+    "android": {
+      "package": "com.childsupport",
+      "publishBundlePath": "android/app/src/main/assets/shell-app.bundle",
+      "publishManifestPath": "android/app/src/main/assets/shell-app-manifest.json"
     }
   }
 }

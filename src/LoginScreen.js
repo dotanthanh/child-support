@@ -3,6 +3,7 @@ import { StyleSheet, View, KeyboardAvoidingView,
   Keyboard, Animated, ScrollView
 } from 'react-native';
 import { Text, FormLabel, FormInput, Button } from 'react-native-elements';
+// import firebase from 'react-native-firebase';
 
 import LandingImage from '../assets/pregnancy.png';
 
@@ -16,12 +17,12 @@ export default class LoginScreen extends React.Component {
 
   shrinkImageAnimation = Animated.timing(this.state.imageSize, {
     toValue: 100,
-    duration: 1000
+    duration: 500
   });
 
   expandImageAnimation = Animated.timing(this.state.imageSize, {
     toValue: 200,
-    duration: 1000
+    duration: 500
   });
 
   componentDidMount() {
@@ -56,8 +57,7 @@ export default class LoginScreen extends React.Component {
     const { imageSize, inputFocused, username, password } = this.state;
 
     const inputProps = {
-      required: true,
-      blurOnSubmit: false
+      required: true
     };
     const imageStyle = {
       height: imageSize,
@@ -69,7 +69,7 @@ export default class LoginScreen extends React.Component {
       <ScrollView
         contentContainerStyle={styles.container}
         scrollEnabled={false}
-        keyboardShouldPersistTaps="never">
+        keyboardShouldPersistTaps="handled">
         {!inputFocused && (
           <Text h2 style={styles.title}>PregMind</Text>
         )}
