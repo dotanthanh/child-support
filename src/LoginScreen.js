@@ -95,7 +95,7 @@ export default class LoginScreen extends React.Component {
               color="white"
               title="Login"
               onPress={this.onLogin}
-          />
+            />
           </View>
         </KeyboardAvoidingView>
       </ScrollView>
@@ -135,7 +135,7 @@ export class WaitingLoginScreen extends React.Component {
   componentDidMount() {
     setTimeout(
       () => {
-        this.props.navigation.navigate('App');
+        this.props.navigation.navigate('DailyQuestion');
       },
       2000
     );

@@ -3,6 +3,7 @@ import { createSwitchNavigator, createStackNavigator } from 'react-navigation';
 
 import HomeScreen from './src/HomeScreen';
 import LoginScreen, { WaitingLoginScreen } from './src/LoginScreen';
+import DailyQuestionScreen from './src/DailyQuestion';
 
 export default class App extends React.Component {
   render() {
@@ -12,9 +13,20 @@ export default class App extends React.Component {
   }
 }
 
-const AppStack = createStackNavigator({
-  Home: HomeScreen
-});
+const AppStack = createStackNavigator(
+  {
+    Home: HomeScreen,
+    DailyQuestion: {
+      screen: DailyQuestionScreen,
+      navigationOptions: {
+        title: 'Daily question'
+      }
+    }
+  },
+  {
+    initialRouteName: 'DailyQuestion'
+  }
+);
 
 const AuthStack = createStackNavigator(
   {
@@ -36,6 +48,6 @@ const RootStacks = createSwitchNavigator(
     Auth: AuthStack
   },
   {
-    initialRouteName: 'Auth'
+    initialRouteName: 'App'
   }
 );
