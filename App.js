@@ -6,8 +6,10 @@ import {
 } from 'react-navigation';
 
 import HomeScreen from './src/HomeScreen';
+
 import LoginScreen, { WaitingLoginScreen } from './src/LoginScreen';
 import DailyQuestionScreen from './src/DailyQuestion';
+import LogoutScreen from './src/Logout'; 
 
 export default class App extends React.Component {
   render() {
@@ -18,7 +20,8 @@ export default class App extends React.Component {
 }
 
 const AppDrawer = createDrawerNavigator({
-  Home: HomeScreen
+  Home: HomeScreen,
+  Logout: LogoutScreen
 });
 
 const AppStack = createStackNavigator(
@@ -59,6 +62,6 @@ const RootStacks = createSwitchNavigator(
     Auth: AuthStack
   },
   {
-    initialRouteName: 'App'
+    initialRouteName: 'Auth'
   }
 );

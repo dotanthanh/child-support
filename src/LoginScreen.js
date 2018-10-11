@@ -43,7 +43,7 @@ export default class LoginScreen extends React.Component {
   onLogin = () => {
     const { username, password } = this.state;
     // some dummy validation here
-    if (username === 'childsupport' && password === 'doggo') {
+    if (username === 'childsupport' && password === 'baby') {
       this.props.navigation.navigate('LoggingIn');
     }
     console.log('login failed');
@@ -144,7 +144,7 @@ export class WaitingLoginScreen extends React.Component {
   render() {
     return (
       <View style={styles.container} on>
-        <Text h4>logging in, please wait...</Text>
+        <Text h4>Logging in, please wait...</Text>
       </View>
     );
   };

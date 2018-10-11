@@ -5,7 +5,7 @@ import { Button } from 'react-native-elements';
 export default class DailyQuestion extends React.Component {
   state = {
     userAnswer: 0,
-    babyAnswer: 0
+    babyAnswer: ''
   };
 
   submitAnswer = () => {
@@ -34,7 +34,7 @@ export default class DailyQuestion extends React.Component {
           <Text style={styles.questionText}>How are you doing today ?</Text>
           <Slider
             step={1}
-            minimunValue={1}
+            minimumValue={1}
             maximumValue={10}
             value={userAnswer}
             onValueChange={this.onUserAnswerChange}
