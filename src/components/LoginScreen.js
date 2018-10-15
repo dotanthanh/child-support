@@ -3,10 +3,12 @@ import { StyleSheet, View, KeyboardAvoidingView,
   Keyboard, Animated, ScrollView
 } from 'react-native';
 import { Text, FormLabel, FormInput, Button } from 'react-native-elements';
-// import firebase from 'react-native-firebase';
+import { observer } from 'mobx-react';
 
-import LandingImage from '../assets/pregnancy.png';
+import LandingImage from '../../assets/pregnancy.png';
+import auth from '../stores/auth';
 
+@observer
 export default class LoginScreen extends React.Component {
   state = {
     inputFocused: false,
@@ -26,6 +28,9 @@ export default class LoginScreen extends React.Component {
   });
 
   componentDidMount() {
+    if (auth.user) {
+      this.props.navigation.navigate('Logging')
+    }
     Keyboard.addListener('keyboardWillShow', () => {
       this.setState({ inputFocused: true });
       this.shrinkImageAnimation.start();
@@ -43,7 +48,7 @@ export default class LoginScreen extends React.Component {
   onLogin = () => {
     const { username, password } = this.state;
     // some dummy validation here
-    if (username === 'childsupport' && password === 'baby') {
+    if (username === 'Childsupport' && password === 'baby') {
       this.props.navigation.navigate('LoggingIn');
     }
     console.log('login failed');

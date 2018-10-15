@@ -19,6 +19,7 @@ AppHeader.propTypes = {
   openDrawer: PropTypes.func.isRequired
 };
 
+// HOC to include appheader/appbar to a screen/component
 export const withHeader = (WrappedComponent) => {
   return class extends React.Component {
     openDrawer = () => {

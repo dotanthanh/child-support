@@ -4,14 +4,22 @@ import {
   createStackNavigator,
   createDrawerNavigator
 } from 'react-navigation';
+import { observer } from 'mobx-react';
 
-import HomeScreen from './src/HomeScreen';
+import HomeScreen from './src/components/HomeScreen';
 
-import LoginScreen, { WaitingLoginScreen } from './src/LoginScreen';
-import DailyQuestionScreen from './src/DailyQuestion';
-import LogoutScreen from './src/Logout'; 
+import LoginScreen, { WaitingLoginScreen } from './src/components/LoginScreen';
+import DailyQuestionScreen from './src/components/DailyQuestion';
+import LogoutScreen from './src/components/Logout'; 
+import auth from './src/stores/auth';
 
+@observer
 export default class App extends React.Component {
+  componentWillUnmount() {
+    // remove observer for user's sign in state
+    auth.unsubscriber();
+  }
+
   render() {
     return (
       <RootStacks />
