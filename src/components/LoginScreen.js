@@ -3,9 +3,12 @@ import { StyleSheet, View, KeyboardAvoidingView,
   Keyboard, Animated, ScrollView
 } from 'react-native';
 import { Text, FormLabel, FormInput, Button } from 'react-native-elements';
+import { observer } from 'mobx-react';
 
-import LandingImage from '../assets/pregnancy.png';
+import LandingImage from '../../assets/pregnancy.png';
+import auth from '../stores/auth';
 
+@observer
 export default class LoginScreen extends React.Component {
   state = {
     inputFocused: false,
@@ -16,15 +19,18 @@ export default class LoginScreen extends React.Component {
 
   shrinkImageAnimation = Animated.timing(this.state.imageSize, {
     toValue: 100,
-    duration: 1000
+    duration: 500
   });
 
   expandImageAnimation = Animated.timing(this.state.imageSize, {
     toValue: 200,
-    duration: 1000
+    duration: 500
   });
 
   componentDidMount() {
+    if (auth.user) {
+      this.props.navigation.navigate('Logging')
+    }
     Keyboard.addListener('keyboardWillShow', () => {
       this.setState({ inputFocused: true });
       this.shrinkImageAnimation.start();
@@ -42,7 +48,7 @@ export default class LoginScreen extends React.Component {
   onLogin = () => {
     const { username, password } = this.state;
     // some dummy validation here
-    if (username === 'childsupport' && password === 'doggo') {
+    if (username === 'Childsupport' && password === 'baby') {
       this.props.navigation.navigate('LoggingIn');
     }
     console.log('login failed');
@@ -56,8 +62,7 @@ export default class LoginScreen extends React.Component {
     const { imageSize, inputFocused, username, password } = this.state;
 
     const inputProps = {
-      required: true,
-      blurOnSubmit: false
+      required: true
     };
     const imageStyle = {
       height: imageSize,
@@ -69,7 +74,7 @@ export default class LoginScreen extends React.Component {
       <ScrollView
         contentContainerStyle={styles.container}
         scrollEnabled={false}
-        keyboardShouldPersistTaps="never">
+        keyboardShouldPersistTaps="handled">
         {!inputFocused && (
           <Text h2 style={styles.title}>PregMind</Text>
         )}
@@ -95,7 +100,7 @@ export default class LoginScreen extends React.Component {
               color="white"
               title="Login"
               onPress={this.onLogin}
-          />
+            />
           </View>
         </KeyboardAvoidingView>
       </ScrollView>
@@ -135,7 +140,7 @@ export class WaitingLoginScreen extends React.Component {
   componentDidMount() {
     setTimeout(
       () => {
-        this.props.navigation.navigate('App');
+        this.props.navigation.navigate('DailyQuestion');
       },
       2000
     );
@@ -144,7 +149,7 @@ export class WaitingLoginScreen extends React.Component {
   render() {
     return (
       <View style={styles.container} on>
-        <Text h4>logging in, please wait...</Text>
+        <Text h4>Logging in, please wait...</Text>
       </View>
     );
   };
