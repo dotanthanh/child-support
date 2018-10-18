@@ -23,7 +23,7 @@ export default class App extends React.Component {
   render() {
     const RootStacks = getRootStacks(
       Boolean(auth.user),
-      true
+      false
     );
     return (
       <RootStacks />
