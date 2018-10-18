@@ -1,6 +1,6 @@
 import React from 'react';
 import { View, StyleSheet, Text, Button } from 'react-native';
-import { VictoryLine, VictoryChart, VictoryTheme } from 'victory-native';
+import FeelingChart from './FeelingChart';
 
 import { withHeader } from './AppHeader';
 
@@ -15,42 +15,18 @@ class HomeScreen extends React.Component {
     ];
 
     return (
-      <View>
-        <View>
-          <FeelingChart data={feelingData}/>
-        </View>
+      <View style={{justifyContent: 'center', flexDirection: 'row'}}>
+        <FeelingChart
+          data={feelingData}
+          height={200}
+          width={300}
+          padding={32}
+          maxDomainX={8}
+          maxDomainY={10}
+        />
       </View>
     );
   }
 };
-
-const FeelingChart = (props) => {
-  return (
-    <VictoryChart
-      animate={{
-        duration: 1000,
-        onLoad: { duration: 1000 }
-      }}
-      theme={VictoryTheme.material}
-      domain={{
-        x: [1, 10],
-        y: [1, 10]
-      }}
-      scale={{ x: 'linear', y: 'linear' }}
-    >
-      <VictoryLine
-        style={{
-          data: { stroke: "#c43a31" },
-          parent: { border: 1, borderColor: 'black'}
-        }}
-        animate={{
-          duration: 1000,
-          onLoad: { duration: 1000 }
-        }}
-        data={props.data}
-      />
-    </VictoryChart>
-  )
-}
 
 export default withHeader(HomeScreen);

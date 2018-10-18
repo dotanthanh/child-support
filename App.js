@@ -8,9 +8,9 @@ import { observer } from 'mobx-react';
 
 import HomeScreen from './src/components/HomeScreen';
 
-import LoginScreen, { WaitingLoginScreen } from './src/components/LoginScreen';
+import LoginScreen from './src/components/LoginScreen';
 import DailyQuestionScreen from './src/components/DailyQuestion';
-import LogoutScreen from './src/components/Logout'; 
+import LogoutScreen from './src/components/Logout';
 import auth from './src/stores/auth';
 
 @observer
@@ -21,6 +21,10 @@ export default class App extends React.Component {
   }
 
   render() {
+    const RootStacks = getRootStacks(
+      Boolean(auth.user),
+      false
+    );
     return (
       <RootStacks />
     );
@@ -32,7 +36,7 @@ const AppDrawer = createDrawerNavigator({
   Logout: LogoutScreen
 });
 
-const AppStack = createStackNavigator(
+const getAppStack = (questionEnable) => createStackNavigator(
   {
     Home: {
       screen: AppDrawer,
@@ -46,7 +50,7 @@ const AppStack = createStackNavigator(
     }
   },
   {
-    initialRouteName: 'DailyQuestion'
+    initialRouteName: questionEnable ? 'DailyQuestion' : 'Home'
   }
 );
 
@@ -55,21 +59,17 @@ const AuthStack = createStackNavigator(
     Login: {
       screen: LoginScreen,
       navigationOptions: { header: null }
-    },
-    LoggingIn: {
-      screen: WaitingLoginScreen,
-      navigationOptions: { header: null }
     }
   },
   { initialRouteName: 'Login' }
 );
 
-const RootStacks = createSwitchNavigator(
+const getRootStacks = (isLoggedIn, questionEnable) => createSwitchNavigator(
   {
-    App: AppStack,
+    App: getAppStack(questionEnable),
     Auth: AuthStack
   },
   {
-    initialRouteName: 'Auth'
+    initialRouteName: isLoggedIn ? 'App' : 'Auth'
   }
 );
