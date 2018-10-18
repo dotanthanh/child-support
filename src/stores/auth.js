@@ -10,12 +10,13 @@ class AuthStore {
   @observable user = firebase.auth().currentUser;
 
   @action
-  signup = (email, password) => {
+  signup = (userdata) => {
+    const { email, password } = userdata;
     firebase
       .auth()
       .createUserWithEmailAndPassword(email, password)
       .then(credentials => {
-        // TODO: do something with the credentials here
+        this.createUser(userdata);
       });
   };
 
@@ -32,6 +33,18 @@ class AuthStore {
   @action
   logout = () => {
     firebase.auth().signOut();
+  }
+
+  @action
+  createUser = (userdata) => {
+    const { dueDate, ...rest } = userdata;
+    if (this.user) {
+      const babyref = firebase.database().ref('babies/').push({
+        activity: [],
+        due_date: dueDate
+      });
+      firebase.database().ref(`users/${this.user.uid}`).set(rest);
+    }
   }
 }
 

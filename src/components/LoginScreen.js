@@ -46,20 +46,17 @@ export default class LoginScreen extends React.Component {
   }
 
   onLogin = () => {
-    const { username, password } = this.state;
-    // some dummy validation here
-    if (username === 'Childsupport' && password === 'baby') {
-      this.props.navigation.navigate('LoggingIn');
-    }
-    console.log('login failed');
+    const { email, password } = this.state;
+    // some dummy validation her
+    auth.login(email, password);
   };
 
-  onChangeUsername = (username) => this.setState({ username });
+  onChangeEmail = (email) => this.setState({ email });
 
   onChangePassword = (password) => this.setState({ password });
 
   render() {
-    const { imageSize, inputFocused, username, password } = this.state;
+    const { imageSize, inputFocused, email, password } = this.state;
 
     const inputProps = {
       required: true
@@ -83,8 +80,8 @@ export default class LoginScreen extends React.Component {
           <FormLabel>Email</FormLabel>
           <FormInput
             {...inputProps}
-            onChangeText={this.onChangeUsername}
-            value={username}
+            onChangeText={this.onChangeEmail}
+            value={email}
           />
           <FormLabel>Password</FormLabel>
           <FormInput
@@ -135,22 +132,3 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16
   }
 });
-
-export class WaitingLoginScreen extends React.Component {
-  componentDidMount() {
-    setTimeout(
-      () => {
-        this.props.navigation.navigate('DailyQuestion');
-      },
-      2000
-    );
-  }
-
-  render() {
-    return (
-      <View style={styles.container} on>
-        <Text h4>Logging in, please wait...</Text>
-      </View>
-    );
-  };
-}
