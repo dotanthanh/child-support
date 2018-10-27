@@ -42,10 +42,10 @@ export default class FeelingChart extends React.Component {
   };
 
   renderAxis = () => {
-    const { height, width, maxDomainX, maxDomainY, padding } = this.props;
+    const { height, width, maxDomainX, maxDomainY, padding, ...rest } = this.props;
 
     return (
-      <View>
+      <View {...rest}>
         <Svg height={height} width={width}>
           <VictoryAxis crossAxis
             padding={padding}
@@ -73,10 +73,10 @@ export default class FeelingChart extends React.Component {
     const x0 = 32;
     const y0 = 200 - 32;
     const ratioX = (300 - 32 - 32) / 10;
-    const ratioY = (200 - 32 - 32) / 10;
+    const ratioY = (200 - 32 - 32) / 10
     const updatedData = data.map(point => ({ x: point.x * ratioX + x0, y: y0 - point.y * ratioY }));
     return (
-      <View>
+      <View style={{width, height}}>
         {this.renderAxis()}  
         {this.renderLine()}
       </View>

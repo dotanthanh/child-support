@@ -5,6 +5,7 @@ import {
   createDrawerNavigator
 } from 'react-navigation';
 import { observer } from 'mobx-react';
+import { StyleSheet } from 'react-native';
 
 import HomeScreen from './src/components/HomeScreen';
 
