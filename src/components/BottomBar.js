@@ -25,7 +25,6 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     height: 48,
     width: '100%',
-    position: 'absolute',
     bottom: 0
   },
   tab: {

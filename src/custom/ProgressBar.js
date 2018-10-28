@@ -6,11 +6,10 @@ const ProgressBar = (props) => {
   const { height, width, percentage, withPointer, pointerText, fontSize, ...rest } = props;
   const borderWidth = 1;
   const arrowSize = height * 2;
-  const percentagePosition = width * percentage / 100;
+  const percentagePosition = `${percentage}${percentage > 0 ? '%' : ''}`;
   const progress = {
     container: {
       height,
-      width,
       borderWidth,
       borderRadius: height / 2,
       borderColor: '#333333',
@@ -26,9 +25,7 @@ const ProgressBar = (props) => {
   const pointerStyle = {
     container: {
       alignItems: 'center',
-      position: 'absolute',
-      marginLeft: percentagePosition,
-      top: height - arrowSize / 4,
+      marginTop: arrowSize / -4,
     },
     arrow: {
       marginBottom: arrowSize / -4
