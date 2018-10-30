@@ -1,84 +1,127 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { View, StyleSheet, Text, Button } from 'react-native';
-import { VictoryAxis, VictoryChart } from 'victory-native';
-import { Line, Svg } from 'react-native-svg';
+import { View, Text } from 'react-native';
+import { VictoryAxis } from 'victory-native';
+import { Svg, Polyline } from 'react-native-svg';
 
 export default class FeelingChart extends React.Component {
   renderLine = () => {
-    const { data, padding, height, width, maxDomainX, maxDomainY } = this.props;
+    const { data, padding, height, width } = this.props;
     const x0 = padding;
     const y0 = height - padding;
-    const ratioX = (width - 2 * padding) / maxDomainX;
-    const ratioY = (height - 2 * padding) / maxDomainY;
-    const updatedData = data.map(point => ({
-      x: point.x * ratioX + x0,
-      y: y0 - point.y * ratioY
-    }));
+    const ratioX = (width - 2 * padding) / 7;
+    const ratioY = (height - 2 * padding) / 10;
+    // remove data entries that are out of covered range for the chart 
+    const dataInRange = data.filter(point => point.x < data[0].x + 6);
+    const updatedData =  dataInRange.map((point) => ({
+        x: (point.x - dataInRange[0].x + 1) * ratioX + x0,
+        y: y0 - point.y * ratioY
+      }));
+    /*
+      we need a string of formatted points 'x1,y1 x2,y1 x3,y3 ...'
+      for polyline api
+    */
+    const polylinePoints = updatedData.reduce(
+      (string, point, index) =>
+        `${string} ${point.x},${point.y} `
+      ,
+      ''
+    );
     return (
       <View style={{position: 'absolute'}}>
         <Svg height={height} width={width}>
-          {updatedData.map(
-            (point, key) => {
-              if (key === updatedData.length - 1) return null;
-              const x2 = updatedData[key + 1].x;
-              const y2 = updatedData[key + 1].y;
-              return (
-                <Line
-                  key={key}
-                  x1={point.x}
-                  y1={point.y}
-                  x2={updatedData[key + 1].x}
-                  y2={updatedData[key + 1].y}
-                  stroke="red"
-                  strokeWidth="2"
-                />
-              );
-            }
-          )}
+          <Polyline
+            points={polylinePoints}
+            fill='none'
+            stroke='#FA8D62'
+            strokeWidth='5'
+          />
         </Svg>
       </View>
     );
   };
 
+  /*
+    feeling chart will fix to 1->10 for Y axis, and limit to max 6 ticks on X axis
+  */
   renderAxis = () => {
-    const { height, width, maxDomainX, maxDomainY, padding } = this.props;
+    const { data, height, width, padding, ...rest } = this.props;
+    const axisStyle = {
+      tickLabels: {
+        fontSize: 12,
+        color: '#333333'
+      },
+      axis: {
+        stroke: '#333333'
+      },
+      axisLabel: {
+        width: '100%',
+        right: 0,
+        position: 'absolute'
+      }
+    };
+    const XLabelStyle = {
+      position: 'absolute',
+      right: 4,
+      top: height - padding + 4,
+      fontSize: 10
+    };
+    let tickValuesX = [];
+    for (var i = 0; i < 6; i++) {
+      tickValuesX.push(data[0].x + i);
+    }
 
     return (
-      <View>
+      <View {...rest}>
         <Svg height={height} width={width}>
           <VictoryAxis crossAxis
             padding={padding}
             width={width}
             height={height}
-            domain={[0, maxDomainX]}
+            domain={[data[0].x - 1, data[0].x - 1 + 7]}
             standalone={false}
-            tickCount={maxDomainX}
+            tickValues={tickValuesX}
+            style={axisStyle}
           />
           <VictoryAxis dependentAxis crossAxis
             padding={padding}
             width={width}
             height={height}
-            domain={[0, maxDomainY]}
+            domain={[0, 10]}
             standalone={false}
-            tickCount={maxDomainY / 2}
+            tickCount={5}
+            style={axisStyle}
           />
         </Svg>
+        <Text style={XLabelStyle}>Week</Text>
       </View>
     )
   }
 
   render() {
-    const { data, maxDomainX, maxDomainY, height, width, padding } = this.props;
-    const x0 = 32;
-    const y0 = 200 - 32;
-    const ratioX = (300 - 32 - 32) / 10;
-    const ratioY = (200 - 32 - 32) / 10;
-    const updatedData = data.map(point => ({ x: point.x * ratioX + x0, y: y0 - point.y * ratioY }));
+    const { padding, height, width } = this.props;
+    const helperLineStyle = {
+      height: 2,
+      width: '25%',
+      backgroundColor: '#FA8D62',
+      marginRight: 8
+    };
+    const helperStyle = {
+      flexDirection: 'row',
+      position: 'absolute',
+      bottom: height - padding + 4,
+      right: 4,
+      alignItems: 'center',
+      justifyContent: 'center'
+    };
     return (
-      <View>
+      <View style={{width, height}}>
         {this.renderAxis()}  
         {this.renderLine()}
+        <View style={helperStyle}>
+          <View style={helperLineStyle} />
+          <Text style={{fontSize: 10}}>your feeling line</Text>
+        </View>
       </View>
     )
   }
@@ -91,7 +134,5 @@ FeelingChart.propTypes = {
   })).isRequired,
   height: PropTypes.number.isRequired,
   width: PropTypes.number.isRequired,
-  padding: PropTypes.number.isRequired,
-  maxDomainX: PropTypes.number.isRequired,
-  maxDomainY: PropTypes.number.isRequired
+  padding: PropTypes.number.isRequired
 };
