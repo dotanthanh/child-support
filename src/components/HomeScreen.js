@@ -5,9 +5,24 @@ import { Text as HeaderText, Button } from 'react-native-elements';
 import FeelingChart from './FeelingChart';
 import { withMenu } from './AppMenu';
 import ProgressBar from '../custom/ProgressBar';
+import BabyChart from './BabyChart';
 
 class HomeScreen extends React.Component {
+  state = {
+    // switch between feeling chart and baby's activity chart
+    feelingChartOpened: false
+  };
+
+  switchToFeelingChart = () => {
+    this.setState({ feelingChartOpened: true });
+  };
+
+  switchToBabyChart = () => {
+    this.setState({ feelingChartOpened: false });
+  };
+
   render() {
+    const { feelingChartOpened } = this.state;
     const feelingData = [
       {x: 29, y: 2},
       {x: 31, y: 5},
@@ -16,10 +31,23 @@ class HomeScreen extends React.Component {
       {x: 34, y: 7},
       {x: 35, y: 7}
     ];
-    const chartButton = {
-      flex: 1,
-      margin: 0,
-      backgroundColor: 'blue'
+    const chartButtonStyle = {
+      container: {
+        flex: 1,
+        marginLeft: 0,
+        marginRight: 0
+      },
+      button: (isSelected, isFeelingChart) => ({
+        backgroundColor: isSelected ? '#FA8D62' : 'white',
+        borderTopLeftRadius: isFeelingChart ? 0 : 24,
+        borderBottomLeftRadius: isFeelingChart ? 0 : 24,
+        borderTopRightRadius: isFeelingChart ? 24 : 0,
+        borderBottomRightRadius: isFeelingChart ? 24 : 0,
+      }),
+      text: {
+        fontSize: 12,
+        fontWeight: '500' 
+      }
     };
 
     return (
@@ -54,15 +82,35 @@ class HomeScreen extends React.Component {
             titleStyle={{fontWeight: '700'}}
           />
           <View style={styles.chartCard}>
-            <FeelingChart
-              data={feelingData}
-              height={200}
-              width={300}
-              padding={32}
-            />
+            {feelingChartOpened
+              ? (
+                <FeelingChart
+                  data={feelingData}
+                  height={180}
+                  width={300}
+                  padding={32}
+                />
+              ) : (
+                <BabyChart width={300} height={180} padding={12} />
+              )
+            }
             <View style={styles.chartButtons}>
-              <Button containerStyle={chartButton} title="Baby's activity" />
-              <Button containerStyle= {chartButton} title="Your feeling" />
+              <Button
+                onPress={this.switchToBabyChart}
+                containerViewStyle={chartButtonStyle.container}
+                buttonStyle={chartButtonStyle.button(!feelingChartOpened, false)}
+                title="Baby's activity"
+                color={!feelingChartOpened ? 'white' : '#333333'}
+                textStyle={chartButtonStyle.text}
+              />
+              <Button
+                onPress={this.switchToFeelingChart}
+                containerViewStyle={chartButtonStyle.container}
+                buttonStyle={chartButtonStyle.button(feelingChartOpened, true)}
+                title="Your feeling"
+                color={feelingChartOpened ? 'white' : '#333333'}
+                textStyle={chartButtonStyle.text}
+              />
             </View>
           </View>
         </View>
@@ -72,7 +120,7 @@ class HomeScreen extends React.Component {
 };
 
 const boxShadow = {
-  shadowOffset: { height: 2,  },
+  shadowOffset: { height: 2, width: 0 },
   shadowColor: 'black',
   shadowOpacity: 0.4, 
 };
@@ -114,7 +162,9 @@ const styles = StyleSheet.create({
     width: '100%',
     flex: 1,
     padding: 24,
-    justifyContent: 'space-between'
+    paddingBottom: 36,
+    justifyContent: 'space-between',
+    minHeight: '60%' 
   },
   forwardButton: {
     height: 40,
@@ -124,19 +174,19 @@ const styles = StyleSheet.create({
     ...boxShadow
   },
   chartCard: {
+    height: '80%',
+    padding: 12,
     borderRadius: 4,
+    justifyContent: 'space-between',
     backgroundColor: '#E4FAF7',
     alignItems: 'center',
     ...boxShadow
   },
   chartButtons: {
+    height: 48,
     flexDirection: 'row',
-    justifyContent: 'center',
-    height: 36,
-    marginVertical: 16,
-    borderRadius: 24,
-    overflow: 'hidden',
-    backgroundColor: 'white',
+    margin: 16,
+    maxWidth: 240,
     ...boxShadow
   }
 });

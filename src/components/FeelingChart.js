@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { View, Text, StyleSheet } from 'react-native';
+import { View, Text } from 'react-native';
 import { VictoryAxis } from 'victory-native';
 import { Svg, Polyline } from 'react-native-svg';
 
