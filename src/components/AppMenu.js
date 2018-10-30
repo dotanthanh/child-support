@@ -23,7 +23,7 @@ AppHeader.propTypes = {
 };
 
 // HOC to include appheader/appbar to a screen/component
-export const withMenu = (WrappedComponent) => {
+export const withMenu = (WrappedComponent, viewId = 'groups') => {
   return class extends React.Component {
     openDrawer = () => {
       this.props.navigation.openDrawer();
@@ -34,7 +34,7 @@ export const withMenu = (WrappedComponent) => {
         <View style={styles.container}>
           <AppHeader openDrawer={this.openDrawer} />
           <WrappedComponent {...this.props} />
-          <BottomBar />
+          <BottomBar currentView={viewId} />
         </View>
       );
     }

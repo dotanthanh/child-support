@@ -1,25 +1,85 @@
 import React from 'react';
-import { View, Text, StyleSheet } from 'react-native';
+import { View, Text, TouchableWithoutFeedback } from 'react-native';
 import { Icon } from 'react-native-elements';
+import { withNavigation } from 'react-navigation';
+import PropTypes from 'prop-types';
 
-const Tab = (props) => (
-  <View style={styles.tab}>
-    <Icon color="white" size={25} name={props.icon} />
-    <Text style={styles.tabText}>{props.tabname}</Text>
-  </View>
-);
+// single Tab component for BottomBar
+const Tab = (props) => {
+  const { isSelected, navigation, viewName } = props;
+  console.log(navigation);
+  const moveToScreen = () => {
+    navigation.navigate(viewName);
+  };
+  const color = isSelected ? '#333333' : 'white';
+  return (
+    <TouchableWithoutFeedback onPress={moveToScreen}>
+      <View style={styles.tab}>
+        <Icon color={color} size={25} name={props.icon} />
+        <Text style={styles.tabText(color)}>
+          {props.tabname}
+        </Text>
+      </View>
+    </TouchableWithoutFeedback>
+  );
+};
 
-const BottomBar = (props) => (
-  <View {...props} style={styles.container}>
-    <Tab tabname="My Journey" icon="pregnant-woman" />
-    <Tab tabname="Sessions" icon="library-books" />
-    <Tab tabname="Q&A" icon="question-answer" />
-    <Tab tabname="Groups" icon="group" />
-    <Tab tabname="Chat" icon="sms" />
-  </View>
-);
+Tab.propTypes = {
+  isSelected: PropTypes.bool.isRequired,
+  viewName: PropTypes.string.isRequired,
+  navigation: PropTypes.shape({
+    navigate: PropTypes.func
+  }).isRequired
+};
 
-const styles = StyleSheet.create({
+const NavigationTab = withNavigation(Tab); 
+
+// BottomBar components
+const BottomBar = (props) => {
+  const { currentView } = props;
+  return (
+    <View {...props} style={styles.container}>
+      <NavigationTab
+        tabname='My Journey'
+        icon='pregnant-woman'
+        isSelected={currentView === 'journey'}
+        viewName='Home'
+      />
+      <NavigationTab
+        tabname='Sessions'
+        icon='library-books'
+        isSelected={currentView === 'sessions'}
+        viewName='Sessions'
+      />
+      <NavigationTab
+        tabname='Q&A'
+        icon='question-answer'
+        isSelected={currentView === 'q&a'}
+        viewName='QuestionAnswer'
+      />
+      <NavigationTab
+        tabname='Groups'
+        icon='group'
+        isSelected={currentView === 'groups'}
+        viewName='Groups'
+      />
+      <NavigationTab
+        tabname='Chat'
+        icon='sms'
+        isSelected={currentView === 'chat'}
+        viewName='Chat'
+      />
+    </View>
+  );
+};
+
+BottomBar.propTypes = {
+  currentView: PropTypes.oneOf(
+    ['journey', 'sessions', 'q&a', 'groups', 'chat']
+  ).isRequired
+};
+
+const styles = {
   container: {
     backgroundColor: '#FA8D62',
     flexDirection: 'row',
@@ -33,11 +93,11 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     padding: 4
   },
-  tabText: {
+  tabText: (color) => ({
     fontSize: 10,
-    color: 'white',
+    color,
     fontWeight: "bold"
-  }
-});
+  })
+};
 
 export default BottomBar;

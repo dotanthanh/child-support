@@ -79,7 +79,7 @@ class HomeScreen extends React.Component {
               size: 20
             }}
             title='Go to current session'
-            titleStyle={{fontWeight: '700'}}
+            textStyle={{ fontWeight: 'bold', fontSize: 14 }}
           />
           <View style={styles.chartCard}>
             {feelingChartOpened
@@ -122,7 +122,7 @@ class HomeScreen extends React.Component {
 const boxShadow = {
   shadowOffset: { height: 2, width: 0 },
   shadowColor: 'black',
-  shadowOpacity: 0.4, 
+  shadowOpacity: 0.4 
 };
 
 const styles = StyleSheet.create({
@@ -191,4 +191,4 @@ const styles = StyleSheet.create({
   }
 });
 
-export default withMenu(HomeScreen);
+export default withMenu(HomeScreen, 'journey');
