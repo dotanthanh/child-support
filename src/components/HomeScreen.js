@@ -1,9 +1,9 @@
 import React from 'react';
 import { View, StyleSheet } from 'react-native';
-import { Text as HeaderText, Icon, Button } from 'react-native-elements';
+import { Text as HeaderText, Button } from 'react-native-elements';
 
 import FeelingChart from './FeelingChart';
-import { withMenu } from './AppHeader';
+import { withMenu } from './AppMenu';
 import ProgressBar from '../custom/ProgressBar';
 
 class HomeScreen extends React.Component {
@@ -16,7 +16,6 @@ class HomeScreen extends React.Component {
       {x: 34, y: 7},
       {x: 35, y: 7}
     ];
-
     const chartButton = {
       flex: 1,
       margin: 0,
@@ -34,8 +33,8 @@ class HomeScreen extends React.Component {
             <HeaderText style={styles.welcomeText}>XYZ days to deliver !</HeaderText>
             <ProgressBar
               height={14}
-              width={100}
-              percentage={5}
+              width={200}
+              percentage={23 / 40 * 100}
               withPointer
               pointerText="You are here!"
               fontSize={10}
@@ -46,8 +45,12 @@ class HomeScreen extends React.Component {
           <Button
             buttonStyle={styles.forwardButton}
             color='white'
+            iconRight={{
+              name: 'arrow-forward',
+              color: 'white',
+              size: 20
+            }}
             title='Go to current session'
-            icon={<Icon name='arrow-forward' color='white' />}
             titleStyle={{fontWeight: '700'}}
           />
           <View style={styles.chartCard}>
