@@ -4,26 +4,26 @@ import {
   createStackNavigator,
   createDrawerNavigator
 } from 'react-navigation';
+import {View, Text} from 'react-native';
 import { observer } from 'mobx-react';
-import { StyleSheet } from 'react-native';
 
 import HomeScreen from './src/components/HomeScreen';
 
 import LoginScreen from './src/components/LoginScreen';
 import DailyQuestionScreen from './src/components/DailyQuestion';
 import LogoutScreen from './src/components/Logout';
-import auth from './src/stores/auth';
+import AuthStore from './src/stores/auth';
 
 @observer
 export default class App extends React.Component {
   componentWillUnmount() {
     // remove observer for user's sign in state
-    auth.unsubscriber();
+    AuthStore.unsubscriber();
   }
 
   render() {
     const RootStacks = getRootStacks(
-      Boolean(auth.user),
+      Boolean(AuthStore.user),
       false
     );
     return (
@@ -37,7 +37,7 @@ const AppDrawer = createDrawerNavigator({
   Logout: LogoutScreen
 });
 
-const getAppStack = (questionEnable) => createStackNavigator(
+const getAppStack = (questionEnable) => createSwitchNavigator(
   {
     Home: {
       screen: AppDrawer,
@@ -48,6 +48,9 @@ const getAppStack = (questionEnable) => createStackNavigator(
       navigationOptions: {
         title: 'Daily question'
       }
+    },
+    Chat: {
+      screen: () => <View><Text>keke</Text></View>
     }
   },
   {

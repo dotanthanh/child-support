@@ -7,7 +7,6 @@ import PropTypes from 'prop-types';
 // single Tab component for BottomBar
 const Tab = (props) => {
   const { isSelected, navigation, viewName } = props;
-  console.log(navigation);
   const moveToScreen = () => {
     navigation.navigate(viewName);
   };

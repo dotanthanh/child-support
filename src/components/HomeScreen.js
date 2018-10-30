@@ -1,17 +1,27 @@
 import React from 'react';
 import { View, StyleSheet } from 'react-native';
 import { Text as HeaderText, Button } from 'react-native-elements';
+import { observer } from 'mobx-react';
 
 import FeelingChart from './FeelingChart';
 import { withMenu } from './AppMenu';
 import ProgressBar from '../custom/ProgressBar';
 import BabyChart from './BabyChart';
+import Loading from '../custom/Loading';
+import UserStore from '../stores/user';
+import { calculateRemainingWeek } from '../utils/user';
 
+@observer
 class HomeScreen extends React.Component {
   state = {
     // switch between feeling chart and baby's activity chart
     feelingChartOpened: false
   };
+
+  componentDidMount() {
+    UserStore.fetchUserData();
+    // calculateRemainingWeek(UserStore.data);
+  }
 
   switchToFeelingChart = () => {
     this.setState({ feelingChartOpened: true });
@@ -20,6 +30,10 @@ class HomeScreen extends React.Component {
   switchToBabyChart = () => {
     this.setState({ feelingChartOpened: false });
   };
+
+  goToCurrentSession = () => {
+    this.props.navigation.navigate('Session');
+  }
 
   render() {
     const { feelingChartOpened } = this.state;
@@ -38,20 +52,28 @@ class HomeScreen extends React.Component {
         marginRight: 0
       },
       button: (isSelected, isFeelingChart) => ({
+        height: 40,
         backgroundColor: isSelected ? '#FA8D62' : 'white',
-        borderTopLeftRadius: isFeelingChart ? 0 : 24,
-        borderBottomLeftRadius: isFeelingChart ? 0 : 24,
-        borderTopRightRadius: isFeelingChart ? 24 : 0,
-        borderBottomRightRadius: isFeelingChart ? 24 : 0,
+        borderTopLeftRadius: isFeelingChart ? 0 : 20,
+        borderBottomLeftRadius: isFeelingChart ? 0 : 20,
+        borderTopRightRadius: isFeelingChart ? 20 : 0,
+        borderBottomRightRadius: isFeelingChart ? 20 : 0,
       }),
       text: {
         fontSize: 12,
-        fontWeight: '500' 
+        fontWeight: 'bold' 
       }
     };
 
     return (
       <View style={styles.container}>
+        <Loading
+          style={styles.loading}
+          size='large'
+          color='#FA8D62'
+          // animating={true}
+          animating={!UserStore.userdata || !UserStore.babydata}
+        />
         <View style={styles.progressContainer}>
           <View style={styles.weekInfo}>
             <HeaderText style={{fontWeight: '500', color: '#333333'}}>Week</HeaderText>
@@ -71,6 +93,7 @@ class HomeScreen extends React.Component {
         </View>
         <View style={styles.content}>
           <Button
+            onPress={this.goToCurrentSession}
             buttonStyle={styles.forwardButton}
             color='white'
             iconRight={{
@@ -126,6 +149,12 @@ const boxShadow = {
 };
 
 const styles = StyleSheet.create({
+  loading: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    height: '100%',
+    width: '100%'
+  },
   container: {
     flex: 1,
     alignItems: 'center'
@@ -183,7 +212,7 @@ const styles = StyleSheet.create({
     ...boxShadow
   },
   chartButtons: {
-    height: 48,
+    // height: 48,
     flexDirection: 'row',
     margin: 16,
     maxWidth: 240,
