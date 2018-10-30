@@ -9,7 +9,7 @@ import ProgressBar from '../custom/ProgressBar';
 import BabyChart from './BabyChart';
 import Loading from '../custom/Loading';
 import UserStore from '../stores/user';
-import { calculateRemainingWeek } from '../utils/user';
+import { calculatePregTime } from '../utils/user';
 
 @observer
 class HomeScreen extends React.Component {
@@ -37,6 +37,7 @@ class HomeScreen extends React.Component {
 
   render() {
     const { feelingChartOpened } = this.state;
+    const timedata = calculatePregTime(UserStore.babydata.due_date);
     const feelingData = [
       {x: 29, y: 2},
       {x: 31, y: 5},
@@ -71,20 +72,23 @@ class HomeScreen extends React.Component {
           style={styles.loading}
           size='large'
           color='#FA8D62'
-          // animating={true}
           animating={!UserStore.userdata || !UserStore.babydata}
         />
         <View style={styles.progressContainer}>
           <View style={styles.weekInfo}>
             <HeaderText style={{fontWeight: '500', color: '#333333'}}>Week</HeaderText>
-            <HeaderText h4 style={{fontWeight: 'bold', color: '#333333'}}>23</HeaderText>
+            <HeaderText h4 style={{fontWeight: 'bold', color: '#333333'}}>
+              {timedata.currentWeek}
+            </HeaderText>
           </View>
           <View>
-            <HeaderText style={styles.welcomeText}>XYZ days to deliver !</HeaderText>
+            <HeaderText style={styles.welcomeText}>
+              {timedata.daysRemaining} days to deliver !
+            </HeaderText>
             <ProgressBar
               height={14}
               width={200}
-              percentage={23 / 40 * 100}
+              percentage={timedata.progress}
               withPointer
               pointerText="You are here!"
               fontSize={10}

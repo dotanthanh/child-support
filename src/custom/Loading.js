@@ -1,6 +1,6 @@
 import * as React from 'react';
 import PropTypes from 'prop-types';
-import { View, StyleSheet, ActivityIndicator, Dimensions } from 'react-native';
+import { View, ActivityIndicator, Dimensions } from 'react-native';
 
 /*
   wrapper component over react-native's ActivityIndicator

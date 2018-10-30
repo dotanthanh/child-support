@@ -6,7 +6,10 @@ import AuthStore from './auth';
 class UserStore {
   @observable database = firebase.database();
   @observable userdata = undefined;
-  @observable babydata = undefined;
+  @observable babydata = {
+    activities: [],
+    due_date: undefined
+  };
 
   @action
   fetchUserData = () => {
@@ -14,11 +17,13 @@ class UserStore {
     if (AuthStore.user) {
       this.database
         .ref(`users/${AuthStore.user.uid}`)
-        .once('value', (userdata) => {
-          this.userdata = userdata;
-          this.database.ref(userdata.baby).once('value', (babydata) => {
-            this.babydata = babydata;
-          });
+        .once('value', (userSnapshot) => {
+          this.userdata = userSnapshot.val();
+          this.database
+            .ref(userSnapshot.val().baby)
+            .once('value', (babySnapshot) => {
+              this.babydata = babySnapshot.val();
+            });
         });
     }
   }
