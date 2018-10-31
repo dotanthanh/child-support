@@ -1,14 +1,11 @@
-import { observable, action, computed } from 'mobx';
+import { observable, action } from 'mobx';
 import firebase from 'react-native-firebase';
 import AuthStore from './auth';
 import {random} from 'lodash';
 class UserStore {
   @observable database = firebase.database();
   @observable userdata = {};
-  @observable babydata = {
-    activities: [],
-    due_date: undefined
-  };
+  @observable babydata = {};
   @observable feelings_data = [
     // {week: 1, feeling_rate:  2},
     // {week: 4, feeling_rate: 3},
@@ -17,20 +14,21 @@ class UserStore {
   ];
 
   @action
-  fetchUserData = () => {
+  fetchUserData = async () => {
     // only fetch if we have a logged in user
     if (AuthStore.user) {
-      this.database
+      await this.database
         .ref(`users/${AuthStore.user.uid}`)
         .once('value', (userSnapshot) => {
           this.userdata = userSnapshot.val();
           this.feelings_data = userSnapshot.child('feelings_data').val();
           this.database
-            .ref(userSnapshot.val().baby)
+            .ref(this.userdata.baby)
             .once('value', (babySnapshot) => {
               this.babydata = babySnapshot.val();
-            });
-        });
+            })
+        })
+        .catch(e => console.log(e));
     }
   };
 }

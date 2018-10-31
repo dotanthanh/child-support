@@ -1,12 +1,12 @@
 import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 
+import AuthStore from '../stores/auth';
+
 export default class Logout extends React.Component {
   componentDidMount() {
     // TODO: logout action here, then redirect to Login screen
-    setTimeout(() => {
-      this.props.navigation.navigate('Login');
-    }, 2000);
+    AuthStore.logout();
   }
 
   render() {

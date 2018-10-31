@@ -16,6 +16,8 @@ export default class LoginScreen extends React.Component {
     email: '',
     password: ''
   };
+  keyBoardWillShowListener = null;
+  keyBoardWillHideListener = null;
 
   shrinkImageAnimation = Animated.timing(this.state.imageSize, {
     toValue: 100,
@@ -29,20 +31,21 @@ export default class LoginScreen extends React.Component {
 
   componentDidMount() {
     if (auth.user) {
-      this.props.navigation.navigate('Logging')
+      this.props.navigation.navigate('Logging');
     }
-    Keyboard.addListener('keyboardWillShow', () => {
+    this.keyBoardWillShowListener = Keyboard.addListener('keyboardWillShow', () => {
       this.setState({ inputFocused: true });
       this.shrinkImageAnimation.start();
     });
-    Keyboard.addListener('keyboardWillHide', () => {
+    this.keyBoardWillHideListener = Keyboard.addListener('keyboardWillHide', () => {
       this.setState({ inputFocused: false });
       this.expandImageAnimation.start();
     });
   }
 
   componentWillUnmount() {
-    Keyboard.removeAllListeners();
+    this.keyBoardWillShowListener.remove();
+    this.keyBoardWillHideListener.remove();
   }
 
   onLogin = () => {

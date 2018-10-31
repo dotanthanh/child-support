@@ -2,6 +2,7 @@ import React from 'react';
 import { View, StyleSheet } from 'react-native';
 import { Text as HeaderText, Button } from 'react-native-elements';
 import { observer } from 'mobx-react';
+import { isEmpty } from 'lodash';
 
 import FeelingChart from './FeelingChart';
 import { withMenu } from './AppMenu';
@@ -9,6 +10,7 @@ import ProgressBar from '../custom/ProgressBar';
 import BabyChart from './BabyChart';
 import Loading from '../custom/Loading';
 import UserStore from '../stores/user';
+import BabyStore from '../stores/baby';
 import { calculatePregTime } from '../utils/user';
 
 @observer
@@ -20,6 +22,7 @@ class HomeScreen extends React.Component {
 
   componentDidMount() {
     UserStore.fetchUserData();
+    BabyStore.fetchActivitySet();
   }
 
   switchToFeelingChart = () => {
@@ -56,14 +59,14 @@ class HomeScreen extends React.Component {
         fontWeight: 'bold' 
       }
     };
-      // console.log(UserStore.feelings_data[0])
+
     return (
       <View style={styles.container}>
         <Loading
           style={styles.loading}
           size='large'
           color='#FA8D62'
-          animating={!UserStore.userdata || !UserStore.babydata}
+          animating={isEmpty(UserStore.userdata) || isEmpty(UserStore.babydata)}
         />
         <View style={styles.progressContainer}>
           <View style={styles.weekInfo}>
@@ -103,13 +106,19 @@ class HomeScreen extends React.Component {
             {feelingChartOpened
               ? (
                 <FeelingChart
-                  data={UserStore.feelings_data.slice(-21)}
+                  data={UserStore.feelings_data.slice(-6)}
                   height={180}
                   width={300}
                   padding={32}
                 />
               ) : (
-                <BabyChart width={300} height={180} padding={12} />
+                <BabyChart
+                  data={UserStore.babydata.activities}
+                  colors={['tomato', 'orange', 'green', 'pink']}
+                  width={300}
+                  height={180}
+                  padding={12}
+                />
               )
             }
             <View style={styles.chartButtons}>
