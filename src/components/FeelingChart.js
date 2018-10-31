@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import { View, Text } from 'react-native';
 import { VictoryAxis } from 'victory-native';
 import { Svg, Polyline } from 'react-native-svg';
+import { isEmpty } from 'lodash';
 
 export default class FeelingChart extends React.Component {
   renderLine = () => {
@@ -12,10 +13,10 @@ export default class FeelingChart extends React.Component {
     const ratioX = (width - 2 * padding) / 7;
     const ratioY = (height - 2 * padding) / 10;
     // remove data entries that are out of covered range for the chart 
-    const dataInRange = data.filter(point => point.x < data[0].x + 6);
+    const dataInRange = data.filter(point => point.day < data[0].day + 6);
     const updatedData =  dataInRange.map((point) => ({
-        x: (point.x - dataInRange[0].x + 1) * ratioX + x0,
-        y: y0 - point.y * ratioY
+        x: (point.day - dataInRange[0].day + 1) * ratioX + x0,
+        y: y0 - point.feeling_rate * ratioY
       }));
     /*
       we need a string of formatted points 'x1,y1 x2,y1 x3,y3 ...'
@@ -27,6 +28,7 @@ export default class FeelingChart extends React.Component {
       ,
       ''
     );
+
     return (
       <View style={{position: 'absolute'}}>
         <Svg height={height} width={width}>
@@ -67,8 +69,13 @@ export default class FeelingChart extends React.Component {
       fontSize: 10
     };
     let tickValuesX = [];
+    let firstDayTick = 0;
+    if (!isEmpty(data)) {
+      firstDayTick = data[0].day;
+    }
+    const lowerBound = firstDayTick > 0 ? firstDayTick : 1;
     for (var i = 0; i < 6; i++) {
-      tickValuesX.push(data[0].x + i);
+      tickValuesX.push(firstDayTick + i);
     }
 
     return (
@@ -78,7 +85,7 @@ export default class FeelingChart extends React.Component {
             padding={padding}
             width={width}
             height={height}
-            domain={[data[0].x - 1, data[0].x - 1 + 7]}
+            domain={[lowerBound - 1, lowerBound + 6]}
             standalone={false}
             tickValues={tickValuesX}
             style={axisStyle}
@@ -93,13 +100,13 @@ export default class FeelingChart extends React.Component {
             style={axisStyle}
           />
         </Svg>
-        <Text style={XLabelStyle}>Week</Text>
+        <Text style={XLabelStyle}>Day</Text>
       </View>
     )
   }
 
   render() {
-    const { padding, height, width } = this.props;
+    const { padding, height, width, data } = this.props;
     const helperLineStyle = {
       height: 2,
       width: '25%',
@@ -117,7 +124,7 @@ export default class FeelingChart extends React.Component {
     return (
       <View style={{width, height}}>
         {this.renderAxis()}  
-        {this.renderLine()}
+        {data.length > 1 && this.renderLine()}
         <View style={helperStyle}>
           <View style={helperLineStyle} />
           <Text style={{fontSize: 10}}>your feeling line</Text>
@@ -129,8 +136,8 @@ export default class FeelingChart extends React.Component {
 
 FeelingChart.propTypes = {
   data: PropTypes.arrayOf(PropTypes.shape({
-    x: PropTypes.number,
-    y: PropTypes.number
+    week: PropTypes.number,
+    feeling_rate: PropTypes.number
   })).isRequired,
   height: PropTypes.number.isRequired,
   width: PropTypes.number.isRequired,

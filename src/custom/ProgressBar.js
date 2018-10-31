@@ -41,6 +41,7 @@ const ProgressBar = (props) => {
       alignItems: 'flex-start'
     },
     arrow: {
+      width: arrowSize,
       marginVertical: arrowSize / -4,
       marginLeft: percentage * width / 100.0 - arrowSize / 2
     },

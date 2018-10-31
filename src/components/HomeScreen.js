@@ -15,12 +15,11 @@ import { calculatePregTime } from '../utils/user';
 class HomeScreen extends React.Component {
   state = {
     // switch between feeling chart and baby's activity chart
-    feelingChartOpened: false
+    feelingChartOpened: true
   };
 
   componentDidMount() {
     UserStore.fetchUserData();
-    // calculateRemainingWeek(UserStore.data);
   }
 
   switchToFeelingChart = () => {
@@ -38,14 +37,6 @@ class HomeScreen extends React.Component {
   render() {
     const { feelingChartOpened } = this.state;
     const timedata = calculatePregTime(UserStore.babydata.due_date);
-    const feelingData = [
-      {x: 29, y: 2},
-      {x: 31, y: 5},
-      {x: 32, y: 4},
-      {x: 33, y: 3},
-      {x: 34, y: 7},
-      {x: 35, y: 7}
-    ];
     const chartButtonStyle = {
       container: {
         flex: 1,
@@ -65,7 +56,7 @@ class HomeScreen extends React.Component {
         fontWeight: 'bold' 
       }
     };
-
+      // console.log(UserStore.feelings_data[0])
     return (
       <View style={styles.container}>
         <Loading
@@ -112,7 +103,7 @@ class HomeScreen extends React.Component {
             {feelingChartOpened
               ? (
                 <FeelingChart
-                  data={feelingData}
+                  data={UserStore.feelings_data.slice(-21)}
                   height={180}
                   width={300}
                   padding={32}
