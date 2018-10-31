@@ -14,10 +14,10 @@ class UserStore {
   ];
 
   @action
-  fetchUserData = async () => {
+  fetchUserData = () => {
     // only fetch if we have a logged in user
     if (AuthStore.user) {
-      await this.database
+      this.database
         .ref(`users/${AuthStore.user.uid}`)
         .once('value', (userSnapshot) => {
           this.userdata = userSnapshot.val();

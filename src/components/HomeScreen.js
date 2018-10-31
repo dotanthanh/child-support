@@ -34,7 +34,8 @@ class HomeScreen extends React.Component {
   };
 
   goToCurrentSession = () => {
-    this.props.navigation.navigate('Session');
+    const sessionNumber = UserStore.userdata.current_session;
+    this.props.navigation.navigate('SingleSession', { sessionNumber });
   }
 
   render() {
@@ -224,4 +225,4 @@ const styles = StyleSheet.create({
   }
 });
 
-export default withMenu(HomeScreen, 'journey');
+export default withMenu(HomeScreen, 'Home');

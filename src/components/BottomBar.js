@@ -41,31 +41,31 @@ const BottomBar = (props) => {
       <NavigationTab
         tabname='My Journey'
         icon='pregnant-woman'
-        isSelected={currentView === 'journey'}
+        isSelected={currentView === 'Home'}
         viewName='Home'
       />
       <NavigationTab
         tabname='Sessions'
         icon='library-books'
-        isSelected={currentView === 'sessions'}
+        isSelected={currentView === 'Sessions'}
         viewName='Sessions'
       />
       <NavigationTab
         tabname='Q&A'
         icon='question-answer'
-        isSelected={currentView === 'q&a'}
+        isSelected={currentView === 'QuestionAnswer'}
         viewName='QuestionAnswer'
       />
       <NavigationTab
         tabname='Groups'
         icon='group'
-        isSelected={currentView === 'groups'}
+        isSelected={currentView === 'Groups'}
         viewName='Groups'
       />
       <NavigationTab
         tabname='Chat'
         icon='sms'
-        isSelected={currentView === 'chat'}
+        isSelected={currentView === 'Chat'}
         viewName='Chat'
       />
     </View>
@@ -74,7 +74,7 @@ const BottomBar = (props) => {
 
 BottomBar.propTypes = {
   currentView: PropTypes.oneOf(
-    ['journey', 'sessions', 'q&a', 'groups', 'chat']
+    ['Home', 'Sessions', 'QuestionAnswer', 'Groups', 'Chat']
   ).isRequired
 };
 

@@ -4,37 +4,32 @@ import PropTypes from 'prop-types';
 import { Header, Icon } from 'react-native-elements';
 
 import BottomBar from './BottomBar';
-
-export const AppHeader = (props) => {
-  return (
-    <View>
-      <Header
-        backgroundColor='#FA8D62'
-        leftComponent={<Icon name='menu' onPress={props.openDrawer} color='white' />}
-        centerComponent={{ text: 'MENU', style: {color: 'white', fontWeight: 'bold', fontSize: 16} }}
-        rightComponent={<Icon name='search' color='white' />}
-      />
-    </View>
-  );
-}
-
-AppHeader.propTypes = {
-  openDrawer: PropTypes.func.isRequired
-};
+import AppHeaderSwitch from '../custom/AppHeaderSwitch';
+import AppHeaderStack from '../custom/AppHeaderStack';
 
 // HOC to include appheader/appbar to a screen/component
-export const withMenu = (WrappedComponent, viewId = 'groups') => {
+export const withMenu = (
+  WrappedComponent,
+  viewName = 'Home',
+  isSwitchHeader = true
+) => {
   return class extends React.Component {
     openDrawer = () => {
       this.props.navigation.openDrawer();
     }
 
+    goBack = () => {
+      this.props.navigation.goBack();
+    }
+
     render() {
       return (
         <View style={styles.container}>
-          <AppHeader openDrawer={this.openDrawer} />
+          {isSwitchHeader && (
+            <AppHeaderSwitch viewName={viewName} openDrawer={this.openDrawer} />
+          )}
           <WrappedComponent {...this.props} />
-          <BottomBar currentView={viewId} />
+          <BottomBar currentView={viewName} />
         </View>
       );
     }
