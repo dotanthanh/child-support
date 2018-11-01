@@ -52,7 +52,6 @@ export default class LoginScreen extends React.Component {
 
   onLogin = () => {
     const { email, password } = this.state;
-    // some dummy validation her
     auth.login(email, password);
   };
 
@@ -106,12 +105,14 @@ export default class LoginScreen extends React.Component {
             />
             <View style={styles.buttonGroup}>
               <Button
+                rounded
                 buttonStyle={styles.button}
                 color={colors.white}
                 title="REGISTER"
                 textStyle={styles.buttonText}
               />
               <Button
+                rounded
                 buttonStyle={styles.button}
                 color={colors.white}
                 title="LOGIN"
@@ -165,8 +166,6 @@ const styles = StyleSheet.create({
   },
   button: {
     width: 100,
-    height: 36,
-    borderRadius: 18,
     backgroundColor: colors.main,
     paddingHorizontal: 16,
     ...shadow

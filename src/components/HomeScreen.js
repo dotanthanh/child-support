@@ -99,6 +99,7 @@ class HomeScreen extends React.Component {
         </View>
         <View style={styles.content}>
           <Button
+            rounded
             onPress={this.goToCurrentSession}
             buttonStyle={styles.forwardButton}
             color='white'
@@ -201,10 +202,8 @@ const styles = StyleSheet.create({
     minHeight: '60%' 
   },
   forwardButton: {
-    height: 40,
     marginBottom: 12,
     backgroundColor: colors.main,
-    borderRadius: 20,
     ...shadow
   },
   chartCard: {

@@ -1,23 +1,54 @@
 import { observable, action } from 'mobx';
 import firebase from 'react-native-firebase';
 import Expo from 'expo';
+import { isEmpty } from 'lodash';
 
 class SessionStore {
   @observable storage = firebase.storage();
   @observable sessionInfo = '';
+  @observable sessionNumber = undefined;
+  @observable sessionAudio = undefined;
 
   @action
-  fetchSessionText = (sessionNumber) => {
-    this.storage.ref(`/documents/session_${sessionNumber}/info_mother.txt`)
-    .getDownloadURL()
-    .then((url) => {
-      const filePath = Expo.FileSystem.documentDirectory + 'info_mother.txt'; 
-      Expo.FileSystem
-        .downloadAsync(url, filePath)
-        .then(() => this.readSessionInfoToStore());
-      console.log(url)
-    })
-    .catch(e => console.log(e));
+  changeSession = (sessionNumber) => {
+    this.sessionInfo = '';
+    this.sessionNumber = sessionNumber;
+    this.sessionAudio = undefined;
+  }
+
+  @action
+  fetchSessionText = async () => {
+    const filePath = Expo.FileSystem.documentDirectory + 'info_mother.txt';
+    try {
+      const downloadUrl = await this.storage
+        .ref(`/documents/session_${this.sessionNumber}/info_mother.txt`)
+        .getDownloadURL();
+      await Expo.FileSystem.downloadAsync(downloadUrl, filePath);
+      await this.readSessionInfoToStore();
+    } catch (e) {
+      console.log(e);
+    }
+  }
+
+  @action
+  fetchSessionAudio = async (audioStatusChangedCallback) => {
+    const filePath = Expo.FileSystem.documentDirectory + 'audio.mp3';
+    try {
+      const downloadUrl = await this.storage
+        .ref(`/documents/session_${this.sessionNumber}/audio.mp3`)
+        .getDownloadURL();
+      await Expo.FileSystem.downloadAsync(downloadUrl, filePath)
+      await Expo.Audio.Sound
+        .create({uri: filePath}, {shouldPlay: false})
+        .then(soundInfo => {
+          this.sessionAudio = soundInfo.sound;
+          this.sessionAudio.setOnPlaybackStatusUpdate(
+            audioStatusChangedCallback
+          );
+        });
+    } catch (e) {
+      console.log(e);
+    } 
   }
 
   readSessionInfoToStore = async () => {

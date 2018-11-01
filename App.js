@@ -51,7 +51,7 @@ const AppDrawer = createDrawerNavigator(
     Sessions: SessionStack,
     Logout: LogoutScreen
   },
-  { initialRouteName: 'Home' }
+  { initialRouteName: 'Sessions' }
 );
 
 const getAppStack = (questionEnable) => createSwitchNavigator(
