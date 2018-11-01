@@ -45,11 +45,14 @@ const SessionStack = createStackNavigator(
   }
 );
 
-const AppDrawer = createDrawerNavigator({
-  Home: HomeScreen,
-  Sessions: SessionStack,
-  Logout: LogoutScreen
-}, {initialRouteName: 'Sessions'});
+const AppDrawer = createDrawerNavigator(
+  {
+    Home: HomeScreen,
+    Sessions: SessionStack,
+    Logout: LogoutScreen
+  },
+  { initialRouteName: 'Home' }
+);
 
 const getAppStack = (questionEnable) => createSwitchNavigator(
   {
@@ -63,9 +66,7 @@ const getAppStack = (questionEnable) => createSwitchNavigator(
       }
     }
   },
-  {
-    initialRouteName: questionEnable ? 'DailyQuestion' : 'Home'
-  }
+  { initialRouteName: questionEnable ? 'DailyQuestion' : 'Home' }
 );
 
 const AuthStack = createStackNavigator(

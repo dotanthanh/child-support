@@ -10,7 +10,6 @@ export default class DailyQuestion extends React.Component {
 
   submitAnswer = () => {
     // do something before move to home screen
-    console.log(this.state);
     this.moveToHomeScreen();
   }
 
