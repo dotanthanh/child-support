@@ -1,9 +1,11 @@
 import React from 'react';
-import { View, ScrollView, StyleSheet } from 'react-native';
+import { View, ScrollView, StyleSheet, Dimensions } from 'react-native';
 import { Button } from 'react-native-elements';
 
 import AppHeaderSwitch from '../custom/AppHeaderSwitch';
 import BottomBar from './BottomBar';
+import { container as containerStyles } from '../styles';
+import { shadow, colors, text } from '../styles/theme';
 
 class SessionsScreen extends React.Component {
   goToSingleSession = (sessionNumber) => {
@@ -42,30 +44,35 @@ class SessionsScreen extends React.Component {
   }
 }
 
+const sessionItemSize = (Dimensions.get('window').width - 12 * 2) / 3 - 8 * 2;
+
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
-    backgroundColor: 'white'
+    ...containerStyles.screenContainerMenu
   },
   scrollView: {
-    paddingTop: 12,
-    alignItems: 'center'
+    padding: 12,
+    flexDirection: 'row',
+    flexWrap: 'wrap'
   },
   sessionButtonContainer: {
-    marginBottom: 12,
-    minWidth: '70%',
-    shadowOffset: { height: 2 },
-    shadowColor: 'black',
-    shadowOpacity: 0.4 
+    margin: 8,
+    marginLeft: 8,
+    marginRight: 8,
+    width: sessionItemSize,
+    height: sessionItemSize,
+    ...shadow
   },
   sessionButton: {
-    height: 40,
-    borderRadius: 20,
-    backgroundColor: '#C4F0EA'
+    height: '100%',
+    paddingHorizontal: 16,
+    borderRadius: 4,
+    backgroundColor: colors.lightBlue
   },
   buttonText: {
-    fontWeight: '500',
-    color: '#333333'
+    fontWeight: text.boldWeight,
+    color: colors.black,
+    textAlign: 'center'
   }
 });
 

@@ -1,8 +1,11 @@
 import React from 'react';
 import { View, Text, ScrollView, StyleSheet } from 'react-native';
 import { Button } from 'react-native-elements';
+
 import AppHeaderStack from '../custom/AppHeaderStack';
 import BottomBar from './BottomBar';
+import { container as containerStyles } from '../styles';
+import { colors, text, shadow } from '../styles/theme';
 
 class SingleSessionScreen extends React.Component {
   render() {
@@ -21,7 +24,7 @@ class SingleSessionScreen extends React.Component {
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1
+    ...containerStyles.screenContainerMenu
   },
   scrollView: {
     paddingTop: 12,
@@ -30,18 +33,16 @@ const styles = StyleSheet.create({
   sessionButtonContainer: {
     marginBottom: 12,
     minWidth: '70%',
-    shadowOffset: { height: 2 },
-    shadowColor: 'black',
-    shadowOpacity: 0.4 
+    ...shadow
   },
   sessionButton: {
     height: 40,
     borderRadius: 20,
-    backgroundColor: '#C4F0EA'
+    backgroundColor: colors.lightBlue
   },
   buttonText: {
-    fontWeight: '500',
-    color: '#333333'
+    fontWeight: text.boldWeight,
+    color: colors.black
   }
 });
 

@@ -5,6 +5,8 @@ import {
   createDrawerNavigator
 } from 'react-navigation';
 import { observer } from 'mobx-react';
+import firebase from 'react-native-firebase';
+const x = firebase.storage();
 
 import HomeScreen from './src/components/HomeScreen';
 

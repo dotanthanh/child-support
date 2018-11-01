@@ -4,13 +4,15 @@ import { Icon } from 'react-native-elements';
 import { withNavigation } from 'react-navigation';
 import PropTypes from 'prop-types';
 
+import { colors, text } from '../styles/theme';
+
 // single Tab component for BottomBar
 const Tab = (props) => {
   const { isSelected, navigation, viewName } = props;
   const moveToScreen = () => {
     navigation.navigate(viewName);
   };
-  const color = isSelected ? '#333333' : 'white';
+  const color = isSelected ? colors.black : colors.white;
   return (
     <TouchableWithoutFeedback onPress={moveToScreen}>
       <View style={styles.tab}>
@@ -80,11 +82,12 @@ BottomBar.propTypes = {
 
 const styles = {
   container: {
-    backgroundColor: '#FA8D62',
+    backgroundColor: colors.main,
     flexDirection: 'row',
     height: 48,
     width: '100%',
-    bottom: 0
+    bottom: 0,
+    position: 'absolute'
   },
   tab: {
     flex: 1,
@@ -95,7 +98,7 @@ const styles = {
   tabText: (color) => ({
     fontSize: 10,
     color,
-    fontWeight: "bold"
+    fontWeight: text.bolderWeight
   })
 };
 

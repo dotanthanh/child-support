@@ -3,7 +3,7 @@ import { View, StyleSheet } from 'react-native';
 import PropTypes from 'prop-types';
 import { Header, Icon } from 'react-native-elements';
 
-import BottomBar from './BottomBar';
+import BottomBar from '../components/BottomBar';
 import AppHeaderSwitch from '../custom/AppHeaderSwitch';
 import AppHeaderStack from '../custom/AppHeaderStack';
 

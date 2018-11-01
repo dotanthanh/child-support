@@ -5,6 +5,8 @@ import { VictoryAxis } from 'victory-native';
 import { Svg, Polyline } from 'react-native-svg';
 import { isEmpty } from 'lodash';
 
+import { colors } from '../styles/theme';
+
 export default class FeelingChart extends React.Component {
   renderLine = () => {
     const { data, padding, height, width } = this.props;
@@ -35,7 +37,7 @@ export default class FeelingChart extends React.Component {
           <Polyline
             points={polylinePoints}
             fill='none'
-            stroke='#FA8D62'
+            stroke={colors.main}
             strokeWidth='5'
           />
         </Svg>
@@ -51,10 +53,10 @@ export default class FeelingChart extends React.Component {
     const axisStyle = {
       tickLabels: {
         fontSize: 12,
-        color: '#333333'
+        color: colors.black
       },
       axis: {
-        stroke: '#333333'
+        stroke: colors.black
       },
       axisLabel: {
         width: '100%',
@@ -110,7 +112,7 @@ export default class FeelingChart extends React.Component {
     const helperLineStyle = {
       height: 2,
       width: '25%',
-      backgroundColor: '#FA8D62',
+      backgroundColor: colors.main,
       marginRight: 8
     };
     const helperStyle = {
