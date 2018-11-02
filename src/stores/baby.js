@@ -1,6 +1,5 @@
 import { observable, action } from 'mobx';
 import firebase from 'react-native-firebase';
-import {random} from 'lodash';
 
 class BabyStore {
   @observable database = firebase.database();
