@@ -1,25 +1,28 @@
 import * as React from 'react';
 import { View, Text } from 'react-native';
+import { observer } from 'mobx-react';
 import { VictoryPie } from 'victory-native';
+import { parseInt } from 'lodash';
+
+import BabyStore from '../stores/baby';
+import { colors, shadow } from '../styles/theme';
 
 const BabyChart = (props) => {
-  const { height, width, padding, ...rest } = props;
+  const { data, colors: propColors, height, width, padding, ...rest } = props;
   const pieSize = (height - padding * 2);
   const styles = {
     pieWrapper: {
       height: pieSize,
       width: pieSize,
       borderRadius: pieSize / 2,
-      shadowOffset: { height: 2, width: 0 },
-      shadowColor: 'black',
-      shadowOpacity: 0.4
+      ...shadow
     },
     infoBoard: {
       width: 'auto',
       maxHeight: '100%',
       padding: 16,
       borderRadius: 4,
-      backgroundColor: 'white',
+      backgroundColor: colors.white,
       alignSelf: 'center'
     },
     pieCategory: {
@@ -37,7 +40,17 @@ const BabyChart = (props) => {
     infoText: {
       fontSize: 10
     }
-  }; 
+  };
+  // calculating the percentage of each section for the PieChart
+  const babyData = BabyStore.activities_set.map((activity, index) => {
+    const percentage = data.filter(
+      activityId => activityId === index
+    ).length * 100 / data.length;
+    return {
+      x: `${parseInt(percentage)}%`,
+      y: percentage
+    };
+  });
 
   return (
     <View {...rest}>
@@ -48,31 +61,23 @@ const BabyChart = (props) => {
             radius={pieSize / 2}
             height={pieSize}
             width={pieSize}
-            colorScale={['tomato', 'orange', 'green']}
-            data={[
-              { x: null, y: 25 },
-              { x: null, y: 10 },
-              { x: null, y: 65 }
-            ]}
+            labelRadius={pieSize / 4}
+            style={{ labels: { fontSize: 10 } }}
+            colorScale={propColors}
+            data={babyData}
           />
         </View>
         <View style={styles.infoBoard}>
-          <View style={styles.pieCategory}>
-            <View style={styles.pieCategorySample('tomato')} />
-            <Text style={styles.infoText}>Sleeping</Text>
-          </View>
-          <View style={styles.pieCategory}>
-            <View style={styles.pieCategorySample('orange')} />
-            <Text style={styles.infoText}>Kicking</Text>
-          </View>
-          <View style={styles.pieCategory}>
-            <View style={styles.pieCategorySample('green')} />
-            <Text style={styles.infoText}>Active</Text>
-          </View>
+          {BabyStore.activities_set.map((activity, index) => (
+            <View key={activity.name} style={styles.pieCategory}>
+              <View style={styles.pieCategorySample(propColors[index])} />
+              <Text style={styles.infoText}>{activity.name}</Text>
+            </View> 
+          ))}
         </View>
       </View>
     </View>
   );
 };
 
-export default BabyChart;
+export default observer(BabyChart);

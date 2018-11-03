@@ -2,6 +2,8 @@ import * as React from 'react';
 import { View, Text } from 'react-native';
 import { Icon } from 'react-native-elements';
 
+import { colors, text, shadow } from '../styles/theme';
+
 const ProgressBar = (props) => {
   const { height, width, percentage, withPointer, pointerText, fontSize, ...rest } = props;
   const borderWidth = 1;
@@ -25,13 +27,13 @@ const ProgressBar = (props) => {
       width,
       borderWidth,
       borderRadius: height / 2,
-      borderColor: '#333333',
+      borderColor: colors.black,
       overflow: 'hidden',
-      backgroundColor: 'white'
+      backgroundColor: colors.white
     },
     finished: {
       height: height - 2 * borderWidth,
-      backgroundColor: '#FA8D62',
+      backgroundColor: colors.main,
       width: percentagePosition,
     }
   };
@@ -41,6 +43,7 @@ const ProgressBar = (props) => {
       alignItems: 'flex-start'
     },
     arrow: {
+      width: arrowSize,
       marginVertical: arrowSize / -4,
       marginLeft: percentage * width / 100.0 - arrowSize / 2
     },
@@ -49,11 +52,11 @@ const ProgressBar = (props) => {
       paddingHorizontal: 8,
       paddingVertical: 4,
       height: fontSize * 2,
-      color: 'white',
+      color: colors.white,
       textAlign: 'center'
     },
     textContainer: {
-      backgroundColor: '#FA8D62',
+      backgroundColor: colors.main,
       borderRadius: fontSize,
       width: 84,
       marginLeft: textPosition
@@ -66,7 +69,12 @@ const ProgressBar = (props) => {
       </View>
       {withPointer && (
         <View style={pointerStyle.container}>
-          <Icon size={arrowSize} iconStyle={pointerStyle.arrow} color="black" name="arrow-drop-up" />
+          <Icon
+            size={arrowSize}
+            iconStyle={pointerStyle.arrow}
+            color={colors.black}
+            name="arrow-drop-up"
+          />
           <View style={pointerStyle.textContainer}>
             <Text style={pointerStyle.text}>{pointerText}</Text>
           </View>

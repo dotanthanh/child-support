@@ -2,25 +2,30 @@ import React from 'react';
 import { View, StyleSheet } from 'react-native';
 import { Text as HeaderText, Button } from 'react-native-elements';
 import { observer } from 'mobx-react';
+import { isEmpty } from 'lodash';
 
 import FeelingChart from './FeelingChart';
-import { withMenu } from './AppMenu';
 import ProgressBar from '../custom/ProgressBar';
 import BabyChart from './BabyChart';
 import Loading from '../custom/Loading';
 import UserStore from '../stores/user';
-import { calculateRemainingWeek } from '../utils/user';
+import BabyStore from '../stores/baby';
+import { calculatePregTime } from '../utils/user';
+import AppHeaderSwitch from '../custom/AppHeaderSwitch';
+import BottomBar from './BottomBar';
+import { container as containerStyles } from '../styles';
+import { shadow, text, colors } from '../styles/theme';
 
 @observer
 class HomeScreen extends React.Component {
   state = {
     // switch between feeling chart and baby's activity chart
-    feelingChartOpened: false
+    feelingChartOpened: true
   };
 
   componentDidMount() {
     UserStore.fetchUserData();
-    // calculateRemainingWeek(UserStore.data);
+    BabyStore.fetchActivitySet();
   }
 
   switchToFeelingChart = () => {
@@ -32,19 +37,14 @@ class HomeScreen extends React.Component {
   };
 
   goToCurrentSession = () => {
-    this.props.navigation.navigate('Session');
+    const sessionNumber = UserStore.userdata.current_session;
+    this.props.navigation.navigate('SingleSession', { sessionNumber });
   }
 
   render() {
     const { feelingChartOpened } = this.state;
-    const feelingData = [
-      {x: 29, y: 2},
-      {x: 31, y: 5},
-      {x: 32, y: 4},
-      {x: 33, y: 3},
-      {x: 34, y: 7},
-      {x: 35, y: 7}
-    ];
+    const timedata = calculatePregTime(UserStore.babydata.due_date);
+    const isWaiting = isEmpty(UserStore.userdata) || isEmpty(UserStore.babydata);
     const chartButtonStyle = {
       container: {
         flex: 1,
@@ -53,7 +53,7 @@ class HomeScreen extends React.Component {
       },
       button: (isSelected, isFeelingChart) => ({
         height: 40,
-        backgroundColor: isSelected ? '#FA8D62' : 'white',
+        backgroundColor: isSelected ? colors.main : colors.white,
         borderTopLeftRadius: isFeelingChart ? 0 : 20,
         borderBottomLeftRadius: isFeelingChart ? 0 : 20,
         borderTopRightRadius: isFeelingChart ? 20 : 0,
@@ -61,30 +61,36 @@ class HomeScreen extends React.Component {
       }),
       text: {
         fontSize: 12,
-        fontWeight: 'bold' 
+        fontWeight: text.bolderWeight
       }
     };
 
     return (
       <View style={styles.container}>
+        <AppHeaderSwitch viewName="HOME" />
         <Loading
           style={styles.loading}
           size='large'
-          color='#FA8D62'
-          // animating={true}
-          animating={!UserStore.userdata || !UserStore.babydata}
+          color={colors.main}
+          animating={isWaiting}
         />
         <View style={styles.progressContainer}>
           <View style={styles.weekInfo}>
-            <HeaderText style={{fontWeight: '500', color: '#333333'}}>Week</HeaderText>
-            <HeaderText h4 style={{fontWeight: 'bold', color: '#333333'}}>23</HeaderText>
+            <HeaderText style={{fontWeight: text.boldWeight, color: colors.black}}>
+              Week
+            </HeaderText>
+            <HeaderText h4 style={{fontWeight: text.bolderWeight, color: colors.black}}>
+              {timedata.currentWeek}
+            </HeaderText>
           </View>
           <View>
-            <HeaderText style={styles.welcomeText}>XYZ days to deliver !</HeaderText>
+            <HeaderText style={styles.welcomeText}>
+              {timedata.daysRemaining} days to deliver !
+            </HeaderText>
             <ProgressBar
               height={14}
               width={200}
-              percentage={23 / 40 * 100}
+              percentage={timedata.progress}
               withPointer
               pointerText="You are here!"
               fontSize={10}
@@ -93,28 +99,35 @@ class HomeScreen extends React.Component {
         </View>
         <View style={styles.content}>
           <Button
+            rounded
             onPress={this.goToCurrentSession}
             buttonStyle={styles.forwardButton}
             color='white'
             iconRight={{
               name: 'arrow-forward',
-              color: 'white',
+              color: text.white,
               size: 20
             }}
             title='Go to current session'
-            textStyle={{ fontWeight: 'bold', fontSize: 14 }}
+            textStyle={{ fontWeight: text.boldWeight, fontSize: 14 }}
           />
           <View style={styles.chartCard}>
             {feelingChartOpened
               ? (
                 <FeelingChart
-                  data={feelingData}
+                  data={UserStore.feelings_data.slice(-6)}
                   height={180}
                   width={300}
                   padding={32}
                 />
               ) : (
-                <BabyChart width={300} height={180} padding={12} />
+                <BabyChart
+                  data={UserStore.babydata.activities}
+                  colors={['tomato', 'orange', 'green', 'pink']}
+                  width={300}
+                  height={180}
+                  padding={12}
+                />
               )
             }
             <View style={styles.chartButtons}>
@@ -123,7 +136,7 @@ class HomeScreen extends React.Component {
                 containerViewStyle={chartButtonStyle.container}
                 buttonStyle={chartButtonStyle.button(!feelingChartOpened, false)}
                 title="Baby's activity"
-                color={!feelingChartOpened ? 'white' : '#333333'}
+                color={!feelingChartOpened ? colors.white : colors.black}
                 textStyle={chartButtonStyle.text}
               />
               <Button
@@ -131,21 +144,16 @@ class HomeScreen extends React.Component {
                 containerViewStyle={chartButtonStyle.container}
                 buttonStyle={chartButtonStyle.button(feelingChartOpened, true)}
                 title="Your feeling"
-                color={feelingChartOpened ? 'white' : '#333333'}
+                color={feelingChartOpened ? colors.white : colors.black}
                 textStyle={chartButtonStyle.text}
               />
             </View>
           </View>
         </View>
+        <BottomBar currentView="Home" />
       </View>
     );
   }
-};
-
-const boxShadow = {
-  shadowOffset: { height: 2, width: 0 },
-  shadowColor: 'black',
-  shadowOpacity: 0.4 
 };
 
 const styles = StyleSheet.create({
@@ -156,18 +164,16 @@ const styles = StyleSheet.create({
     width: '100%'
   },
   container: {
-    flex: 1,
-    alignItems: 'center'
+    ...containerStyles.screenContainerMenu
   },
   progressContainer: {
     padding: 24,
-    height: '30%',
     flexDirection: 'row',
-    backgroundColor: '#C4F0E5',
+    backgroundColor: colors.blue,
     width: '100%',
     alignItems: 'center',
     justifyContent: 'center',
-    ...boxShadow
+    ...shadow
   },
   weekInfo: {
     height: 84,
@@ -175,14 +181,14 @@ const styles = StyleSheet.create({
     borderRadius: 42,
     padding: 12,
     borderWidth: 6,
-    borderColor: '#FA8D62',
+    borderColor: colors.main,
     alignItems: 'center',
-    backgroundColor: 'white',
+    backgroundColor: colors.white,
     marginRight: 24
   },
   welcomeText: {
-    color: '#333333',
-    fontWeight: 'bold',
+    color: colors.black,
+    fontWeight: text.bolderWeight,
     fontSize: 20,
     marginBottom: 32,
     minWidth: '60%'
@@ -196,28 +202,26 @@ const styles = StyleSheet.create({
     minHeight: '60%' 
   },
   forwardButton: {
-    height: 40,
     marginBottom: 12,
-    backgroundColor: '#FA8D62',
-    borderRadius: 20,
-    ...boxShadow
+    backgroundColor: colors.main,
+    ...shadow
   },
   chartCard: {
     height: '80%',
     padding: 12,
     borderRadius: 4,
     justifyContent: 'space-between',
-    backgroundColor: '#E4FAF7',
+    backgroundColor: colors.lightBlue,
     alignItems: 'center',
-    ...boxShadow
+    ...shadow
   },
   chartButtons: {
-    // height: 48,
+    height: 48,
     flexDirection: 'row',
     margin: 16,
     maxWidth: 240,
-    ...boxShadow
+    ...shadow
   }
 });
 
-export default withMenu(HomeScreen, 'journey');
+export default HomeScreen;

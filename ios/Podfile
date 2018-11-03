@@ -5,6 +5,7 @@ target 'child-support' do
   pod 'Firebase/Core'
   pod 'Firebase/Auth'
   pod 'Firebase/Database'
+  pod 'Firebase/Storage'
   pod 'ExpoKit',
     :git => "http://github.com/expo/expo.git",
     :tag => "ios/2.8.4",

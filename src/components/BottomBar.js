@@ -4,13 +4,15 @@ import { Icon } from 'react-native-elements';
 import { withNavigation } from 'react-navigation';
 import PropTypes from 'prop-types';
 
+import { colors, text } from '../styles/theme';
+
 // single Tab component for BottomBar
 const Tab = (props) => {
   const { isSelected, navigation, viewName } = props;
   const moveToScreen = () => {
     navigation.navigate(viewName);
   };
-  const color = isSelected ? '#333333' : 'white';
+  const color = isSelected ? colors.black : colors.white;
   return (
     <TouchableWithoutFeedback onPress={moveToScreen}>
       <View style={styles.tab}>
@@ -41,31 +43,31 @@ const BottomBar = (props) => {
       <NavigationTab
         tabname='My Journey'
         icon='pregnant-woman'
-        isSelected={currentView === 'journey'}
+        isSelected={currentView === 'Home'}
         viewName='Home'
       />
       <NavigationTab
         tabname='Sessions'
         icon='library-books'
-        isSelected={currentView === 'sessions'}
+        isSelected={currentView === 'Sessions'}
         viewName='Sessions'
       />
       <NavigationTab
         tabname='Q&A'
         icon='question-answer'
-        isSelected={currentView === 'q&a'}
+        isSelected={currentView === 'QuestionAnswer'}
         viewName='QuestionAnswer'
       />
       <NavigationTab
         tabname='Groups'
         icon='group'
-        isSelected={currentView === 'groups'}
+        isSelected={currentView === 'Groups'}
         viewName='Groups'
       />
       <NavigationTab
         tabname='Chat'
         icon='sms'
-        isSelected={currentView === 'chat'}
+        isSelected={currentView === 'Chat'}
         viewName='Chat'
       />
     </View>
@@ -74,17 +76,18 @@ const BottomBar = (props) => {
 
 BottomBar.propTypes = {
   currentView: PropTypes.oneOf(
-    ['journey', 'sessions', 'q&a', 'groups', 'chat']
+    ['Home', 'Sessions', 'QuestionAnswer', 'Groups', 'Chat']
   ).isRequired
 };
 
 const styles = {
   container: {
-    backgroundColor: '#FA8D62',
+    backgroundColor: colors.main,
     flexDirection: 'row',
     height: 48,
     width: '100%',
-    bottom: 0
+    bottom: 0,
+    position: 'absolute'
   },
   tab: {
     flex: 1,
@@ -95,7 +98,7 @@ const styles = {
   tabText: (color) => ({
     fontSize: 10,
     color,
-    fontWeight: "bold"
+    fontWeight: text.bolderWeight
   })
 };
 

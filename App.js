@@ -4,14 +4,17 @@ import {
   createStackNavigator,
   createDrawerNavigator
 } from 'react-navigation';
-import {View, Text} from 'react-native';
 import { observer } from 'mobx-react';
+import firebase from 'react-native-firebase';
+const x = firebase.storage();
 
 import HomeScreen from './src/components/HomeScreen';
 
 import LoginScreen from './src/components/LoginScreen';
 import DailyQuestionScreen from './src/components/DailyQuestion';
 import LogoutScreen from './src/components/Logout';
+import SingleSessionScreen from './src/components/SingleSessionScreen';
+import SessionsScreen from './src/components/SessionsScreen';
 import AuthStore from './src/stores/auth';
 
 @observer
@@ -32,30 +35,38 @@ export default class App extends React.Component {
   }
 }
 
-const AppDrawer = createDrawerNavigator({
-  Home: HomeScreen,
-  Logout: LogoutScreen
-});
+const SessionStack = createStackNavigator(
+  {
+    Sessions: SessionsScreen,
+    SingleSession: SingleSessionScreen
+  },
+  {
+    headerMode: 'none'
+  }
+);
+
+const AppDrawer = createDrawerNavigator(
+  {
+    Home: HomeScreen,
+    Sessions: SessionStack,
+    Logout: LogoutScreen
+  },
+  { initialRouteName: 'Home' }
+);
 
 const getAppStack = (questionEnable) => createSwitchNavigator(
   {
     Home: {
-      screen: AppDrawer,
-      navigationOptions: { header: null }
+      screen: AppDrawer
     },
     DailyQuestion: {
       screen: DailyQuestionScreen,
       navigationOptions: {
         title: 'Daily question'
       }
-    },
-    Chat: {
-      screen: () => <View><Text>keke</Text></View>
     }
   },
-  {
-    initialRouteName: questionEnable ? 'DailyQuestion' : 'Home'
-  }
+  { initialRouteName: !questionEnable ? 'DailyQuestion' : 'Home' }
 );
 
 const AuthStack = createStackNavigator(
