@@ -16,21 +16,27 @@ import LogoutScreen from './src/components/Logout';
 import SingleSessionScreen from './src/components/SingleSessionScreen';
 import SessionsScreen from './src/components/SessionsScreen';
 import AuthStore from './src/stores/auth';
+import { shouldShowQuestion } from './src/utils/user';
 
 @observer
 export default class App extends React.Component {
+  state = { questionOpen: false };
+
+  async componentDidMount() {
+    const questionOpen = await shouldShowQuestion();
+    this.setState({ questionOpen });
+  }
+
   componentWillUnmount() {
     // remove observer for user's sign in state
     AuthStore.unsubscriber();
   }
 
   render() {
-    const RootStacks = getRootStacks(
-      Boolean(AuthStore.user),
-      false
-    );
+    const { questionOpen } = this.state;
+    const RootStack = getRootStacks(Boolean(AuthStore.user), questionOpen);
     return (
-      <RootStacks />
+      <RootStack />
     );
   }
 }
@@ -54,7 +60,7 @@ const AppDrawer = createDrawerNavigator(
   { initialRouteName: 'Home' }
 );
 
-const getAppStack = (questionEnable) => createSwitchNavigator(
+const getAppStack = (shouldShowQuestion) => createSwitchNavigator(
   {
     Home: {
       screen: AppDrawer
@@ -66,7 +72,7 @@ const getAppStack = (questionEnable) => createSwitchNavigator(
       }
     }
   },
-  { initialRouteName: !questionEnable ? 'DailyQuestion' : 'Home' }
+  { initialRouteName: shouldShowQuestion ? 'DailyQuestion' : 'Home' }
 );
 
 const AuthStack = createStackNavigator(
@@ -79,9 +85,9 @@ const AuthStack = createStackNavigator(
   { initialRouteName: 'Login' }
 );
 
-const getRootStacks = (isLoggedIn, questionEnable) => createSwitchNavigator(
+const getRootStacks = (isLoggedIn, shouldShowQuestion) => createSwitchNavigator(
   {
-    App: getAppStack(questionEnable),
+    App: getAppStack(shouldShowQuestion),
     Auth: AuthStack
   },
   {

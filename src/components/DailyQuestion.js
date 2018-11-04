@@ -2,23 +2,36 @@ import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 import { Button, Slider, Icon,
   Text as HeaderText } from 'react-native-elements';
-import { parseInt } from 'lodash';
+import { observer } from 'mobx-react';
+import { keys, includes } from 'lodash';
 
 import { colors, text, shadow } from '../styles/theme';
 import { container as containerStyle } from '../styles';
+import BabyStore from '../stores/baby';
+import QuestionStore from '../stores/question';
+import { feelingIconNames } from '../contants';
+import { cacheQuestion } from '../utils/user';
 
-export default class DailyQuestion extends React.Component {
+@observer
+export class DailyQuestion extends React.Component {
   state = {
     userAnswer: 1,
-    babyAnswer: ''
+    babyAnswer: []
   };
+
+  componentDidMount() {
+    BabyStore.fetchActivitySet();
+  }
 
   submitAnswer = () => {
     // do something before move to home screen
+    QuestionStore.submitAnswer(this.state);
     this.moveToHomeScreen();
   }
 
-  moveToHomeScreen = () => {
+  moveToHomeScreen = async () => {
+    // cache the information so the question not popup again during the day
+    await cacheQuestion();
     this.props.navigation.navigate('Home'); 
   }
 
@@ -27,23 +40,45 @@ export default class DailyQuestion extends React.Component {
     this.setState({ userAnswer: roundedValue });
   }
 
-  onBabyAnswerChange = (value) => this.setState({ babyAnswer: value });
+  onBabyAnswerChange = (value) => {
+    let babyAnswer = this.state.babyAnswer;
+    const answer = parseInt(value);
+    const shouldPop = includes(babyAnswer, answer);
+    // remove selection if it is selected already
+    if (shouldPop) {
+      babyAnswer = babyAnswer.filter(activityId => activityId !== answer);
+    } else {
+      babyAnswer.push(answer);
+    }
+    this.setState({ babyAnswer });
+  };
+
+  renderActivitySelections = () => {
+    const { babyAnswer } = this.state;
+    return keys(BabyStore.activities_set).map(
+      (selectionValue) => {
+        const activityId = parseInt(selectionValue);
+        const selected = includes(babyAnswer, activityId);
+        const onPress = () => this.onBabyAnswerChange(activityId);
+        const activityName = BabyStore.activities_set[activityId].name; 
+        return (
+          <Button
+            onPress={onPress}
+            containerViewStyle={selectionStyles.container}
+            key={activityName}
+            textStyle={selectionStyles.text(selected)}
+            buttonStyle={selectionStyles.button(selected)}
+            title={activityName}
+            rounded
+          />
+        );
+      }
+    );
+  };
 
   render() {
-    const { userAnswer, babyAnswer } = this.state;
-    const feelingIconScale = [
-      'sentiment-very-dissatisfied',
-      'sentiment-very-dissatisfied',
-      'mood-bad',
-      'mood-bad',
-      'sentiment-dissatisfied',
-      'sentiment-dissatisfied',
-      'sentiment-satisfied',
-      'sentiment-satisfied',
-      'sentiment-very-satisfied',
-      'sentiment-very-satisfied'
-    ];
-    const thumbWidth = 52;
+    const { userAnswer } = this.state;
+    const thumbWidth = 48;
     const thumbTouchSize = 10;
     const ratio = (userAnswer - 1) / 9.0;
     const thumbStyles = {
@@ -55,6 +90,8 @@ export default class DailyQuestion extends React.Component {
         width: thumbWidth,
         alignItems: 'center',
         marginTop: -12,
+        // for some weird reasons the slider from the library
+        // has an extra space of 20, this is hotfix
         marginLeft: thumbWidth / -2 + thumbTouchSize - 20 * ratio,
         left: `${ratio * 100.0}%`
       },
@@ -73,7 +110,7 @@ export default class DailyQuestion extends React.Component {
 
     return (
       <View style={styles.container}>
-        <HeaderText h4 style={styles.pageTitle}>Daily Question</HeaderText>
+        <HeaderText h4 style={styles.pageTitle}>Daily Questions</HeaderText>
         <View style={styles.question}>
           <Text style={styles.questionText}>How are you doing today ?</Text>
           <Slider
@@ -96,7 +133,7 @@ export default class DailyQuestion extends React.Component {
               title={`${userAnswer}`}
               textStyle={thumbStyles.thumbText}
               iconRight={{
-                name: feelingIconScale[userAnswer - 1],
+                name: feelingIconNames[userAnswer],
                 size: 16,
                 color: colors.black
               }}
@@ -106,19 +143,11 @@ export default class DailyQuestion extends React.Component {
         <View style={styles.question}>
           <Text style={styles.questionText}>How is your baby doing ?</Text>
           <View style={styles.selectionGrid}>
-            {['Sleeping', 'Kicking', 'Active', 'Other'].map(title => (
-              <Button
-                containerViewStyle={styles.selectionContainer}
-                key={title}
-                textStyle={styles.selectionText}
-                buttonStyle={styles.selection}
-                title={title}
-                rounded
-              />
-            ))}
+          {this.renderActivitySelections()}
           </View>
         </View>
         <View style={styles.buttonGroup}>
+          {/* an useless element to hack the flex-position */}
           <Button
             disabled
             disabledStyle={{backgroundColor: 'transparent'}}
@@ -145,6 +174,28 @@ export default class DailyQuestion extends React.Component {
     );
   }
 }
+
+// different stylings for selected and non-selected button
+const selectionStyles = {
+  container: {
+    marginLeft: 4,
+    marginRight: 4
+  },
+  button: (selected) => ({
+    paddingVertical: 8,
+    paddingHorizontal: 12,
+    borderWidth: 0.5,
+    borderColor: selected ? colors.main : colors.line,
+    marginVertical: 4,
+    backgroundColor: selected ? colors.main : 'transparent'
+  }),
+  text: (selected) => ({
+    textAlign: 'center',
+    color: selected ? colors.white : colors.black,
+    fontWeight: text.bolderWeight,
+    fontSize: 12
+  })
+};
 
 const styles = StyleSheet.create({
   container: {
@@ -199,23 +250,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     flexWrap: 'wrap',
     justifyContent: 'flex-start'
-  },
-  selectionContainer: {
-    marginLeft: 4,
-    marginRight: 4
-  },
-  selection: {
-    paddingVertical: 8,
-    paddingHorizontal: 12,
-    backgroundColor: 'transparent',
-    borderWidth: 0.5,
-    borderColor: colors.line,
-    marginVertical: 4
-  },
-  selectionText: {
-    textAlign: 'center',
-    color: colors.black,
-    fontWeight: text.bolderWeight,
-    fontSize: 12
   }
 });
+
+export default DailyQuestion;

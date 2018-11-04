@@ -29,6 +29,7 @@ class SessionsScreen extends React.Component {
         <ScrollView contentContainerStyle={styles.scrollView}>
           {sessions.map(sessionNumber => (
             <Button
+              rounded
               onPress={this.goToSingleSession(sessionNumber)}
               containerViewStyle={styles.sessionButtonContainer}
               buttonStyle={styles.sessionButton}

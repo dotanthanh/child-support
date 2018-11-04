@@ -25,7 +25,9 @@ class HomeScreen extends React.Component {
 
   componentDidMount() {
     UserStore.fetchUserData();
-    BabyStore.fetchActivitySet();
+    if (isEmpty(BabyStore.activities_set)) {
+      BabyStore.fetchActivitySet();
+    }
   }
 
   switchToFeelingChart = () => {
@@ -109,7 +111,7 @@ class HomeScreen extends React.Component {
               size: 20
             }}
             title='Go to current session'
-            textStyle={{ fontWeight: text.boldWeight, fontSize: 14 }}
+            textStyle={{ fontWeight: text.bolderWeight, fontSize: 14 }}
           />
           <View style={styles.chartCard}>
             {feelingChartOpened
@@ -184,7 +186,8 @@ const styles = StyleSheet.create({
     borderColor: colors.main,
     alignItems: 'center',
     backgroundColor: colors.white,
-    marginRight: 24
+    marginRight: 24,
+    ...shadow
   },
   welcomeText: {
     color: colors.black,
