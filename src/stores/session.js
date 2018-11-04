@@ -31,7 +31,7 @@ class SessionStore {
   }
 
   @action
-  fetchSessionAudio = async (audioStatusChangedCallback) => {
+  fetchSessionAudio = async () => {
     const filePath = Expo.FileSystem.documentDirectory + 'audio.mp3';
     try {
       const downloadUrl = await this.storage
@@ -42,9 +42,6 @@ class SessionStore {
         .create({uri: filePath}, {shouldPlay: false})
         .then(soundInfo => {
           this.sessionAudio = soundInfo.sound;
-          this.sessionAudio.setOnPlaybackStatusUpdate(
-            audioStatusChangedCallback
-          );
         });
     } catch (e) {
       console.log(e);

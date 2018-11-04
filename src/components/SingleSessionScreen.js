@@ -30,13 +30,21 @@ class SingleSessionScreen extends React.Component {
     if (isEmpty(SessionStore.sessionInfo)) {
       SessionStore.fetchSessionText();
     }
+    if (SessionStore.sessionAudio) {
+      SessionStore.sessionAudio.setOnPlaybackStatusUpdate(this.audioStatusCallback);
+    }
   }
 
   // download the audio and play it
   initializeSound = async () => {
     this.setState({ audioLoading: true, audioPlaying: false });
-    await SessionStore.fetchSessionAudio(this.audioStatusCallback);
-    this.toggleSound();
+    try {
+      await SessionStore.fetchSessionAudio();
+      SessionStore.sessionAudio.setOnPlaybackStatusUpdate(this.audioStatusCallback);
+      this.toggleSound();
+    } catch (e) {
+      console.log(e);
+    }
   };
 
   // play/pause the audio
@@ -50,6 +58,7 @@ class SingleSessionScreen extends React.Component {
 
   // callback for changes in audio playing
   audioStatusCallback = (statusObject) => {
+    console.log(statusObject)
     if (statusObject.didJustFinish) {
       SessionStore.sessionAudio.stopAsync();
     } else {
@@ -57,6 +66,14 @@ class SingleSessionScreen extends React.Component {
         audioLoading: statusObject.isBuffering,
         audioPlaying: statusObject.isPlaying
       });
+    }
+  }
+
+  componentWillUnmount() {
+    // TODO: prevent memory leak here
+    // stop the audio
+    if (SessionStore.sessionAudio) {
+      SessionStore.sessionAudio.stopAsync();
     }
   }
 
