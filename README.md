@@ -36,11 +36,11 @@ Built with [React Native](https://github.com/facebook/react-native), [Mobx](http
 * Test data in Firebase database
 * Organize and manage project-specific assets. Storage setup for project's static data (media, text, ...)
 * Sessions / Informative lecture for each week of pregnancy:
-    * Some text about 
+    * Some text about general information for the week
     * Audio available to play along the text
     * Exercises / Reflection for user in session is yet to be implemented
 
-### Other Features in the future (plans)
+### Other features in the future (plans)
 
 * Chat / Messaging
 * Social network approach
