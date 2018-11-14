@@ -10,9 +10,17 @@
   },
   "dependencies": {
     "expo": "^30.0.1",
+    "expokit": "^1.7.1",
+    "lodash": "^4.17.11",
+    "mobx": "^5.5.0",
+    "mobx-react": "^5.2.8",
+    "moment": "^2.22.2",
     "react": "16.3.1",
     "react-native": "https://github.com/expo/react-native/archive/sdk-30.0.0.tar.gz",
     "react-native-elements": "^0.19.1",
-    "react-navigation": "^2.17.0"
+    "react-native-firebase": "^5.0.0",
+    "react-native-svg": "^7.0.3",
+    "react-navigation": "^2.17.0",
+    "victory-native": "^30.4.0"
   }
 }
