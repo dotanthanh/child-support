@@ -100,7 +100,8 @@ export class DailyQuestion extends React.Component {
         paddingHorizontal: 4,
         paddingVertical: 4,
         backgroundColor: colors.main,
-        width: thumbWidth
+        width: thumbWidth,
+        borderWidth: .5
       },
       thumbText: {
         fontWeight: text.bolderWeight,
@@ -113,6 +114,10 @@ export class DailyQuestion extends React.Component {
         <HeaderText h4 style={styles.pageTitle}>Daily Questions</HeaderText>
         <View style={styles.question}>
           <Text style={styles.questionText}>How are you doing today ?</Text>
+          <View style={styles.scaleContainer}>
+            <Text style={styles.scaleLeft}>1</Text>
+            <Text style={styles.scaleRight}>10</Text>
+          </View>
           <Slider
             thumbTouchSize={{ height: thumbTouchSize, width: thumbTouchSize }}
             minimumTrackTintColor={colors.main}
@@ -250,6 +255,16 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     flexWrap: 'wrap',
     justifyContent: 'flex-start'
+  },
+  scaleContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between' 
+  },
+  scaleLeft: {
+    textAlign: 'left'
+  },
+  scaleRight: {
+    textAlign: 'right'
   }
 });
 
