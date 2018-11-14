@@ -15,6 +15,7 @@ import DailyQuestionScreen from './src/components/DailyQuestion';
 import LogoutScreen from './src/components/Logout';
 import SingleSessionScreen from './src/components/SingleSessionScreen';
 import SessionsScreen from './src/components/SessionsScreen';
+import RegisterScreen from './src/components/RegisterScreen';
 import AuthStore from './src/stores/auth';
 import { shouldShowQuestion } from './src/utils/user';
 
@@ -55,7 +56,8 @@ const AppDrawer = createDrawerNavigator(
   {
     Home: HomeScreen,
     Sessions: SessionStack,
-    Logout: LogoutScreen
+    Logout: LogoutScreen,
+    Register: RegisterScreen
   },
   { initialRouteName: 'Home' }
 );

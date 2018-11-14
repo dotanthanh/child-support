@@ -50,6 +50,10 @@ export default class LoginScreen extends React.Component {
     this.keyBoardWillHideListener.remove();
   }
 
+  onRegister = () => {
+    this.props.navigation.navigate('Register');
+  };
+
   onLogin = () => {
     const { email, password } = this.state;
     auth.login(email, password);
@@ -92,6 +96,8 @@ export default class LoginScreen extends React.Component {
               value={email}
               inputStyle={styles.input}
               containerStyle={styles.inputContainer}
+              autoCapitalize="none"
+              autoCorrect={false}
             />
             <FormInput
               secureTextEntry
@@ -110,6 +116,7 @@ export default class LoginScreen extends React.Component {
                 color={colors.white}
                 title="REGISTER"
                 textStyle={styles.buttonText}
+                onPress={this.onRegister}
               />
               <Button
                 rounded
