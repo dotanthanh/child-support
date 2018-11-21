@@ -4,13 +4,15 @@ import {
 	Text,
 	View,
 	Animated,
-	KeyboardAvoidingView
+	KeyboardAvoidingView,
+  ScrollView
 } from 'react-native';
 import { FormLabel, FormInput, Button } from 'react-native-elements';
 import firebase from 'react-native-firebase';
 import RadioForm from 'react-native-simple-radio-button';
 import DatePicker from "react-native-datepicker";
 import moment from "moment";
+
 import { colors, text, shadow } from '../styles/theme';
 
 import AuthStore from '../stores/auth';
@@ -89,6 +91,7 @@ export default class RegisterScreen extends React.Component {
 	    };
 
 		return (
+    <ScrollView>
 		<View style={styles.regform}>
 		<KeyboardAvoidingView style={styles.form} behavior="padding">
 
@@ -102,7 +105,7 @@ export default class RegisterScreen extends React.Component {
 	            {this.state.errorMessage}
 	          </Text>}
 	        <FormInput
-	        placeholder="Full name"
+            placeholder="Full name"
            	{...inputProps}
            	onChangeText={this.onChangeName}
            	value={name}
@@ -124,6 +127,7 @@ export default class RegisterScreen extends React.Component {
 	        <FormLabel>Status</FormLabel>
       			<View style={styles.container}>
                <RadioForm
+                style={styles.radioForm}
 								containerStyle={styles.radioForm}
 								radio_props={userIsMother}
 								initial={-1}
@@ -135,6 +139,7 @@ export default class RegisterScreen extends React.Component {
            <FormLabel>First time pregnancy?</FormLabel>
            <View style={styles.container}>
                <RadioForm
+                style={styles.radioForm}
 								radio_props={userIsFirstTime}
 								initial={-1}
 								onPress={(is_first_time) => {this.status}}
@@ -145,6 +150,7 @@ export default class RegisterScreen extends React.Component {
            <FormLabel>Due date</FormLabel>
            <View style={styles.container}>
               <DatePicker
+                style={styles.radioForm}
                 date={this.state.date}
                 mode="date"
                 placeholder="Select date"
@@ -189,6 +195,7 @@ export default class RegisterScreen extends React.Component {
 
     		</KeyboardAvoidingView>
     		</View>
+        </ScrollView>
 		);
 	}
 };
@@ -216,7 +223,8 @@ const styles = StyleSheet.create({
   	borderBottomColor: '#909b99'
   },
   radioForm: {
-  	paddingTop: 100
+  	paddingLeft: 20,
+    paddingTop: 5
   },
   buttonGroup: {
     flexDirection: 'row',
