@@ -56,6 +56,8 @@ export default class RegisterScreen extends React.Component {
 
 	onChangePassword = (password) => this.setState({ password });
 
+  onChangePasswordTwo = (passwordTwo) => this.setState({ passwordTwo });
+
 	onCreateUser = () => {
 		const { error, inputFocused, ...rest } = this.state;
 		AuthStore.signup(rest);
@@ -77,9 +79,16 @@ export default class RegisterScreen extends React.Component {
 	    is_mother,
 	    name,
 	    password,
+      passwordTwo,
       date,
 	    error
 		} = this.state;
+
+    const isInvalid =
+      password !== passwordTwo ||
+      password === '' ||
+      email === '' ||
+      name === '';
 
 		const inputProps = {
 	      required: true,
@@ -171,6 +180,16 @@ export default class RegisterScreen extends React.Component {
 	          value={this.state.password}
 	        />
 
+          <FormInput
+            secureTextEntry
+            placeholder="Confirm password"
+            autoCapitalize="none"
+            inputStyle={styles.input}
+            containerStyle={styles.inputContainer}
+            onChangeText={passwordTwo => this.setState({ passwordTwo })}
+            value={this.state.passwordTwo}
+          />
+
 	        <View style={styles.buttonGroup}>
 		        <Button
 							rounded
@@ -178,7 +197,9 @@ export default class RegisterScreen extends React.Component {
 									color={colors.white}
 									title="Create"
 									textStyle={styles.buttonText}
-							title="Sign Up" onPress={this.onCreateUser}
+                  title="Sign Up"
+                  onPress={this.onCreateUser}
+                  disabled={isInvalid}
 						/>
 
 		        <Button
