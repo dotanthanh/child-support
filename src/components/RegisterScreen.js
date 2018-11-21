@@ -12,6 +12,8 @@ import {
 import { FormLabel, FormInput, Button } from 'react-native-elements';
 import firebase from 'react-native-firebase';
 import RadioForm, { RadioButton, RadioButtonInput, RadioButtonLabel} from 'react-native-simple-radio-button';
+import DatePicker from "react-native-datepicker";
+import moment from "moment";
 import { colors, text, shadow } from '../styles/theme';
 
 import auth from '../stores/auth';
@@ -35,12 +37,13 @@ var INITIAL_STATE = {
 	    name: '',
 	    email: '',
 	    feelings_data: [{
-		    "day" : 1,
-		    "feeling_rate" : 1
-		  }],
+        "day" : 1,
+        "feeling_rate" : 1
+      }],
 	    is_first_time: true,
 	    is_mother: true,
 	    name: '',
+      date: moment(),
 	    password: '',
 	    error: null
 	};
@@ -59,46 +62,54 @@ export default class RegisterScreen extends React.Component {
 	onChangePassword = (password) => this.setState({ password });
 
 	onCreateUser = () => {
-	    const { baby, current_session, email, feelings_data, is_first_time, is_mother, name, password } = this.state
+	    const { baby, current_session, email, feelings_data, is_first_time, is_mother, name, password, date } = this.state
 	    firebase.auth().createUserWithEmailAndPassword(email, password)
         .then(function(user) {
-            var ref = firebase.database().ref().child("users");
+            var ref = firebase.database().ref().child(`users`);
+
+            const babyref = firebase.database().ref('babies/').push({
+              activity: [],
+              due_date: date
+            });
+
             var data = {
             	baby,
             	current_session,
-                email,
-                feelings_data,
-                is_first_time,
-                is_mother,
-                name,
-                password,
+              email,
+              feelings_data,
+              is_first_time,
+              is_mother,
+              name,
+              password,
             }
-            ref.child(user.uid).set(data).then(function(ref) {
-                $location.path('/profile');
-            }, function(error) {
-                console.log(error);
-            });
+
+            ref.child(user.uid).set(data)
+    
         })
 	};
 
 	constructor(props) {
 	    super(props);
-
 	    this.state = { ...INITIAL_STATE };
+
+      firebase.auth().onAuthStateChanged( user => {
+        if (user) { this.userId = user.uid }
+      });
 	  }
 
 	render() {
 		const {
 			inputFocused,
-		    baby,
-		    current_session,
-		    email,
-		    feelings_data,
-		    is_first_time,
-		    is_mother,
-		    name,
-		    password,
-		    error
+		  baby,
+		  current_session,
+	    email,
+	    feelings_data,
+	    is_first_time,
+	    is_mother,
+	    name,
+	    password,
+      date,
+	    error
 		} = this.state;
 
 		const inputProps = {
@@ -137,11 +148,11 @@ export default class RegisterScreen extends React.Component {
 	          placeholder="Email"
 	          autoCapitalize="none"
 	          inputStyle={styles.input}
-              containerStyle={styles.inputContainer}
+            containerStyle={styles.inputContainer}
 	          onChangeText={email => this.setState({ email })}
 	          value={this.state.email}
 	          autoCapitalize="none"
-              autoCorrect={false}
+            autoCorrect={false}
 	        />
 	        <FormLabel>Status</FormLabel>
       			<View style={styles.container}>
@@ -150,7 +161,7 @@ export default class RegisterScreen extends React.Component {
                radio_props={userIsMother}
                initial={-1}
                onPress={(is_mother) => {this.status}}
-               flexDirection='row' 
+               flexDirection='row'
                />
            </View>
            
@@ -164,12 +175,26 @@ export default class RegisterScreen extends React.Component {
                flexDirection='row' 
                />
            </View>
+
+           <FormLabel>Due date</FormLabel>
+           <View style={styles.container}>
+              <DatePicker
+                date={this.state.date}
+                mode="date"
+                placeholder="Select date"
+                selected={this.state.startDate}
+                onDateChange={(date) => {this.setState({date: date})}}
+                confirmBtnText="Confirm"
+                cancelBtnText="Cancel"
+              />
+           </View>
+
 	        <FormInput
 	          secureTextEntry
 	          placeholder="Password"
 	          autoCapitalize="none"
 	          inputStyle={styles.input}
-              containerStyle={styles.inputContainer}
+            containerStyle={styles.inputContainer}
 	          onChangeText={password => this.setState({ password })}
 	          value={this.state.password}
 	        />
@@ -185,10 +210,10 @@ export default class RegisterScreen extends React.Component {
 
 		        <Button
 		        rounded
-                buttonStyle={styles.button}
-                color={colors.white}
-                title="Create"
-                textStyle={styles.buttonText}
+            buttonStyle={styles.button}
+            color={colors.white}
+            title="Create"
+            textStyle={styles.buttonText}
 		        title="Back"
 		        onPress={() => this.props.navigation.navigate('Login')}
 		        />
