@@ -16,7 +16,7 @@ class UserStore {
         .ref(`users/${AuthStore.user.uid}`)
         .once('value', (userSnapshot) => {
           this.userdata = userSnapshot.val();
-          this.feelings_data = userSnapshot.child('feelings_data').val();
+          this.feelings_data = userSnapshot.child('feelings_data').val() || [];
           this.database
             .ref(this.userdata.baby)
             .once('value', (babySnapshot) => {

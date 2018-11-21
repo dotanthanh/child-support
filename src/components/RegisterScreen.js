@@ -3,20 +3,17 @@ import {
 	StyleSheet,
 	Text,
 	View,
-	TextInput,
-	TouchableOpacity,
 	Animated,
-	KeyboardAvoidingView,
-	Alert
+	KeyboardAvoidingView
 } from 'react-native';
 import { FormLabel, FormInput, Button } from 'react-native-elements';
 import firebase from 'react-native-firebase';
-import RadioForm, { RadioButton, RadioButtonInput, RadioButtonLabel} from 'react-native-simple-radio-button';
+import RadioForm from 'react-native-simple-radio-button';
 import DatePicker from "react-native-datepicker";
 import moment from "moment";
 import { colors, text, shadow } from '../styles/theme';
 
-import auth from '../stores/auth';
+import AuthStore from '../stores/auth';
 import LandingImage from '../../assets/pregnancy.png';
 
 
@@ -32,18 +29,14 @@ var userIsFirstTime = [
 
 var INITIAL_STATE = {
 	    inputFocused: false,
-	    baby: '',
+			// current session should be calculated based on due date
 	    current_session: 1,
 	    name: '',
 	    email: '',
-	    feelings_data: [{
-        "day" : 1,
-        "feeling_rate" : 1
-      }],
+	    feelings_data: [],
 	    is_first_time: true,
 	    is_mother: true,
-	    name: '',
-      date: moment(),
+	    date: moment(),
 	    password: '',
 	    error: null
 	};
@@ -62,40 +55,14 @@ export default class RegisterScreen extends React.Component {
 	onChangePassword = (password) => this.setState({ password });
 
 	onCreateUser = () => {
-	    const { baby, current_session, email, feelings_data, is_first_time, is_mother, name, password, date } = this.state
-	    firebase.auth().createUserWithEmailAndPassword(email, password)
-        .then(function(user) {
-            var ref = firebase.database().ref().child(`users`);
-
-            const babyref = firebase.database().ref('babies/').push({
-              activity: [],
-              due_date: date
-            });
-
-            var data = {
-            	baby,
-            	current_session,
-              email,
-              feelings_data,
-              is_first_time,
-              is_mother,
-              name,
-              password,
-            }
-
-            ref.child(user.uid).set(data)
-    
-        })
+		const { error, inputFocused, ...rest } = this.state;
+		AuthStore.signup(rest);
 	};
 
 	constructor(props) {
-	    super(props);
-	    this.state = { ...INITIAL_STATE };
-
-      firebase.auth().onAuthStateChanged( user => {
-        if (user) { this.userId = user.uid }
-      });
-	  }
+		super(props);
+		this.state = { ...INITIAL_STATE };
+	}
 
 	render() {
 		const {
@@ -157,22 +124,21 @@ export default class RegisterScreen extends React.Component {
 	        <FormLabel>Status</FormLabel>
       			<View style={styles.container}>
                <RadioForm
-               containerStyle={styles.radioForm}
-               radio_props={userIsMother}
-               initial={-1}
-               onPress={(is_mother) => {this.status}}
-               flexDirection='row'
+								containerStyle={styles.radioForm}
+								radio_props={userIsMother}
+								initial={-1}
+								onPress={(is_mother) => {this.status}}
+								flexDirection='row'
                />
            </View>
            
-
            <FormLabel>First time pregnancy?</FormLabel>
            <View style={styles.container}>
                <RadioForm
-               radio_props={userIsFirstTime}
-               initial={-1}
-               onPress={(is_first_time) => {this.status}}
-               flexDirection='row' 
+								radio_props={userIsFirstTime}
+								initial={-1}
+								onPress={(is_first_time) => {this.status}}
+								flexDirection='row' 
                />
            </View>
 
@@ -201,21 +167,22 @@ export default class RegisterScreen extends React.Component {
 
 	        <View style={styles.buttonGroup}>
 		        <Button
-		        rounded
-                buttonStyle={styles.button}
-                color={colors.white}
-                title="Create"
-                textStyle={styles.buttonText}
-		        title="Sign Up" onPress={this.onCreateUser} />
+							rounded
+									buttonStyle={styles.button}
+									color={colors.white}
+									title="Create"
+									textStyle={styles.buttonText}
+							title="Sign Up" onPress={this.onCreateUser}
+						/>
 
 		        <Button
-		        rounded
-            buttonStyle={styles.button}
-            color={colors.white}
-            title="Create"
-            textStyle={styles.buttonText}
-		        title="Back"
-		        onPress={() => this.props.navigation.navigate('Login')}
+							rounded
+							buttonStyle={styles.button}
+							color={colors.white}
+							title="Create"
+							textStyle={styles.buttonText}
+							title="Back"
+							onPress={() => this.props.navigation.navigate('Login')}
 		        />
 	        </View>
         </View>

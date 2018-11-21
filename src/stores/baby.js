@@ -10,7 +10,7 @@ class BabyStore {
     this.database
       .ref('activities_set')
       .once('value', (activitySnapshot) => {
-        this.activities_set = activitySnapshot.val()
+        this.activities_set = activitySnapshot.val();
       })
       .catch(e => console.log(error));
   }

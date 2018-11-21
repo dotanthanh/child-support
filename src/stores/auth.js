@@ -11,13 +11,26 @@ class AuthStore {
 
   @action
   signup = (userdata) => {
-    const { email, password } = userdata;
-    firebase
-      .auth()
-      .createUserWithEmailAndPassword(email, password)
+    const { email, password, date, ...rest } = userdata;
+    firebase.auth().createUserWithEmailAndPassword(email, password)
       .then(credentials => {
-        this.createUser(userdata);
-      });
+        let babyId = ''
+        const babyref = firebase.database().ref('babies/').push({
+          activity: [],
+          due_date: date
+        });
+        babyref.once('value', (snapshot) => {
+          babyId = snapshot.key;
+          const data = {
+            ...rest,
+            email,
+            password,
+            baby: `babies/${babyId}`
+          };
+          const userRef = firebase.database().ref().child(`users`);
+          userRef.child(credentials.user.uid).set(data)
+        })
+      })
   };
 
   @action
@@ -28,23 +41,11 @@ class AuthStore {
       .then(credentials => {
         // TODO: do something with the credentials here
       });
-  }
+  };
 
   @action
   logout = () => {
     firebase.auth().signOut();
-  }
-
-  @action
-  createUser = (userdata) => {
-    const { dueDate, ...rest } = userdata;
-    if (this.user) {
-      const babyref = firebase.database().ref('babies/').push({
-        activity: [],
-        due_date: dueDate
-      });
-      firebase.database().ref(`users/${this.user.uid}`).set(rest);
-    }
   }
 }
 

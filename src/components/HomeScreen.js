@@ -124,7 +124,7 @@ class HomeScreen extends React.Component {
                 />
               ) : (
                 <BabyChart
-                  data={UserStore.babydata.activities}
+                  data={UserStore.babydata.activities || []}
                   colors={['tomato', 'orange', 'green', 'pink']}
                   width={300}
                   height={180}
