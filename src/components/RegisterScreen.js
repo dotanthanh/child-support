@@ -105,8 +105,8 @@ export default class RegisterScreen extends React.Component {
 		<KeyboardAvoidingView style={styles.form} behavior="padding">
 
 			<View style={styles.headerContainer}>
-	          <Animated.Image source={LandingImage} style={imageStyle} />
-	        </View>
+        <Animated.Image source={LandingImage} style={imageStyle} />
+      </View>
 
 	    <View style={styles.regform}>
 	        {this.state.errorMessage &&
@@ -163,7 +163,6 @@ export default class RegisterScreen extends React.Component {
                 date={this.state.date}
                 mode="date"
                 placeholder="Select date"
-                selected={this.state.startDate}
                 onDateChange={(date) => {this.setState({date: date})}}
                 confirmBtnText="Confirm"
                 cancelBtnText="Cancel"
@@ -193,13 +192,13 @@ export default class RegisterScreen extends React.Component {
 	        <View style={styles.buttonGroup}>
 		        <Button
 							rounded
-									buttonStyle={styles.button}
-									color={colors.white}
-									title="Create"
-									textStyle={styles.buttonText}
-                  title="Sign Up"
-                  onPress={this.onCreateUser}
-                  disabled={isInvalid}
+							buttonStyle={styles.button}
+							color={colors.white}
+							title="Create"
+							textStyle={styles.buttonText}
+              title="Sign Up"
+              onPress={this.onCreateUser}
+              disabled={isInvalid}
 						/>
 
 		        <Button
@@ -225,7 +224,8 @@ const styles = StyleSheet.create({
   regform: {
   	alignSelf: 'stretch',
   	paddingLeft: 50,
-    paddingRight: 40
+    paddingRight: 40,
+    backgroundColor: colors.lightBlue
   },
   headerContainer: {
     paddingTop: 48,
