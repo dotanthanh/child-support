@@ -14,7 +14,6 @@ export class UserIdentifier extends React.Component {
 
   componentWillReceiveProps(nextProps) {
     if (nextProps.user !== this.props.user) {
-      console.log(this.props.navigation)
       this.attemptRedirect()
     }
   }

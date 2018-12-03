@@ -69,7 +69,7 @@ const AdminDrawer = createDrawerNavigator(
     Home: AdminHomeScreen,
     QuestionAnswer: AdminQuestionAnswer
   },
-  { initialRouteName: 'Home' }
+  { initialRouteName: 'QuestionAnswer' }
 )
 
 const getUserAppStack = (shouldShowQuestion) => createSwitchNavigator(

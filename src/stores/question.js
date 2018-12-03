@@ -8,11 +8,6 @@ class QuestionStore {
   database = firebase.database();
 
   @action
-  getUserAnswers = () => {
-    return this.dailyAnswers.map(answer => answer.user);
-  }
-
-  @action
   submitAnswer = async (answerObject) => {
     const { userAnswer, babyAnswer } = answerObject;
     try {
