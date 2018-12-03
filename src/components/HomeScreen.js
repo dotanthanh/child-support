@@ -24,7 +24,9 @@ class HomeScreen extends React.Component {
   };
 
   componentDidMount() {
-    UserStore.fetchUserData();
+    if (isEmpty(UserStore.userdata)) {
+      UserStore.fetchUserData();
+    }
     if (isEmpty(BabyStore.activities_set)) {
       BabyStore.fetchActivitySet();
     }

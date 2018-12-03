@@ -8,6 +8,7 @@ import { header as headerStyles } from '../styles';
 
 export const AppHeaderSwitch = (props) => {
   const { viewName, navigation: { openDrawer } } = props;
+  
   return (
     <View style={headerStyles.container}>
       <Header

@@ -5,8 +5,6 @@ import {
   createDrawerNavigator
 } from 'react-navigation';
 import { observer } from 'mobx-react';
-import firebase from 'react-native-firebase';
-const x = firebase.storage();
 
 import HomeScreen from './src/components/HomeScreen';
 
@@ -16,6 +14,9 @@ import LogoutScreen from './src/components/Logout';
 import SingleSessionScreen from './src/components/SingleSessionScreen';
 import SessionsScreen from './src/components/SessionsScreen';
 import RegisterScreen from './src/components/RegisterScreen';
+import AdminHomeScreen from './src/components/admin/AdminScreen';
+import AdminQuestionAnswer from './src/components/admin/AdminQuestionAnswer';
+import UserIdentifier from './src/components/UserIdentifier';
 import AuthStore from './src/stores/auth';
 import { shouldShowQuestion } from './src/utils/user';
 
@@ -36,6 +37,7 @@ export default class App extends React.Component {
   render() {
     const { questionOpen } = this.state;
     const RootStack = getRootStacks(Boolean(AuthStore.user), questionOpen);
+
     return (
       <RootStack />
     );
@@ -62,7 +64,15 @@ const AppDrawer = createDrawerNavigator(
   { initialRouteName: 'Home' }
 );
 
-const getAppStack = (shouldShowQuestion) => createSwitchNavigator(
+const AdminDrawer = createDrawerNavigator(
+  {
+    Home: AdminHomeScreen,
+    QuestionAnswer: AdminQuestionAnswer
+  },
+  { initialRouteName: 'Home' }
+)
+
+const getUserAppStack = (shouldShowQuestion) => createSwitchNavigator(
   {
     Home: {
       screen: AppDrawer
@@ -76,6 +86,22 @@ const getAppStack = (shouldShowQuestion) => createSwitchNavigator(
   },
   { initialRouteName: shouldShowQuestion ? 'DailyQuestion' : 'Home' }
 );
+
+const AdminAppStack = createSwitchNavigator(
+  {
+    Home: AdminDrawer 
+  },
+  { initialRouteName: 'Home' }
+);
+
+const getAppStack = (shouldShowQuestion) => createSwitchNavigator(
+  {
+    User: getUserAppStack(shouldShowQuestion),
+    Admin: AdminAppStack,
+    AuthGateway: UserIdentifier
+  },
+  { initialRouteName: 'AuthGateway' }
+)
 
 const AuthStack = createStackNavigator(
   {
