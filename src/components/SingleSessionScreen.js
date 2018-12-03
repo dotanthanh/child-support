@@ -1,7 +1,7 @@
 import React from 'react';
 import { View, ScrollView, StyleSheet } from 'react-native';
 import { observer } from 'mobx-react';
-import { Button, Text } from 'react-native-elements';
+import { Button, Text, Icon } from 'react-native-elements';
 import { isEmpty } from 'lodash';
 
 import AppHeaderStack from '../custom/AppHeaderStack';
@@ -15,7 +15,8 @@ import { colors, text, shadow } from '../styles/theme';
 class SingleSessionScreen extends React.Component {
   state = {
     audioPlaying: false,
-    audioLoading: false
+    audioLoading: false,
+    recordOpened: false
   }
 
   componentDidMount() {
@@ -67,7 +68,11 @@ class SingleSessionScreen extends React.Component {
         audioPlaying: statusObject.isPlaying
       });
     }
-  }
+  };
+
+  toggleRecord = () => {
+    this.setState({ recordOpened: !this.state.recordOpened })
+  };
 
   componentWillUnmount() {
     // TODO: prevent memory leak here
@@ -79,7 +84,7 @@ class SingleSessionScreen extends React.Component {
 
   render() {
     const { navigation: { state: { params } } } = this.props;
-    const { audioLoading, audioPlaying } = this.state;
+    const { audioLoading, audioPlaying, recordOpened } = this.state;
     const buttonListener = SessionStore.sessionAudio
       ? this.toggleSound
       : this.initializeSound; 
@@ -88,11 +93,11 @@ class SingleSessionScreen extends React.Component {
       <View style={styles.container}>
         <AppHeaderStack viewName={`Session ${params.sessionNumber}`} />
         <ScrollView style={styles.contentContainer}>
-          <View>
+          <View style={styles.sectionContainer}>
             <View style={styles.sectionHeader}>
               <Text style={styles.headerStyle}>Info</Text>
                 <Button
-                loading
+                  loading
                   loading={audioLoading}
                   loadingRight
                   rounded
@@ -106,7 +111,7 @@ class SingleSessionScreen extends React.Component {
                       color: colors.white
                     } : undefined
                   }
-                  />
+                />
               </View>
             <Loading
               style={{paddingVertical: 16}}
@@ -115,9 +120,57 @@ class SingleSessionScreen extends React.Component {
               animating={isEmpty(SessionStore.sessionInfo)}
             />
             <Text style={styles.sessionInfo}>
-              {SessionStore.sessionInfo}
+              {/* {SessionStore.sessionInfo} */}
             </Text>
           </View>
+
+          <View style={styles.sectionContainer}>
+            <View style={styles.sectionHeader}>
+              <Text style={styles.headerStyle}>Exercise</Text>
+            </View>
+            <Loading
+              style={{paddingVertical: 16}}
+              color={colors.main}
+              animating={true}
+              animating={isEmpty(SessionStore.sessionExercise)}
+            />
+            <Text style={styles.sessionInfo}>
+              {/* {SessionStore.sessionExercise} */}
+            </Text>
+          </View>
+
+          <View style={styles.sectionContainer}>
+            <View style={styles.sectionHeader}>
+              <Text style={styles.headerStyle}>Reflection</Text>
+            </View>
+            <Loading
+              style={{paddingVertical: 16}}
+              color={colors.main}
+              animating={true}
+              animating={isEmpty(SessionStore.sessionReflection)}
+            />
+            <Text style={styles.sessionInfo}>
+              {SessionStore.sessionReflection}
+            </Text>
+            {!isEmpty(SessionStore.sessionReflection) && (
+              <Button
+                rounded
+                onPress={this.toggleRecord}
+                buttonStyle={styles.recordButton}
+                textStyle={{fontWeight: '500'}}
+                title="Record"
+              />
+            )}
+            {recordOpened && (
+              <View>
+                <Icon name='record' />
+                <Button title="stop" />
+                <Button title="cancel" />
+                <Button title="upload" />
+              </View>
+            )}
+          </View>
+
         </ScrollView>
         <BottomBar currentView='Sessions' />
       </View>
@@ -132,6 +185,9 @@ const styles = StyleSheet.create({
   contentContainer: {
     width: '100%'
   },
+  sectionContainer: {
+    alignItems: 'center'
+  },
   sessionInfo: {
     padding: 16,
     color: colors.black,
@@ -144,7 +200,8 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     backgroundColor: colors.lightBlue,
     paddingHorizontal: 16,
-    paddingVertical: 8
+    paddingVertical: 8,
+    minHeight: 48
   },
   headerStyle: {
     fontSize: 18,
@@ -155,6 +212,13 @@ const styles = StyleSheet.create({
     minHeight: 32,
     padding: 0,
     backgroundColor: colors.main
+  },
+  recordButton: {
+    marginVertical: 16,
+    paddingHorizontal: 32,
+    backgroundColor: colors.main,
+    alignSelf: 'flex-start',
+    ...shadow
   }
 });
 

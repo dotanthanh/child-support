@@ -6,25 +6,37 @@ import { isEmpty } from 'lodash';
 class SessionStore {
   @observable storage = firebase.storage();
   @observable sessionInfo = '';
+  @observable sessionExercise = '';
+  @observable sessionReflection = '';
   @observable sessionNumber = undefined;
   @observable sessionAudio = undefined;
 
   @action
   changeSession = (sessionNumber) => {
     this.sessionInfo = '';
+    this.sessionExercise = '';
+    this.sessionReflection = '';
     this.sessionNumber = sessionNumber;
     this.sessionAudio = undefined;
   }
 
   @action
   fetchSessionText = async () => {
-    const filePath = Expo.FileSystem.documentDirectory + 'info_mother.txt';
+    await this.fetchSessionSection('info')
+    await this.fetchSessionSection('exercise')
+    await this.fetchSessionSection('reflection')
+  }
+
+  // fetch each section of a session: "info" | "exercise" | "reflection"
+  @action
+  fetchSessionSection = async (sectionName) => {
+    const filePath = Expo.FileSystem.documentDirectory + `${sectionName}_mother.txt`;
     try {
       const downloadUrl = await this.storage
-        .ref(`/documents/session_${this.sessionNumber}/info_mother.txt`)
+        .ref(`/documents/session_${this.sessionNumber}/${sectionName}_mother.txt`)
         .getDownloadURL();
       await Expo.FileSystem.downloadAsync(downloadUrl, filePath);
-      await this.readSessionInfoToStore();
+      await this.readSessionInfoToStore(sectionName);
     } catch (e) {
       console.log(e);
     }
@@ -48,10 +60,18 @@ class SessionStore {
     } 
   }
 
-  readSessionInfoToStore = async () => {
+  readSessionInfoToStore = async (sectionName) => {
     await Expo.FileSystem
-      .readAsStringAsync(Expo.FileSystem.documentDirectory + 'info_mother.txt')
-      .then(content => this.sessionInfo = content)
+      .readAsStringAsync(Expo.FileSystem.documentDirectory + `${sectionName}_mother.txt`)
+      .then(content => {
+        if  (sectionName === 'exercise') {
+          this.sessionExercise = content
+        } else if (sectionName === 'reflection') {
+          this.sessionReflection = content
+        } else {
+          this.sessionInfo = content
+        }
+      })
       .catch(e => console.log(e));
   };
 }
