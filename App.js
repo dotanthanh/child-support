@@ -67,7 +67,8 @@ const AppDrawer = createDrawerNavigator(
 const AdminDrawer = createDrawerNavigator(
   {
     Home: AdminHomeScreen,
-    QuestionAnswer: AdminQuestionAnswer
+    QuestionAnswer: AdminQuestionAnswer,
+    Logout: LogoutScreen 
   },
   { initialRouteName: 'QuestionAnswer' }
 )

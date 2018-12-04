@@ -2,6 +2,7 @@ import { action, observable } from 'mobx';
 import firebase from 'react-native-firebase';
 
 import AuthStore from './auth';
+import { mapObjectToArrayWithId } from '../utils';
 
 class QuestionStore {
   database = firebase.database();
@@ -12,19 +13,19 @@ class QuestionStore {
     this.database
       .ref('user_questions')
       .once('value', (snapshot) => {
-        this.questions = snapshot.val() || [];
+        this.questions = mapObjectToArrayWithId(snapshot.val()) || [];
       });
   }
 
   @action
-  submitAnswer = async (answer, index) => {
+  submitAnswer = async (question) => {
     const updatedQuestion = {
-      ...this.questions[index],
-      answer,
+      ...question,
+      id: undefined,
       is_answered: true
     }
     await this.database
-      .ref(`user_questions/${index}`)
+      .ref(`user_questions/${question.id}`)
       .set(updatedQuestion, () => {
         this.fetchQuestions();
       }); 
@@ -37,18 +38,11 @@ class QuestionStore {
   //     text: "How do I need to do to get response from the baby ?",
   //     answer: '',
   //     is_answered: false,
-  //     // submitted_by: AuthStore.user.uid
+  //     submitted_by: AuthStore.user.uid
   //   }
-  //   let questionsList = [];
   //   await this.database
   //     .ref('user_questions')
-  //     .once('value', (snapshot) => {
-  //       questionsList = snapshot.val() || [];
-  //     })
-  //   questionsList.push(question);
-  //   await this.database
-  //     .ref('user_questions')
-  //     .set(questionsList, (snapshot) => {
+  //     .push(question, (snapshot) => {
   //       // do something after successfully submitted question
   //     })
   // }

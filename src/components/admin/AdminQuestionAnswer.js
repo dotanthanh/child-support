@@ -12,7 +12,7 @@ import { colors, text, shadow } from '../../styles/theme';
 @observer
 class QuestionAnswerScreen extends React.Component {
   state = {
-    openedQuestionIndex: -1,
+    openedQuestionId: -1,
     answer: ''
   }
 
@@ -20,11 +20,11 @@ class QuestionAnswerScreen extends React.Component {
     QuestionStore.fetchQuestions();
   }
 
-  toggleQuestion = (index) => {
-    if (index === this.state.openedQuestionIndex) {
-      this.setState({ openedQuestionIndex: -1 });
+  toggleQuestion = (id) => {
+    if (id === this.state.openedQuestionId) {
+      this.setState({ openedQuestionId: -1 });
     } else {
-      this.setState({ openedQuestionIndex: index, answer: '' });
+      this.setState({ openedQuestionId: id, answer: '' });
     }
   }
 
@@ -33,15 +33,15 @@ class QuestionAnswerScreen extends React.Component {
   }
 
   resetState = () => {
-    this.setState({ openedQuestionIndex: -1, answer: '' });
+    this.setState({ openedQuestionId: -1, answer: '' });
   }
 
-  renderQuestions = ({ index, item: question }) => {
-    const { openedQuestionIndex, answer } = this.state;
-    const isOpened = index === openedQuestionIndex;
-    const toggleQuestion = () => this.toggleQuestion(index)
+  renderQuestions = ({ item: question }) => {
+    const { openedQuestionId, answer } = this.state;
+    const isOpened = question.id === openedQuestionId;
+    const toggleQuestion = () => this.toggleQuestion(question.id);
     const submitAnswer = async () => {
-      await QuestionStore.submitAnswer(answer, index);
+      await QuestionStore.submitAnswer({ ...question, answer });
       this.resetState();
     }
 
@@ -78,6 +78,7 @@ class QuestionAnswerScreen extends React.Component {
   }
 
   render() {
+    const unansweredQuestions = QuestionStore.questions.filter(question => !question.is_answered);
 
     return (
       <View style={styles.container}>
@@ -94,9 +95,9 @@ class QuestionAnswerScreen extends React.Component {
           <FlatList
             // extraData ensures that the list will re-render as the state changes
             extraData={this.state}
-            data={QuestionStore.questions.filter(question => !question.is_answered)}
+            data={unansweredQuestions}
             renderItem={this.renderQuestions}
-            keyExtractor={(item, index) => index.toString()}
+            keyExtractor={(question, index) => question.id.toString()}
           />
         </ScrollView>
       </View>

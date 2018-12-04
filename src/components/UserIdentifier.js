@@ -7,28 +7,27 @@ import Loading from '../custom/Loading';
 
 export class UserIdentifier extends React.Component {
   componentDidMount() {
-    if (isEmpty(this.props.user)) {
+    if (isEmpty(this.props.user.values)) {
       UserStore.fetchUserData();
     }
   }
 
   componentWillReceiveProps(nextProps) {
-    if (nextProps.user !== this.props.user) {
-      this.attemptRedirect()
+    if (!isEmpty(nextProps.user)) {
+      this.redirect(nextProps.user.is_admin)
     }
   }
 
-  attemptRedirect = () => {
-    const { user } = this.props;
-    if (user.is_admin) {
+  redirect = (isAdmin) => {
+    if (isAdmin) {
       this.props.navigation.navigate('Admin');
-    } else if (!isEmpty(user)) {
+    } else {
       this.props.navigation.navigate('User')
     }
   }
 
   render() {
-    const isLoading = isEmpty(this.props.user)
+    const isLoading = isEmpty(this.props.user.values)
     
     return (
       <Loading animating={isLoading} />
