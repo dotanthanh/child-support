@@ -63,8 +63,7 @@ const AppDrawer = createDrawerNavigator(
     Register: RegisterScreen,
     Logout: LogoutScreen
   },
-  // { initialRouteName: 'Home' }
-  { initialRouteName: 'Profile' }
+  { initialRouteName: 'Sessions' }
 );
 
 const AdminDrawer = createDrawerNavigator(

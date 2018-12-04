@@ -4,6 +4,7 @@ import { observer } from 'mobx-react';
 import { Button, Text, Icon } from 'react-native-elements';
 import { isEmpty } from 'lodash';
 
+import RecordScreen from './RecordScreen';
 import AppHeaderStack from '../custom/AppHeaderStack';
 import BottomBar from './BottomBar';
 import Loading from '../custom/Loading';
@@ -59,7 +60,6 @@ class SingleSessionScreen extends React.Component {
 
   // callback for changes in audio playing
   audioStatusCallback = (statusObject) => {
-    console.log(statusObject)
     if (statusObject.didJustFinish) {
       SessionStore.sessionAudio.stopAsync();
     } else {
@@ -89,7 +89,9 @@ class SingleSessionScreen extends React.Component {
       ? this.toggleSound
       : this.initializeSound; 
     
-    return (
+    return recordOpened ? (
+      <RecordScreen closeScreen={this.toggleRecord} />
+    ) : (
       <View style={styles.container}>
         <AppHeaderStack viewName={`Session ${params.sessionNumber}`} />
         <ScrollView style={styles.contentContainer}>
@@ -150,24 +152,17 @@ class SingleSessionScreen extends React.Component {
               animating={isEmpty(SessionStore.sessionReflection)}
             />
             <Text style={styles.sessionInfo}>
-              {SessionStore.sessionReflection}
+              {/* {SessionStore.sessionReflection} */}
             </Text>
             {!isEmpty(SessionStore.sessionReflection) && (
               <Button
                 rounded
+                icon={{ name: 'mic' }}
                 onPress={this.toggleRecord}
                 buttonStyle={styles.recordButton}
                 textStyle={{fontWeight: '500'}}
                 title="Record"
               />
-            )}
-            {recordOpened && (
-              <View>
-                <Icon name='record' />
-                <Button title="stop" />
-                <Button title="cancel" />
-                <Button title="upload" />
-              </View>
             )}
           </View>
 
