@@ -65,10 +65,10 @@ const BottomBar = (props) => {
         viewName='Groups'
       />
       <NavigationTab
-        tabname='Chat'
-        icon='sms'
-        isSelected={currentView === 'Chat'}
-        viewName='Chat'
+        tabname='Profile'
+        icon='account-circle'
+        isSelected={currentView === 'Profile'}
+        viewName='Profile'
       />
     </View>
   );
@@ -76,7 +76,7 @@ const BottomBar = (props) => {
 
 BottomBar.propTypes = {
   currentView: PropTypes.oneOf(
-    ['Home', 'Sessions', 'QuestionAnswer', 'Groups', 'Chat']
+    ['Home', 'Sessions', 'QuestionAnswer', 'Groups', 'Profile']
   ).isRequired
 };
 

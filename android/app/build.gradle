@@ -99,6 +99,8 @@ apply from: 'expo.gradle'
 
 
 dependencies {
+    compile project(':react-native-image-crop-picker')
+    compile project(':react-native-image-picker')
     compile project(':react-native-firebase')
   implementation fileTree(dir: 'libs', include: ['*.jar'])
 

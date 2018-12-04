@@ -19,6 +19,7 @@ import AdminQuestionAnswer from './src/components/admin/AdminQuestionAnswer';
 import UserIdentifier from './src/components/UserIdentifier';
 import AuthStore from './src/stores/auth';
 import { shouldShowQuestion } from './src/utils/user';
+import ProfileScreen from './src/components/ProfileScreen';
 
 @observer
 export default class App extends React.Component {
@@ -58,19 +59,21 @@ const AppDrawer = createDrawerNavigator(
   {
     Home: HomeScreen,
     Sessions: SessionStack,
-    Logout: LogoutScreen,
-    Register: RegisterScreen
+    Profile: ProfileScreen,
+    Register: RegisterScreen,
+    Logout: LogoutScreen
   },
-  { initialRouteName: 'Home' }
+  // { initialRouteName: 'Home' }
+  { initialRouteName: 'Profile' }
 );
 
 const AdminDrawer = createDrawerNavigator(
   {
     Home: AdminHomeScreen,
-    QuestionAnswer: AdminQuestionAnswer,
+    AdminQuestionAnswer: AdminQuestionAnswer,
     Logout: LogoutScreen 
   },
-  { initialRouteName: 'QuestionAnswer' }
+  { initialRouteName: 'AdminQuestionAnswer' }
 )
 
 const getUserAppStack = (shouldShowQuestion) => createSwitchNavigator(
@@ -90,7 +93,7 @@ const getUserAppStack = (shouldShowQuestion) => createSwitchNavigator(
 
 const AdminAppStack = createSwitchNavigator(
   {
-    Home: AdminDrawer 
+    Home: AdminDrawer
   },
   { initialRouteName: 'Home' }
 );
