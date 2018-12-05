@@ -7,7 +7,6 @@ import {
 import { observer } from 'mobx-react';
 
 import HomeScreen from './src/components/HomeScreen';
-
 import LoginScreen from './src/components/LoginScreen';
 import DailyQuestionScreen from './src/components/DailyQuestion';
 import LogoutScreen from './src/components/Logout';
@@ -17,6 +16,7 @@ import RegisterScreen from './src/components/RegisterScreen';
 import AdminHomeScreen from './src/components/admin/AdminScreen';
 import AdminQuestionAnswer from './src/components/admin/AdminQuestionAnswer';
 import UserIdentifier from './src/components/UserIdentifier';
+import QAScreen from './src/components/QAScreen';
 import AuthStore from './src/stores/auth';
 import { shouldShowQuestion } from './src/utils/user';
 import ProfileScreen from './src/components/ProfileScreen';
@@ -59,6 +59,7 @@ const AppDrawer = createDrawerNavigator(
   {
     Home: HomeScreen,
     Sessions: SessionStack,
+    QuestionAnswer: QAScreen,
     Profile: ProfileScreen,
     Register: RegisterScreen,
     Logout: LogoutScreen
