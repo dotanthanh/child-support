@@ -17,6 +17,7 @@ import RegisterScreen from './src/components/RegisterScreen';
 import AdminHomeScreen from './src/components/admin/AdminScreen';
 import AdminQuestionAnswer from './src/components/admin/AdminQuestionAnswer';
 import UserIdentifier from './src/components/UserIdentifier';
+import QAScreen from './src/components/QAScreen';
 import AuthStore from './src/stores/auth';
 import { shouldShowQuestion } from './src/utils/user';
 import ProfileScreen from './src/components/ProfileScreen';
@@ -61,7 +62,9 @@ const AppDrawer = createDrawerNavigator(
     Sessions: SessionStack,
     Profile: ProfileScreen,
     Register: RegisterScreen,
-    Logout: LogoutScreen
+    Logout: LogoutScreen,
+    Register: RegisterScreen,
+    QuestionAnswer: QAScreen
   },
   // { initialRouteName: 'Home' }
   { initialRouteName: 'Profile' }

@@ -4,13 +4,15 @@ import {
 	Text,
 	View,
 	Animated,
-	KeyboardAvoidingView
+	KeyboardAvoidingView,
+  ScrollView
 } from 'react-native';
 import { FormLabel, FormInput, Button } from 'react-native-elements';
 import firebase from 'react-native-firebase';
 import RadioForm from 'react-native-simple-radio-button';
 import DatePicker from "react-native-datepicker";
 import moment from "moment";
+
 import { colors, text, shadow } from '../styles/theme';
 
 import AuthStore from '../stores/auth';
@@ -54,6 +56,8 @@ export default class RegisterScreen extends React.Component {
 
 	onChangePassword = (password) => this.setState({ password });
 
+  onChangePasswordTwo = (passwordTwo) => this.setState({ passwordTwo });
+
 	onCreateUser = () => {
 		const { error, inputFocused, ...rest } = this.state;
 		AuthStore.signup(rest);
@@ -75,9 +79,16 @@ export default class RegisterScreen extends React.Component {
 	    is_mother,
 	    name,
 	    password,
+      passwordTwo,
       date,
 	    error
 		} = this.state;
+
+    const isInvalid =
+      password !== passwordTwo ||
+      password === '' ||
+      email === '' ||
+      name === '';
 
 		const inputProps = {
 	      required: true,
@@ -89,12 +100,13 @@ export default class RegisterScreen extends React.Component {
 	    };
 
 		return (
+    <ScrollView>
 		<View style={styles.regform}>
 		<KeyboardAvoidingView style={styles.form} behavior="padding">
 
 			<View style={styles.headerContainer}>
-	          <Animated.Image source={LandingImage} style={imageStyle} />
-	        </View>
+        <Animated.Image source={LandingImage} style={imageStyle} />
+      </View>
 
 	    <View style={styles.regform}>
 	        {this.state.errorMessage &&
@@ -102,7 +114,7 @@ export default class RegisterScreen extends React.Component {
 	            {this.state.errorMessage}
 	          </Text>}
 	        <FormInput
-	        placeholder="Full name"
+            placeholder="Full name"
            	{...inputProps}
            	onChangeText={this.onChangeName}
            	value={name}
@@ -124,6 +136,7 @@ export default class RegisterScreen extends React.Component {
 	        <FormLabel>Status</FormLabel>
       			<View style={styles.container}>
                <RadioForm
+                style={styles.radioForm}
 								containerStyle={styles.radioForm}
 								radio_props={userIsMother}
 								initial={-1}
@@ -135,6 +148,7 @@ export default class RegisterScreen extends React.Component {
            <FormLabel>First time pregnancy?</FormLabel>
            <View style={styles.container}>
                <RadioForm
+                style={styles.radioForm}
 								radio_props={userIsFirstTime}
 								initial={-1}
 								onPress={(is_first_time) => {this.status}}
@@ -145,10 +159,10 @@ export default class RegisterScreen extends React.Component {
            <FormLabel>Due date</FormLabel>
            <View style={styles.container}>
               <DatePicker
+                style={styles.radioForm}
                 date={this.state.date}
                 mode="date"
                 placeholder="Select date"
-                selected={this.state.startDate}
                 onDateChange={(date) => {this.setState({date: date})}}
                 confirmBtnText="Confirm"
                 cancelBtnText="Cancel"
@@ -165,14 +179,26 @@ export default class RegisterScreen extends React.Component {
 	          value={this.state.password}
 	        />
 
+          <FormInput
+            secureTextEntry
+            placeholder="Confirm password"
+            autoCapitalize="none"
+            inputStyle={styles.input}
+            containerStyle={styles.inputContainer}
+            onChangeText={passwordTwo => this.setState({ passwordTwo })}
+            value={this.state.passwordTwo}
+          />
+
 	        <View style={styles.buttonGroup}>
 		        <Button
 							rounded
-									buttonStyle={styles.button}
-									color={colors.white}
-									title="Create"
-									textStyle={styles.buttonText}
-							title="Sign Up" onPress={this.onCreateUser}
+							buttonStyle={styles.button}
+							color={colors.white}
+							title="Create"
+							textStyle={styles.buttonText}
+              title="Sign Up"
+              onPress={this.onCreateUser}
+              disabled={isInvalid}
 						/>
 
 		        <Button
@@ -189,6 +215,7 @@ export default class RegisterScreen extends React.Component {
 
     		</KeyboardAvoidingView>
     		</View>
+        </ScrollView>
 		);
 	}
 };
@@ -197,7 +224,8 @@ const styles = StyleSheet.create({
   regform: {
   	alignSelf: 'stretch',
   	paddingLeft: 50,
-    paddingRight: 40
+    paddingRight: 40,
+    backgroundColor: colors.lightBlue
   },
   headerContainer: {
     paddingTop: 48,
@@ -216,7 +244,8 @@ const styles = StyleSheet.create({
   	borderBottomColor: '#909b99'
   },
   radioForm: {
-  	paddingTop: 100
+  	paddingLeft: 20,
+    paddingTop: 5
   },
   buttonGroup: {
     flexDirection: 'row',
