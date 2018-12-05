@@ -16,6 +16,7 @@ import LogoutScreen from './src/components/Logout';
 import SingleSessionScreen from './src/components/SingleSessionScreen';
 import SessionsScreen from './src/components/SessionsScreen';
 import RegisterScreen from './src/components/RegisterScreen';
+import QAScreen from './src/components/QAScreen';
 import AuthStore from './src/stores/auth';
 import { shouldShowQuestion } from './src/utils/user';
 
@@ -57,7 +58,8 @@ const AppDrawer = createDrawerNavigator(
     Home: HomeScreen,
     Sessions: SessionStack,
     Logout: LogoutScreen,
-    Register: RegisterScreen
+    Register: RegisterScreen,
+    QuestionAnswer: QAScreen
   },
   { initialRouteName: 'Home' }
 );
