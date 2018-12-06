@@ -6,9 +6,18 @@ import { Button } from 'react-native-elements';
 import { withAudioPlaying } from '../wrappers/audio';
 import { colors } from '../styles/theme';
 
+/*
+  this component is meant to used with HOC/wrapper withAudioPlaying
+  to get the following props:
+    - audioLoading
+    - audioPlaying
+    - toggleSound
+    - initializeSound
+    - shouldFetch
+*/
 const SessionAudioPlayer = (props) => {
-  const { audioLoading, audioPlaying, toggleSound, initializeSound, audio } = props;
-  const buttonListener = audio ? toggleSound : initializeSound;
+  const { audioLoading, audioPlaying, toggleSound, initializeSound, shouldFetch } = props;
+  const buttonListener = shouldFetch ? initializeSound : toggleSound;
 
   return (
     <Button
@@ -39,11 +48,17 @@ const styles = StyleSheet.create({
   }
 });
 
-SessionAudioPlayer.propTypes = {
-  audioLoading: PropTypes.bool.isRequired,
-  audioPlaying: PropTypes.bool.isRequired,
-  toggleSound: PropTypes.func.isRequired,
-  initializeSound: PropTypes.func.isRequired
+SessionAudioPlayer.defaultProps = {
+  audioLoading: false,
+  audioPlaying: false
 };
 
-export default withAudioPlaying(SessionAudioPlayer);
+SessionAudioPlayer.propTypes = {
+  audioLoading: PropTypes.bool,
+  audioPlaying: PropTypes.bool,
+  toggleSound: PropTypes.func,
+  initializeSound: PropTypes.func,
+  shouldFetch: PropTypes.bool
+};
+
+export default SessionAudioPlayer;
