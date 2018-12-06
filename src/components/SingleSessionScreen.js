@@ -90,7 +90,10 @@ class SingleSessionScreen extends React.Component {
       : this.initializeSound; 
     
     return recordOpened ? (
-      <RecordScreen closeScreen={this.toggleRecord} />
+      <RecordScreen
+        closeScreen={this.toggleRecord}
+        saveRecording={SessionStore.saveRecording}
+      />
     ) : (
       <View style={styles.container}>
         <AppHeaderStack viewName={`Session ${params.sessionNumber}`} />

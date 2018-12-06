@@ -3,6 +3,8 @@ import firebase from 'react-native-firebase';
 import Expo from 'expo';
 import { isEmpty } from 'lodash';
 
+import AuthStore from './auth';
+
 class SessionStore {
   @observable storage = firebase.storage();
   @observable sessionInfo = '';
@@ -59,6 +61,17 @@ class SessionStore {
       console.log(e);
     } 
   }
+
+  @action
+  saveRecording = async (recordingUri) => {
+    try {
+      await firebase.storage()
+        .ref(`users_data/${AuthStore.user.uid}/session_${this.sessionNumber}/recording.mp3`)
+        .putFile(recordingUri);
+    } catch (e) {
+      console.log(e);
+    }
+  };
 
   readSessionInfoToStore = async (sectionName) => {
     await Expo.FileSystem
