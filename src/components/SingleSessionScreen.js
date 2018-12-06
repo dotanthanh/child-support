@@ -122,7 +122,7 @@ class SingleSessionScreen extends React.Component {
               animating={isEmpty(SessionStore.sessionInfo)}
             />
             <Text style={styles.sessionInfo}>
-              {/* {SessionStore.sessionInfo} */}
+              {SessionStore.sessionInfo}
             </Text>
           </View>
 
@@ -137,7 +137,7 @@ class SingleSessionScreen extends React.Component {
               animating={isEmpty(SessionStore.sessionExercise)}
             />
             <Text style={styles.sessionInfo}>
-              {/* {SessionStore.sessionExercise} */}
+              {SessionStore.sessionExercise}
             </Text>
           </View>
 
@@ -152,7 +152,7 @@ class SingleSessionScreen extends React.Component {
               animating={isEmpty(SessionStore.sessionReflection)}
             />
             <Text style={styles.sessionInfo}>
-              {/* {SessionStore.sessionReflection} */}
+              {SessionStore.sessionReflection}
             </Text>
             {!isEmpty(SessionStore.sessionReflection) && (
               <Button
@@ -209,7 +209,7 @@ const styles = StyleSheet.create({
     backgroundColor: colors.main
   },
   recordButton: {
-    marginVertical: 16,
+    marginVertical: 24,
     paddingHorizontal: 32,
     backgroundColor: colors.main,
     alignSelf: 'flex-start',
