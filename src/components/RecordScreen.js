@@ -146,6 +146,7 @@ export class RecordScreen extends React.Component {
     const { loadedSound } = this.state;
     if (loadedSound) {
       loadedSound.unloadAsync();
+      loadedSound.setOnPlaybackStatusUpdate(null);
     }
   }
 

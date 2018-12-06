@@ -12,6 +12,7 @@ class SessionStore {
   @observable sessionReflection = '';
   @observable sessionNumber = undefined;
   @observable sessionAudio = undefined;
+  @observable diaryAudio = undefined;
 
   @action
   changeSession = (sessionNumber) => {
@@ -51,15 +52,39 @@ class SessionStore {
       const downloadUrl = await this.storage
         .ref(`/documents/session_${this.sessionNumber}/audio.mp3`)
         .getDownloadURL();
-      await Expo.FileSystem.downloadAsync(downloadUrl, filePath)
-      await Expo.Audio.Sound
-        .create({uri: filePath}, {shouldPlay: false})
-        .then(soundInfo => {
-          this.sessionAudio = soundInfo.sound;
-        });
+      this.sessionAudio = await this.downloadAudio(downloadUrl, filePath);
     } catch (e) {
       console.log(e);
-    } 
+    }
+  }
+
+  /*
+    general function for downloading a audio file and
+    create a sound object using Expo API
+  */
+  @action
+  downloadAudio = async (url, filePath) => {
+    try {
+      await Expo.FileSystem.downloadAsync(url, filePath)
+      const soundInfo = await Expo.Audio.Sound
+        .create({uri: filePath}, {shouldPlay: false})
+      return soundInfo.sound;
+    } catch (e) {
+      console.log(e);
+    }
+  }
+
+  @action
+  fetchDiaryAudio = async () => {
+    const filePath = Expo.FileSystem.documentDirectory + 'recording.mp3';
+    try {
+      const downloadUrl = await this.storage
+        .ref(`/users_data/${AuthStore.user.uid}/session_${this.sessionNumber}/recording.mp3`)
+        .getDownloadURL();
+      this.diaryAudio = await this.downloadAudio(downloadUrl, filePath);
+    } catch (e) {
+      console.log(e);
+    }
   }
 
   @action
