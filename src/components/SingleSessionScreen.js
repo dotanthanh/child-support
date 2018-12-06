@@ -32,6 +32,7 @@ class SingleSessionScreen extends React.Component {
     if (isEmpty(SessionStore.sessionInfo)) {
       SessionStore.fetchSessionText();
     }
+    SessionStore.fetchDiaryAudio();
   }
 
   toggleRecord = () => {
@@ -41,17 +42,6 @@ class SingleSessionScreen extends React.Component {
   render() {
     const { navigation: { state: { params } } } = this.props;
     const { recordOpened } = this.state;
-    
-    const SessionAudioPlayer = withAudioPlaying(
-      AudioPlayer,
-      SessionStore.sessionAudio,
-      SessionStore.fetchSessionAudio
-    );
-    const DiaryAudioPlayer = withAudioPlaying(
-      AudioPlayer,
-      SessionStore.diaryAudio,
-      SessionStore.fetchDiaryAudio
-    );
 
     return recordOpened ? (
       <RecordScreen
@@ -63,80 +53,13 @@ class SingleSessionScreen extends React.Component {
         <AppHeaderStack viewName={`Session ${params.sessionNumber}`} />
         <ScrollView style={styles.contentContainer}>
 
-          <View style={styles.sectionContainer}>
-            <View style={styles.sectionHeader}>
-              <Text style={styles.headerStyle}>Info</Text>
-              <SessionAudioPlayer />
-              </View>
-            <Loading
-              style={{paddingVertical: 16}}
-              color={colors.main}
-              animating={true}
-              animating={isEmpty(SessionStore.sessionInfo)}
-            />
-            <Text style={styles.sessionInfo}>
-              {SessionStore.sessionInfo}
-            </Text>
-          </View>
+          <SessionInfo />
 
-          <View style={styles.sectionContainer}>
-            <View style={styles.sectionHeader}>
-              <Text style={styles.headerStyle}>Exercise</Text>
-            </View>
-            <Loading
-              style={{paddingVertical: 16}}
-              color={colors.main}
-              animating={true}
-              animating={isEmpty(SessionStore.sessionExercise)}
-            />
-            <Text style={styles.sessionInfo}>
-              {SessionStore.sessionExercise}
-            </Text>
-          </View>
+          <SessionExercise />
 
-          <View style={styles.sectionContainer}>
-            <View style={styles.sectionHeader}>
-              <Text style={styles.headerStyle}>Reflection</Text>
-            </View>
-            <Loading
-              style={{paddingVertical: 16}}
-              color={colors.main}
-              animating={true}
-              animating={isEmpty(SessionStore.sessionReflection)}
-            />
-            <Text style={styles.sessionInfo}>
-              {SessionStore.sessionReflection}
-            </Text>
-            {!isEmpty(SessionStore.sessionReflection) && (
-              <Button
-                rounded
-                icon={{ name: 'mic' }}
-                onPress={this.toggleRecord}
-                buttonStyle={styles.recordButton}
-                textStyle={{fontWeight: '500'}}
-                title="Record"
-              />
-            )}
-          </View>
+          <SessionReflection toggleRecord={this.toggleRecord} />
 
-          <View style={styles.sectionContainer}>
-            <View style={styles.sectionHeader}>
-              <Text style={styles.headerStyle}>Diary</Text>
-            </View>
-            <Text style={styles.sessionInfo}>
-              This is the archive of your diary in this section.
-            </Text>
-            <View style={styles.diaryRecording}>
-              <Text>Diary recording</Text>
-              <DiaryAudioPlayer />
-            </View>
-            <Loading
-              style={{paddingVertical: 16}}
-              color={colors.main}
-              animating={true}
-              animating={isEmpty(SessionStore.sessionExercise)}
-            />
-          </View>
+          <SessionDiary />
 
         </ScrollView>
         <BottomBar currentView='Sessions' />
@@ -144,6 +67,109 @@ class SingleSessionScreen extends React.Component {
     );
   }
 }
+
+const SessionInfo = observer(props => {
+  const SessionAudioPlayer = withAudioPlaying(
+    AudioPlayer,
+    SessionStore.sessionAudio,
+    SessionStore.fetchSessionAudio
+  );
+
+  return (
+    <View style={styles.sectionContainer}>
+      <View style={styles.sectionHeader}>
+        <Text style={styles.headerStyle}>Info</Text>
+        <SessionAudioPlayer />
+        </View>
+      <Loading
+        style={{paddingVertical: 16}}
+        color={colors.main}
+        animating={true}
+        animating={isEmpty(SessionStore.sessionInfo)}
+      />
+      <Text style={styles.sessionInfo}>
+        {SessionStore.sessionInfo}
+      </Text>
+    </View>
+  );
+});
+
+const SessionExercise = observer(props => (
+  <View style={styles.sectionContainer}>
+    <View style={styles.sectionHeader}>
+      <Text style={styles.headerStyle}>Exercise</Text>
+    </View>
+    <Loading
+      style={{paddingVertical: 16}}
+      color={colors.main}
+      animating={true}
+      animating={isEmpty(SessionStore.sessionExercise)}
+    />
+    <Text style={styles.sessionInfo}>
+      {SessionStore.sessionExercise}
+    </Text>
+  </View>
+));
+
+const SessionReflection = observer(props => {
+  const { toggleRecord } = props;
+
+  return (
+    <View style={styles.sectionContainer}>
+      <View style={styles.sectionHeader}>
+        <Text style={styles.headerStyle}>Reflection</Text>
+      </View>
+      <Loading
+        style={{paddingVertical: 16}}
+        color={colors.main}
+        animating={true}
+        animating={isEmpty(SessionStore.sessionReflection)}
+      />
+      <Text style={styles.sessionInfo}>
+        {SessionStore.sessionReflection}
+      </Text>
+      {!isEmpty(SessionStore.sessionReflection) && (
+        <Button
+          rounded
+          icon={{ name: 'mic' }}
+          onPress={toggleRecord}
+          buttonStyle={styles.recordButton}
+          textStyle={{fontWeight: '500'}}
+          title="Record"
+        />
+      )}
+    </View> 
+  );
+});
+
+const SessionDiary = observer(props => {
+  const DiaryAudioPlayer = withAudioPlaying(
+    AudioPlayer,
+    SessionStore.diaryAudio,
+    SessionStore.fetchDiaryAudio
+  );
+
+  return (
+    <View style={styles.sectionContainer}>
+      <View style={styles.sectionHeader}>
+        <Text style={styles.headerStyle}>Diary</Text>
+      </View>
+      <Text style={styles.sessionInfo}>
+        This is the archive of your diary in this section.
+      </Text>
+      <View style={styles.diaryRecording}>
+        <Text>Diary recording</Text>
+        <DiaryAudioPlayer />
+      </View>
+      <Loading
+        style={{paddingVertical: 16}}
+        color={colors.main}
+        animating={true}
+        animating={isEmpty(SessionStore.diaryAudio)}
+      />
+    </View> 
+  );
+});
 
 const styles = StyleSheet.create({
   container: {
