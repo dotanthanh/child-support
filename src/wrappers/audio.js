@@ -8,7 +8,11 @@ import PropTypes from 'prop-types';
     - source of audio attached to the component
     - a function to fetch the audio 
 */
-export const withAudioPlaying = (WrappedComponent) => {
+export const withAudioPlaying = (
+  WrappedComponent,
+  audio,
+  fetchAudio
+) => {
 
   const ComponentWithAudio = class extends React.Component {
     state = {
@@ -17,7 +21,6 @@ export const withAudioPlaying = (WrappedComponent) => {
     };
   
     componentDidMount() {
-      const { audio } = this.props;
       if (audio) {
         audio.setOnPlaybackStatusUpdate(this.audioStatusCallback);
       }
@@ -25,7 +28,6 @@ export const withAudioPlaying = (WrappedComponent) => {
     
     // download the audio and play it
     initializeSound = async () => {
-      const { audio, fetchAudio } = this.props;
       this.setState({ audioLoading: true, audioPlaying: false });
 
       try {
@@ -39,8 +41,6 @@ export const withAudioPlaying = (WrappedComponent) => {
 
     // play/pause the audio
     toggleSound = () => {
-      const { audio } = this.props;
-
       if (this.state.audioPlaying) {
         audio.pauseAsync();
       } else {
@@ -50,8 +50,6 @@ export const withAudioPlaying = (WrappedComponent) => {
 
     // callback for changes in audio playing
     audioStatusCallback = (statusObject) => {
-      const { audio } = this.props;
-
       if (statusObject.didJustFinish) {
         audio.stopAsync();
       } else {
@@ -63,7 +61,6 @@ export const withAudioPlaying = (WrappedComponent) => {
     };
 
     componentWillUnmount() {
-      const { audio } = this.props;
       // TODO: prevent memory leak here
       // stop the audio
       if (audio) {
@@ -78,7 +75,8 @@ export const withAudioPlaying = (WrappedComponent) => {
         audioLoading,
         audioPlaying,
         toggleSound: this.toggleSound,
-        initializeSound: this.initializeSound
+        initializeSound: this.initializeSound,
+        shouldFetch: !audio
       };
 
       return (

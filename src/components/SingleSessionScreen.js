@@ -11,7 +11,8 @@ import Loading from '../custom/Loading';
 import SessionStore from '../stores/session';
 import { container as containerStyles } from '../styles';
 import { colors, text, shadow } from '../styles/theme';
-import SessionAudioPlayer from './SessionAudioPlayer';
+import AudioPlayer from './SessionAudioPlayer';
+import { withAudioPlaying } from '../wrappers/audio';
 
 @observer
 class SingleSessionScreen extends React.Component {
@@ -40,6 +41,17 @@ class SingleSessionScreen extends React.Component {
   render() {
     const { navigation: { state: { params } } } = this.props;
     const { recordOpened } = this.state;
+    
+    const SessionAudioPlayer = withAudioPlaying(
+      AudioPlayer,
+      SessionStore.sessionAudio,
+      SessionStore.fetchSessionAudio
+    );
+    const DiaryAudioPlayer = withAudioPlaying(
+      AudioPlayer,
+      SessionStore.diaryAudio,
+      SessionStore.fetchDiaryAudio
+    );
 
     return recordOpened ? (
       <RecordScreen
@@ -54,10 +66,7 @@ class SingleSessionScreen extends React.Component {
           <View style={styles.sectionContainer}>
             <View style={styles.sectionHeader}>
               <Text style={styles.headerStyle}>Info</Text>
-              <SessionAudioPlayer
-                audio={SessionStore.sessionAudio}
-                fetchAudio={SessionStore.fetchSessionAudio}
-              />
+              <SessionAudioPlayer />
               </View>
             <Loading
               style={{paddingVertical: 16}}
@@ -119,10 +128,7 @@ class SingleSessionScreen extends React.Component {
             </Text>
             <View style={styles.diaryRecording}>
               <Text>Diary recording</Text>
-              <SessionAudioPlayer
-                audio={SessionStore.diaryAudio}
-                fetchAudio={SessionStore.fetchDiaryAudio}
-              />
+              <DiaryAudioPlayer />
             </View>
             <Loading
               style={{paddingVertical: 16}}
