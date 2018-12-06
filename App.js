@@ -61,11 +61,9 @@ const AppDrawer = createDrawerNavigator(
     Sessions: SessionStack,
     QuestionAnswer: QAScreen,
     Profile: ProfileScreen,
-    Register: RegisterScreen,
     Logout: LogoutScreen
   },
-  // { initialRouteName: 'Home' }
-  { initialRouteName: 'Profile' }
+  { initialRouteName: 'Sessions' }
 );
 
 const AdminDrawer = createDrawerNavigator(
@@ -82,6 +80,7 @@ const getUserAppStack = (shouldShowQuestion) => createSwitchNavigator(
     Home: {
       screen: AppDrawer
     },
+    Register: RegisterScreen,
     DailyQuestion: {
       screen: DailyQuestionScreen,
       navigationOptions: {

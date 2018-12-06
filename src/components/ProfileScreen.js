@@ -39,7 +39,7 @@ export class ProfileScreen extends React.Component {
   takeImage = async () => {
     const permissions = Permissions.CAMERA;
     const { status } = await Permissions.askAsync(permissions);
-    if(status === 'granted') {
+    if (status === 'granted') {
       try {
         let result = await ImagePicker.launchCameraAsync({
           allowsEditing: true,
@@ -67,12 +67,13 @@ export class ProfileScreen extends React.Component {
             />
           )}
           <Loading style={styles.image} animating={imageLoading} />
+          <Text style={styles.username}>{user.name}</Text>
           <View style={styles.buttonsGroup}>
             <Button
               rounded
-              title='Change picture'
+              title='Update image'
               textStyle={styles.imageButtonText}
-              icon={{ name: 'camera-alt' }}
+              icon={{ name: 'insert-photo' }}
               buttonStyle={styles.imageButton}
               onPress={this.chooseImage}
             />
@@ -87,10 +88,6 @@ export class ProfileScreen extends React.Component {
           </View>
         </View>
         <View style={styles.infoContainer}>
-          <View style={styles.infoSection}>
-            <Text style={styles.infoTag}>Name</Text>
-            <Text style={styles.infoText}>{user.name}</Text>
-          </View>
           <View style={styles.infoSection}>
             <Text style={styles.infoTag}>Age</Text>
             <Text style={styles.infoText}>{user.age}</Text>
@@ -118,17 +115,22 @@ const styles = StyleSheet.create({
     ...shadow
   },
   image: {
-    width: Dimensions.get('window').width * 0.6,
-    height: Dimensions.get('window').width * 0.6,
-    borderRadius: Dimensions.get('window').width * 0.6 / 2,
+    width: Dimensions.get('window').width * 0.4,
+    height: Dimensions.get('window').width * 0.4,
+    borderRadius: Dimensions.get('window').width * 0.4 / 2,
     alignItems: 'center',
     justifyContent: 'center'
+  },
+  username: {
+    fontSize: 22,
+    fontWeight: '500',
+    letterSpacing: 2,
+    paddingVertical: 24
   },
   buttonsGroup: {
     flexDirection: 'row'
   },
   imageButton: {
-    marginTop: 24,
     paddingHorizontal: 16,
     paddingVertical: 8,
     backgroundColor: colors.main,
@@ -141,9 +143,6 @@ const styles = StyleSheet.create({
   },
   infoContainer: {
     minWidth: '80%',
-    backgroundColor: colors.lightBlue,
-    borderRadius: 4,
-    ...shadow
   },
   infoSection: {
     flexDirection: 'row',
