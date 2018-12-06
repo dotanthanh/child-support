@@ -36,6 +36,11 @@ node_modules/
 npm-debug.log
 yarn-error.log
 
+# Dynamic Macros
+ios/child-support/Supporting/EXBuildConstants.plist.bak
+ios/child-support/Supporting/EXBuildConstants.json
+ios/child-support/Supporting/EXBuildConstants.plist
+
 # BUCK
 buck-out/
 \.buckd/

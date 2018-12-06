@@ -16,7 +16,8 @@ export class RecordScreen extends React.Component {
     playable: false,
     recordingDuration: 0,
     soundPlaying: false,
-    soundPlayingTime: 0
+    soundPlayingTime: 0,
+    isSaving: false
   };
 
   async componentDidMount() {
@@ -57,7 +58,7 @@ export class RecordScreen extends React.Component {
 
       if (status === 'granted') {
         const recording = new Audio.Recording();
-        await recording.prepareToRecordAsync(Audio.RECORDING_OPTIONS_PRESET_HIGH_QUALITY);
+        await recording.prepareToRecordAsync(Audio.RECORDING_OPTIONS_PRESET_LOW_QUALITY);
         recording.setOnRecordingStatusUpdate(this.recordingEventHandler);
         this.setState({ recording });
         await recording.startAsync();
@@ -126,15 +127,34 @@ export class RecordScreen extends React.Component {
     })
   }
 
-  saveRecording = () => {
-    // TODO
+  saveRecording = async () => {
+    const { saveRecording, closeScreen } = this.props;
+    const { loadedSound } = this.state;
+
+    this.setState({ isSaving: true });
+    try {
+      const { uri } = await loadedSound.getStatusAsync();
+      await saveRecording(uri);
+      await loadedSound.unloadAsync();
+      closeScreen();
+    } catch (e) {
+      this.setState({ isSaving: false });
+    }
   };
+
+  componentWillUnmount() {
+    const { loadedSound } = this.state;
+    if (loadedSound) {
+      loadedSound.unloadAsync();
+      loadedSound.setOnPlaybackStatusUpdate(null);
+    }
+  }
 
   render() {
     const { closeScreen } = this.props;
     const {
       loadedSound, soundPlaying, soundPlayingTime,
-      playable, recordingDuration, isRecording
+      playable, recordingDuration, isRecording, isSaving
     } = this.state;
     const displayedDuration = getTimeDurationString(recordingDuration);
     const displayedPlaybackTime = getTimeDurationString(soundPlayingTime);
@@ -150,12 +170,15 @@ export class RecordScreen extends React.Component {
             onPress={closeScreen}
           />
           <Button
+            loading
+            loadingRight
+            loading={isSaving}
             disabled={!loadedSound}
             disabledStyle={styles.buttonDisabled}
             buttonStyle={styles.containerButton}
             color={colors.black}
             textStyle={styles.containerButtonText}
-            title="Save"
+            title={isSaving ? 'Saving' : 'Save'}
             onPress={this.saveRecording}
           />
         </View>
@@ -204,7 +227,8 @@ export class RecordScreen extends React.Component {
 }
 
 RecordScreen.propTypes = {
-  closeScreen: PropTypes.func.isRequired
+  closeScreen: PropTypes.func.isRequired,
+  saveRecording: PropTypes.func
 };
 
 const styles = StyleSheet.create({

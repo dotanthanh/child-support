@@ -11,12 +11,11 @@ import Loading from '../custom/Loading';
 import SessionStore from '../stores/session';
 import { container as containerStyles } from '../styles';
 import { colors, text, shadow } from '../styles/theme';
+import SessionAudioPlayer from './SessionAudioPlayer';
 
 @observer
 class SingleSessionScreen extends React.Component {
   state = {
-    audioPlaying: false,
-    audioLoading: false,
     recordOpened: false
   }
 
@@ -32,88 +31,33 @@ class SingleSessionScreen extends React.Component {
     if (isEmpty(SessionStore.sessionInfo)) {
       SessionStore.fetchSessionText();
     }
-    if (SessionStore.sessionAudio) {
-      SessionStore.sessionAudio.setOnPlaybackStatusUpdate(this.audioStatusCallback);
-    }
   }
-
-  // download the audio and play it
-  initializeSound = async () => {
-    this.setState({ audioLoading: true, audioPlaying: false });
-    try {
-      await SessionStore.fetchSessionAudio();
-      SessionStore.sessionAudio.setOnPlaybackStatusUpdate(this.audioStatusCallback);
-      this.toggleSound();
-    } catch (e) {
-      console.log(e);
-    }
-  };
-
-  // play/pause the audio
-  toggleSound = () => {
-    if (this.state.audioPlaying) {
-      SessionStore.sessionAudio.pauseAsync();
-    } else {
-      SessionStore.sessionAudio.playAsync();
-    }
-  };
-
-  // callback for changes in audio playing
-  audioStatusCallback = (statusObject) => {
-    if (statusObject.didJustFinish) {
-      SessionStore.sessionAudio.stopAsync();
-    } else {
-      this.setState({
-        audioLoading: statusObject.isBuffering,
-        audioPlaying: statusObject.isPlaying
-      });
-    }
-  };
 
   toggleRecord = () => {
     this.setState({ recordOpened: !this.state.recordOpened })
   };
 
-  componentWillUnmount() {
-    // TODO: prevent memory leak here
-    // stop the audio
-    if (SessionStore.sessionAudio) {
-      SessionStore.sessionAudio.stopAsync();
-    }
-  }
-
   render() {
     const { navigation: { state: { params } } } = this.props;
-    const { audioLoading, audioPlaying, recordOpened } = this.state;
-    const buttonListener = SessionStore.sessionAudio
-      ? this.toggleSound
-      : this.initializeSound; 
-    
+    const { recordOpened } = this.state;
+
     return recordOpened ? (
-      <RecordScreen closeScreen={this.toggleRecord} />
+      <RecordScreen
+        closeScreen={this.toggleRecord}
+        saveRecording={SessionStore.saveRecording}
+      />
     ) : (
       <View style={styles.container}>
         <AppHeaderStack viewName={`Session ${params.sessionNumber}`} />
         <ScrollView style={styles.contentContainer}>
+
           <View style={styles.sectionContainer}>
             <View style={styles.sectionHeader}>
               <Text style={styles.headerStyle}>Info</Text>
-                <Button
-                  loading
-                  loading={audioLoading}
-                  loadingRight
-                  rounded
-                  disabled={audioLoading}
-                  onPress={buttonListener}
-                  buttonStyle={styles.iconButton}
-                  title={audioLoading ? null : 'Play'}
-                  iconRight={!audioLoading
-                    ? {
-                      name: audioPlaying ? 'pause' : 'play-arrow',
-                      color: colors.white
-                    } : undefined
-                  }
-                />
+              <SessionAudioPlayer
+                audio={SessionStore.sessionAudio}
+                fetchAudio={SessionStore.fetchSessionAudio}
+              />
               </View>
             <Loading
               style={{paddingVertical: 16}}
@@ -166,6 +110,28 @@ class SingleSessionScreen extends React.Component {
             )}
           </View>
 
+          <View style={styles.sectionContainer}>
+            <View style={styles.sectionHeader}>
+              <Text style={styles.headerStyle}>Diary</Text>
+            </View>
+            <Text style={styles.sessionInfo}>
+              This is the archive of your diary in this section.
+            </Text>
+            <View style={styles.diaryRecording}>
+              <Text>Diary recording</Text>
+              <SessionAudioPlayer
+                audio={SessionStore.diaryAudio}
+                fetchAudio={SessionStore.fetchDiaryAudio}
+              />
+            </View>
+            <Loading
+              style={{paddingVertical: 16}}
+              color={colors.main}
+              animating={true}
+              animating={isEmpty(SessionStore.sessionExercise)}
+            />
+          </View>
+
         </ScrollView>
         <BottomBar currentView='Sessions' />
       </View>
@@ -184,6 +150,7 @@ const styles = StyleSheet.create({
     alignItems: 'center'
   },
   sessionInfo: {
+    width: '100%',
     padding: 16,
     color: colors.black,
     fontSize: 14,
@@ -202,18 +169,18 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: text.boldWeight
   },
-  iconButton: {
-    marginLeft: 12,
-    minHeight: 32,
-    padding: 0,
-    backgroundColor: colors.main
-  },
   recordButton: {
     marginVertical: 24,
     paddingHorizontal: 32,
     backgroundColor: colors.main,
     alignSelf: 'flex-start',
     ...shadow
+  },
+  diaryRecording: {
+    flexDirection: 'row',
+    width: '100%',
+    alignItems: 'center',
+    padding: 16
   }
 });
 
