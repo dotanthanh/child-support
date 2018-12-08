@@ -62,7 +62,7 @@ class SingleSessionScreen extends React.Component {
           <SessionDiary />
 
         </ScrollView>
-        <BottomBar currentView='Sessions' />
+        <BottomBar currentView='SessionStack' />
       </View>
     );
   }

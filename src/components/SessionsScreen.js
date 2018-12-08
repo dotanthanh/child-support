@@ -39,7 +39,7 @@ class SessionsScreen extends React.Component {
             />
           ))}
         </ScrollView>
-        <BottomBar currentView='Sessions' />
+        <BottomBar currentView='SessionStack' />
       </View>
     );
   }
@@ -77,5 +77,4 @@ const styles = StyleSheet.create({
   }
 });
 
-// export default withMenu(SessionsScreen, 'Sessions');
 export default SessionsScreen;

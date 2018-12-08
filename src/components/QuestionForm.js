@@ -26,6 +26,7 @@ export class QuestionForm extends React.Component {
 
   submitQuestion = async () => {
     const { closeForm, topicId } = this.props;
+    const { text } = this.state;
 
     this.setState({ isSubmitting: true });
     await QuestionAnswerStore.submitQuestion(text, topicId);
@@ -57,7 +58,7 @@ export class QuestionForm extends React.Component {
         buttonStyle={styles.button}
         color={colors.black}
         textStyle={styles.buttonText}
-        title={isSubmitting ? 'Submitting' : 'Submit'}
+        title={isSubmitting ? '' : 'Submit'}
         onPress={this.submitQuestion}
       /> 
     )
@@ -78,7 +79,7 @@ export class QuestionForm extends React.Component {
         </View>
         <FormInput
           placeholder='What do you want to ask ?'
-          onChangeText={this.onChangeInput}
+          onChangeText={this.onInputChange}
           value={questionText}
           inputStyle={styles.input}
           containerStyle={styles.inputContainer}

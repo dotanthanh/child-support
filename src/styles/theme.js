@@ -28,3 +28,8 @@ export const button = {
     paddingVertical: 12
   }
 };
+
+export const border = {
+  width: 0.5,
+  color: colors.line
+};

@@ -6,6 +6,7 @@ import {
   ScrollView,
   TouchableOpacity
 } from 'react-native';
+import PropTypes from 'prop-types';
 import { Button } from 'react-native-elements';
 import { observer } from 'mobx-react';
 
@@ -14,65 +15,49 @@ import BottomBar from './BottomBar';
 import { container as containerStyles, iconButton, subSection } from '../styles';
 import { colors, button, text } from '../styles/theme';
 import QuestionAnswerStore from '../stores/questionanswer';
-import QuestionForm from './QuestionForm';
 
 @observer
-export default class QAScreen extends React.Component {
-  state = {
-    formOpened: true
-  };
-
+export class QAScreen extends React.Component {
   componentDidMount() {
     QuestionAnswerStore.fetchTopics();
   }
 
-  toggleForm = () => {
-    this.setState({ formOpened: !this.state.formOpened });
-  };
+  navigate = (topic) => {
+    this.props.navigation.navigate('TopicQuestions', { topic });
+  }
 
 	render() {
-    const { navigation } = this.props;
-    const { formOpened } = this.state;
     const topics = QuestionAnswerStore.topics;
 
-    return formOpened ? (
-      <QuestionForm closeForm={this.toggleForm} />
-    ) : (
+    return (
       <View style={styles.container}>
         <AppHeaderSwitch viewName="Q&A" />
 
         <ScrollView style={styles.contentContainer}>
-          {/* <View style={styles.newQuestion}>
-            <Button
-              rounded
-              buttonStyle={styles.button}
-              textStyle={styles.buttonText}
-              iconRight={{name: 'add', style: styles.icon, size: 30}}
-              title='Ask'
-              onPress={this.toggleForm}
-            />
-          </View> */}
           <View>
             <View style={styles.subHeader}>
               <Text style={styles.subHeaderText}>Topic</Text>
             </View>
             <View style={styles.topicsContainer}>
               {topics.map(topic => (
-                <Topic key={topic.id} topic={topic} navigation={navigation} />
+                <Topic
+                  key={topic.id}
+                  topic={topic}
+                  navigate={() => this.navigate(topic)}
+                />
               ))}
             </View>
           </View>
         </ScrollView>
 
-        <BottomBar currentView='QuestionAnswer' />
+        <BottomBar currentView='QAStack' />
       </View>
     );
   }
 }
 
 const Topic = (props) => {
-  const { topic, navigation  } = props;
-  const navigate = () => navigation.navigate('TopicQuestion', { topicId: topic.id});
+  const { topic, navigate  } = props;
 
   return (
     <TouchableOpacity onPress={navigate}>
@@ -92,29 +77,17 @@ const Topic = (props) => {
   );
 }
 
+Topic.propTypes = {
+  navigate: PropTypes.func,
+  topic: PropTypes.object
+};
+
 const styles = StyleSheet.create({
   container: {
     ...containerStyles.screenContainerMenu
   },
   contentContainer: {
     ...containerStyles.screenContent
-  },
-  newQuestion: {
-    flexDirection: 'row',
-    justifyContent: 'flex-end',
-    alignItems: 'center',
-    padding: 16
-  },
-  icon: {
-    ...iconButton
-  },
-  button: {
-    ...button.default,
-    paddingVertical: 8,
-    paddingHorizontal: 24
-  },
-  buttonText: {
-    fontWeight: text.bolderWeight
   },
   subHeader: {
     backgroundColor: colors.lightBlue,
@@ -143,3 +116,5 @@ const styles = StyleSheet.create({
     ...iconButton
   }
 });
+
+export default QAScreen;
