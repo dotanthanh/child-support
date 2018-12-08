@@ -1,12 +1,16 @@
 import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
-import { Button, Icon } from 'react-native-elements';
+import { Button, Header } from 'react-native-elements';
 import PropTypes from 'prop-types';
 import { Audio, Permissions } from 'expo';
 
 import { getTimeDurationString } from '../utils';
-import { container as containerStyles, header as headerStyles } from '../styles';
-import { shadow, colors } from '../styles/theme';
+import {
+  container as containerStyles,
+  header as headerStyles,
+  iconButton as iconStyle
+} from '../styles';
+import { shadow, colors, button, text } from '../styles/theme';
 
 export class RecordScreen extends React.Component {
   state = {
@@ -159,27 +163,40 @@ export class RecordScreen extends React.Component {
     const displayedDuration = getTimeDurationString(recordingDuration);
     const displayedPlaybackTime = getTimeDurationString(soundPlayingTime);
     
+    const CloseButton = (
+      <Button
+        containerViewStyle={styles.buttonContainer}
+        buttonStyle={styles.containerButton}
+        color={colors.black}
+        textStyle={styles.containerButtonText}
+        title="Cancel"
+        onPress={closeScreen}
+      />
+    );
+    const SaveButton = (
+      <Button
+        loading
+        loadingRight
+        loading={isSaving}
+        disabled={!loadedSound}
+        disabledStyle={styles.buttonDisabled}
+        containerViewStyle={styles.buttonContainer}
+        buttonStyle={styles.containerButton}
+        color={colors.black}
+        textStyle={styles.containerButtonText}
+        title={isSaving ? 'Saving' : 'Save'}
+        onPress={this.saveRecording}
+      />
+    );
+
     return (
       <View style={styles.container}>
         <View style={styles.header}>
-          <Button
-            buttonStyle={styles.containerButton}
-            color={colors.black}
-            textStyle={styles.containerButtonText}
-            title="Cancel"
-            onPress={closeScreen}
-          />
-          <Button
-            loading
-            loadingRight
-            loading={isSaving}
-            disabled={!loadedSound}
-            disabledStyle={styles.buttonDisabled}
-            buttonStyle={styles.containerButton}
-            color={colors.black}
-            textStyle={styles.containerButtonText}
-            title={isSaving ? 'Saving' : 'Save'}
-            onPress={this.saveRecording}
+          <Header
+            backgroundColor={colors.white}
+            leftComponent={CloseButton}
+            centerComponent={null}
+            rightComponent={SaveButton}
           />
         </View>
 
@@ -233,16 +250,18 @@ RecordScreen.propTypes = {
 
 const styles = StyleSheet.create({
   header: {
-    ...headerStyles.container,
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'flex-end'
+    ...headerStyles.container
+  },
+  buttonContainer: {
+    marginLeft: 0,
+    marginRight: 0
   },
   containerButton: {
-    backgroundColor: 'transparent'
+    backgroundColor: 'transparent',
+    padding: 0
   },
   containerButtonText: {
-    fontWeight: 'bold'
+    fontWeight: text.bolderWeight
   },
   buttonDisabled: {
     backgroundColor: 'transparent',
@@ -262,14 +281,10 @@ const styles = StyleSheet.create({
     paddingVertical: 32
   },
   buttonStyle: {
-    ...shadow,
-    backgroundColor: colors.main,
-    paddingHorizontal: 12,
-    paddingVertical: 12
+    ...button.default
   },
   iconStyle: {
-    // current version of the library not center the icon
-    marginRight: 0
+    ...iconStyle
   }
 });
 

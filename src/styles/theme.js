@@ -20,10 +20,11 @@ export const text = {
   bolderWeight: 'bold'
 };
 
-const theme = {
-  colors,
-  shadow,
-  text
+export const button = {
+  default: {
+    ...shadow,
+    backgroundColor: colors.main,
+    paddingHorizontal: 12,
+    paddingVertical: 12
+  }
 };
-
-export default theme;

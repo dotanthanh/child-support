@@ -63,7 +63,7 @@ const AppDrawer = createDrawerNavigator(
     Profile: ProfileScreen,
     Logout: LogoutScreen
   },
-  { initialRouteName: 'Sessions' }
+  { initialRouteName: 'QuestionAnswer' }
 );
 
 const AdminDrawer = createDrawerNavigator(

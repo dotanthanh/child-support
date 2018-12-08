@@ -3,116 +3,143 @@ import {
 	StyleSheet,
 	Text,
 	View,
-	Animated,
-	KeyboardAvoidingView,
-  	ScrollView,
-  	TextInput,
-  	TouchableHighlight,
-  	AlertIOS
+  ScrollView,
+  TouchableOpacity
 } from 'react-native';
-import { FormLabel, FormInput, Button } from 'react-native-elements';
-import firebase from 'react-native-firebase';
-import { addQuestion } from '../stores/questionanswer';
-import { addAnswer } from '../stores/questionanswer';
+import { Button } from 'react-native-elements';
+import { observer } from 'mobx-react';
 
 import AppHeaderSwitch from '../custom/AppHeaderSwitch';
 import BottomBar from './BottomBar';
-import QAList from './QAList';
-import { container as containerStyles } from '../styles';
-import { colors, text, shadow } from '../styles/theme';
+import { container as containerStyles, iconButton, subSection } from '../styles';
+import { colors, button, text } from '../styles/theme';
+import QuestionAnswerStore from '../stores/questionanswer';
+import QuestionForm from './QuestionForm';
 
-import AuthStore from '../stores/auth';
-import LandingImage from '../../assets/pregnancy.png';
+@observer
+export default class QAScreen extends React.Component {
+  state = {
+    formOpened: true
+  };
 
-export default class DailyQuestion extends React.Component {
+  componentDidMount() {
+    QuestionAnswerStore.fetchTopics();
+  }
 
-	constructor(props) {
-      super(props);
-      this.state = {
-        name: ''
-      }
-      this.handleChange = this.handleChange.bind(this);
-      this.handleSubmit = this.handleSubmit.bind(this);
-    }
-    handleChange(e) {
-      this.setState({
-        name: e.nativeEvent.text
-      });
-    }
-    handleSubmit() {
-      addQuestion(this.state.name);
-      AlertIOS.alert(
-        'Question saved successfully'
-       );
-    }
+  toggleForm = () => {
+    this.setState({ formOpened: !this.state.formOpened });
+  };
 
 	render() {
+    const { navigation } = this.props;
+    const { formOpened } = this.state;
+    const topics = QuestionAnswerStore.topics;
 
-    return (
+    return formOpened ? (
+      <QuestionForm closeForm={this.toggleForm} />
+    ) : (
       <View style={styles.container}>
         <AppHeaderSwitch viewName="Q&A" />
-        <ScrollView contentContainerStyle={styles.scrollView}>
-        	<Text style={styles.title}>
-        	Ask a question
-        	</Text>
-        <TextInput
-              style={styles.itemInput}
-              onChange={this.handleChange}
-            />
-        <TouchableHighlight
-                style = {styles.button}
-                underlayColor= "white"
-                onPress = {this.handleSubmit}
-              >
-              <Text
-              	  rounded
-                  style={styles.buttonText}>
-                  Add
-              </Text>
-            </TouchableHighlight>
-        </ScrollView>
 
-        <QAList />
+        <ScrollView style={styles.contentContainer}>
+          {/* <View style={styles.newQuestion}>
+            <Button
+              rounded
+              buttonStyle={styles.button}
+              textStyle={styles.buttonText}
+              iconRight={{name: 'add', style: styles.icon, size: 30}}
+              title='Ask'
+              onPress={this.toggleForm}
+            />
+          </View> */}
+          <View>
+            <View style={styles.subHeader}>
+              <Text style={styles.subHeaderText}>Topic</Text>
+            </View>
+            <View style={styles.topicsContainer}>
+              {topics.map(topic => (
+                <Topic key={topic.id} topic={topic} navigation={navigation} />
+              ))}
+            </View>
+          </View>
+        </ScrollView>
 
         <BottomBar currentView='QuestionAnswer' />
       </View>
     );
-
   }
+}
 
+const Topic = (props) => {
+  const { topic, navigation  } = props;
+  const navigate = () => navigation.navigate('TopicQuestion', { topicId: topic.id});
+
+  return (
+    <TouchableOpacity onPress={navigate}>
+      <View style={styles.topic}>
+        <Text style={styles.topicText}>{topic.text}</Text>
+        <Button
+          containerViewStyle={{marginRight: 0}}
+          iconRight={{
+            name: 'chevron-right',
+            size: 25,
+            style: {color: colors.black}
+          }}
+          buttonStyle={styles.topicButton}
+        />
+      </View>
+    </TouchableOpacity>
+  );
 }
 
 const styles = StyleSheet.create({
-  	container: {
+  container: {
     ...containerStyles.screenContainerMenu
   },
-  title: {
-    marginBottom: 20,
-    fontSize: 25,
-    textAlign: 'center'
+  contentContainer: {
+    ...containerStyles.screenContent
   },
-  itemInput: {
-    height: 50,
-    padding: 4,
-    marginRight: 5,
-    fontSize: 23,
-    borderWidth: 1,
-    borderColor: 'black',
-    borderRadius: 8,
-    color: 'black'
+  newQuestion: {
+    flexDirection: 'row',
+    justifyContent: 'flex-end',
+    alignItems: 'center',
+    padding: 16
+  },
+  icon: {
+    ...iconButton
   },
   button: {
-    width: 150,
-    marginTop: 10,
-    padding: 5,
-    backgroundColor: colors.main,
-    paddingHorizontal: 16,
-    ...shadow,
-    justifyContent: 'center' 
+    ...button.default,
+    paddingVertical: 8,
+    paddingHorizontal: 24
   },
   buttonText: {
-    fontWeight: text.bolderWeight,
-    fontSize: 12,
-    textAlign: 'center' 
+    fontWeight: text.bolderWeight
+  },
+  subHeader: {
+    backgroundColor: colors.lightBlue,
+    ...subSection.header
+  },
+  subHeaderText: {
+    fontSize: 18,
+    fontWeight: text.boldWeight
+  },
+  topicsContainer: {
+  },
+  topic: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    padding: 16,
+    borderBottomWidth: 0.5,
+    borderColor: colors.line
+  },
+  topicText: {
+    fontSize: 16
+  },
+  topicButton: {
+    padding: 0,
+    backgroundColor: 'transparent',
+    ...iconButton
   }
 });
