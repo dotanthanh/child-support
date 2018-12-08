@@ -94,7 +94,7 @@ class SessionStore {
         .ref(`users_data/${AuthStore.user.uid}/session_${this.sessionNumber}/recording.mp3`)
         .putFile(recordingUri);
     } catch (e) {
-      console.log(e);
+      throw e;
     }
   };
 

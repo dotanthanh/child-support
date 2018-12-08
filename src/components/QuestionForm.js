@@ -2,7 +2,8 @@ import React from 'react';
 import { 
 	StyleSheet,
   View,
-  Text
+  Text,
+  AlertIOS
 } from 'react-native';
 import PropTypes from 'prop-types';
 import { Button, FormInput, Header } from 'react-native-elements';
@@ -29,7 +30,13 @@ export class QuestionForm extends React.Component {
     const { text } = this.state;
 
     this.setState({ isSubmitting: true });
-    await QuestionAnswerStore.submitQuestion(text, topicId);
+    try {
+      await QuestionAnswerStore.submitQuestion(text, topicId);
+      AlertIOS.alert('Question submitted successfully');
+    } catch (e) {
+      AlertIOS.alert('Failed to submit question');
+      this.setState({ isSubmitting: false });
+    }
     closeForm();
   }
 
@@ -52,7 +59,7 @@ export class QuestionForm extends React.Component {
         loading
         loadingRight
         loading={isSubmitting}
-        disabled={isEmpty(text)}
+        disabled={isEmpty(questionText)}
         containerViewStyle={styles.buttonContainer}
         disabledStyle={styles.buttonDisabled}
         buttonStyle={styles.button}

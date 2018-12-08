@@ -50,7 +50,7 @@ export class QAScreen extends React.Component {
           </View>
         </ScrollView>
 
-        <BottomBar currentView='QAStack' />
+        <BottomBar currentView='QuestionAnswer' />
       </View>
     );
   }

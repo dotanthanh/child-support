@@ -59,24 +59,24 @@ const SessionStack = createStackNavigator(
 
 const QuestionAnswerStack = createStackNavigator(
   {
-    TopicsList: QAScreen,
+    QuestionAnswer: QAScreen,
     TopicQuestions: TopicScreen
   },
   {
     headerMode: 'none',
-    initialRouteName: 'TopicsList'
+    initialRouteName: 'QuestionAnswer'
   }
 );
 
 const AppDrawer = createDrawerNavigator(
   {
     Home: HomeScreen,
-    SessionStack: SessionStack,
-    QAStack: QuestionAnswerStack,
+    Sessions: SessionStack,
+    QuestionAnswer: QuestionAnswerStack,
     Profile: ProfileScreen,
     Logout: LogoutScreen
   },
-  { initialRouteName: 'QAStack' }
+  { initialRouteName: 'Sessions' }
 );
 
 const AdminDrawer = createDrawerNavigator(

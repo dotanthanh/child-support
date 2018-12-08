@@ -42,6 +42,7 @@ class QuestionAnswerStore {
   @action
   submitQuestion = async (question, topicId) => {
     try {
+      throw new Error()
       await this.database.ref('user_questions/').push({
         answer: "",
         is_answered: false,
@@ -49,7 +50,7 @@ class QuestionAnswerStore {
         topic_id: topicId
       });
     } catch (e) {
-      console.log(e);
+      throw e;
     }
   };
 }

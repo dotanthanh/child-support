@@ -49,14 +49,14 @@ const BottomBar = (props) => {
       <NavigationTab
         tabname='Sessions'
         icon='library-books'
-        isSelected={currentView === 'SessionStack'}
-        viewName='SessionStack'
+        isSelected={currentView === 'Sessions'}
+        viewName='Sessions'
       />
       <NavigationTab
         tabname='Q&A'
         icon='question-answer'
-        isSelected={currentView === 'QAStack'}
-        viewName='QAStack'
+        isSelected={currentView === 'QuestionAnswer'}
+        viewName='QuestionAnswer'
       />
       <NavigationTab
         tabname='Groups'
@@ -76,7 +76,7 @@ const BottomBar = (props) => {
 
 BottomBar.propTypes = {
   currentView: PropTypes.oneOf(
-    ['Home', 'SessionStack', 'QAStack', 'Groups', 'Profile']
+    ['Home', 'Sessions', 'QuestionAnswer', 'Groups', 'Profile']
   ).isRequired
 };
 

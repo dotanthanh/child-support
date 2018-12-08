@@ -73,7 +73,7 @@ export class TopicScreen extends React.Component {
           ))}
         </View>
 
-        <BottomBar currentView="QAStack" />
+        <BottomBar currentView="QuestionAnswer" />
       </View>
     )
   }

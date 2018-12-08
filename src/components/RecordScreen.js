@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, StyleSheet } from 'react-native';
+import { View, Text, StyleSheet, AlertIOS } from 'react-native';
 import { Button, Header } from 'react-native-elements';
 import PropTypes from 'prop-types';
 import { Audio, Permissions } from 'expo';
@@ -140,8 +140,10 @@ export class RecordScreen extends React.Component {
       const { uri } = await loadedSound.getStatusAsync();
       await saveRecording(uri);
       await loadedSound.unloadAsync();
+      AlertIOS.alert('Recording saved successfully');
       closeScreen();
     } catch (e) {
+      AlertIOS.alert('Failed to save recording');
       this.setState({ isSaving: false });
     }
   };
