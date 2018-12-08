@@ -1,5 +1,7 @@
 import { Dimensions } from 'react-native';
 
+import { text } from './theme';
+
 export const container = {
   screenContainerMenu: {
     flex: 1,
@@ -12,6 +14,9 @@ export const container = {
     flex: 1,
     alignItems: 'center',
     backgroundColor: 'white'
+  },
+  screenContent: {
+    width: '100%'
   }
 };
 
@@ -26,12 +31,24 @@ export const header = {
     color: 'white',
     fontWeight: 'bold',
     fontSize: 16
-  } 
+  }
 };
 
-const styles = {
-  container,
-  header
-}
+export const subSection = {
+  header: {
+    flexDirection: 'row',
+    width: '100%',
+    alignItems: 'center',
+    paddingHorizontal: 16,
+    paddingVertical: 8,
+    minHeight: 48
+  },
+  headerText: {
+    fontWeight: text.boldWeight
+  }
+};
 
-export default styles;
+// current version of the library not center the icon
+export const iconButton = {
+  marginRight: 0
+};

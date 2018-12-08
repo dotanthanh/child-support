@@ -9,7 +9,7 @@ import AppHeaderStack from '../custom/AppHeaderStack';
 import BottomBar from './BottomBar';
 import Loading from '../custom/Loading';
 import SessionStore from '../stores/session';
-import { container as containerStyles } from '../styles';
+import { container as containerStyles, subSection as subSectionStyles } from '../styles';
 import { colors, text, shadow } from '../styles/theme';
 import AudioPlayer from './SessionAudioPlayer';
 import { withAudioPlaying } from '../wrappers/audio';
@@ -62,7 +62,7 @@ class SingleSessionScreen extends React.Component {
           <SessionDiary />
 
         </ScrollView>
-        <BottomBar currentView='Sessions' />
+        <BottomBar currentView='SessionStack' />
       </View>
     );
   }
@@ -176,7 +176,7 @@ const styles = StyleSheet.create({
     ...containerStyles.screenContainerMenu
   },
   contentContainer: {
-    width: '100%'
+    ...containerStyles.screenContent
   },
   sectionContainer: {
     alignItems: 'center'
@@ -189,17 +189,12 @@ const styles = StyleSheet.create({
     lineHeight: 20
   },
   sectionHeader: {
-    flexDirection: 'row',
-    width: '100%',
-    alignItems: 'center',
     backgroundColor: colors.lightBlue,
-    paddingHorizontal: 16,
-    paddingVertical: 8,
-    minHeight: 48
+    ...subSectionStyles.header
   },
   headerStyle: {
     fontSize: 18,
-    fontWeight: text.boldWeight
+    ...subSectionStyles.headerText
   },
   recordButton: {
     marginVertical: 24,

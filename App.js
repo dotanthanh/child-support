@@ -20,6 +20,7 @@ import QAScreen from './src/components/QAScreen';
 import AuthStore from './src/stores/auth';
 import { shouldShowQuestion } from './src/utils/user';
 import ProfileScreen from './src/components/ProfileScreen';
+import TopicScreen from './src/components/TopicScreen';
 
 @observer
 export default class App extends React.Component {
@@ -51,19 +52,31 @@ const SessionStack = createStackNavigator(
     SingleSession: SingleSessionScreen
   },
   {
-    headerMode: 'none'
+    headerMode: 'none',
+    initialRouteName: 'Sessions'
+  }
+);
+
+const QuestionAnswerStack = createStackNavigator(
+  {
+    TopicsList: QAScreen,
+    TopicQuestions: TopicScreen
+  },
+  {
+    headerMode: 'none',
+    initialRouteName: 'TopicsList'
   }
 );
 
 const AppDrawer = createDrawerNavigator(
   {
     Home: HomeScreen,
-    Sessions: SessionStack,
-    QuestionAnswer: QAScreen,
+    SessionStack: SessionStack,
+    QAStack: QuestionAnswerStack,
     Profile: ProfileScreen,
     Logout: LogoutScreen
   },
-  { initialRouteName: 'Sessions' }
+  { initialRouteName: 'QAStack' }
 );
 
 const AdminDrawer = createDrawerNavigator(

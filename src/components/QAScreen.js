@@ -3,116 +3,118 @@ import {
 	StyleSheet,
 	Text,
 	View,
-	Animated,
-	KeyboardAvoidingView,
-  	ScrollView,
-  	TextInput,
-  	TouchableHighlight,
-  	AlertIOS
+  ScrollView,
+  TouchableOpacity
 } from 'react-native';
-import { FormLabel, FormInput, Button } from 'react-native-elements';
-import firebase from 'react-native-firebase';
-import { addQuestion } from '../stores/questionanswer';
-import { addAnswer } from '../stores/questionanswer';
+import PropTypes from 'prop-types';
+import { Button } from 'react-native-elements';
+import { observer } from 'mobx-react';
 
 import AppHeaderSwitch from '../custom/AppHeaderSwitch';
 import BottomBar from './BottomBar';
-import QAList from './QAList';
-import { container as containerStyles } from '../styles';
-import { colors, text, shadow } from '../styles/theme';
+import { container as containerStyles, iconButton, subSection } from '../styles';
+import { colors, button, text } from '../styles/theme';
+import QuestionAnswerStore from '../stores/questionanswer';
 
-import AuthStore from '../stores/auth';
-import LandingImage from '../../assets/pregnancy.png';
+@observer
+export class QAScreen extends React.Component {
+  componentDidMount() {
+    QuestionAnswerStore.fetchTopics();
+  }
 
-export default class DailyQuestion extends React.Component {
-
-	constructor(props) {
-      super(props);
-      this.state = {
-        name: ''
-      }
-      this.handleChange = this.handleChange.bind(this);
-      this.handleSubmit = this.handleSubmit.bind(this);
-    }
-    handleChange(e) {
-      this.setState({
-        name: e.nativeEvent.text
-      });
-    }
-    handleSubmit() {
-      addQuestion(this.state.name);
-      AlertIOS.alert(
-        'Question saved successfully'
-       );
-    }
+  navigate = (topic) => {
+    this.props.navigation.navigate('TopicQuestions', { topic });
+  }
 
 	render() {
+    const topics = QuestionAnswerStore.topics;
 
     return (
       <View style={styles.container}>
         <AppHeaderSwitch viewName="Q&A" />
-        <ScrollView contentContainerStyle={styles.scrollView}>
-        	<Text style={styles.title}>
-        	Ask a question
-        	</Text>
-        <TextInput
-              style={styles.itemInput}
-              onChange={this.handleChange}
-            />
-        <TouchableHighlight
-                style = {styles.button}
-                underlayColor= "white"
-                onPress = {this.handleSubmit}
-              >
-              <Text
-              	  rounded
-                  style={styles.buttonText}>
-                  Add
-              </Text>
-            </TouchableHighlight>
+
+        <ScrollView style={styles.contentContainer}>
+          <View>
+            <View style={styles.subHeader}>
+              <Text style={styles.subHeaderText}>Topic</Text>
+            </View>
+            <View style={styles.topicsContainer}>
+              {topics.map(topic => (
+                <Topic
+                  key={topic.id}
+                  topic={topic}
+                  navigate={() => this.navigate(topic)}
+                />
+              ))}
+            </View>
+          </View>
         </ScrollView>
 
-        <QAList />
-
-        <BottomBar currentView='QuestionAnswer' />
+        <BottomBar currentView='QAStack' />
       </View>
     );
-
   }
-
 }
 
+const Topic = (props) => {
+  const { topic, navigate  } = props;
+
+  return (
+    <TouchableOpacity onPress={navigate}>
+      <View style={styles.topic}>
+        <Text style={styles.topicText}>{topic.text}</Text>
+        <Button
+          containerViewStyle={{marginRight: 0}}
+          iconRight={{
+            name: 'chevron-right',
+            size: 25,
+            style: {color: colors.black}
+          }}
+          buttonStyle={styles.topicButton}
+        />
+      </View>
+    </TouchableOpacity>
+  );
+}
+
+Topic.propTypes = {
+  navigate: PropTypes.func,
+  topic: PropTypes.object
+};
+
 const styles = StyleSheet.create({
-  	container: {
+  container: {
     ...containerStyles.screenContainerMenu
   },
-  title: {
-    marginBottom: 20,
-    fontSize: 25,
-    textAlign: 'center'
+  contentContainer: {
+    ...containerStyles.screenContent
   },
-  itemInput: {
-    height: 50,
-    padding: 4,
-    marginRight: 5,
-    fontSize: 23,
-    borderWidth: 1,
-    borderColor: 'black',
-    borderRadius: 8,
-    color: 'black'
+  subHeader: {
+    backgroundColor: colors.lightBlue,
+    ...subSection.header
   },
-  button: {
-    width: 150,
-    marginTop: 10,
-    padding: 5,
-    backgroundColor: colors.main,
-    paddingHorizontal: 16,
-    ...shadow,
-    justifyContent: 'center' 
+  subHeaderText: {
+    fontSize: 18,
+    fontWeight: text.boldWeight
   },
-  buttonText: {
-    fontWeight: text.bolderWeight,
-    fontSize: 12,
-    textAlign: 'center' 
+  topicsContainer: {
+  },
+  topic: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    padding: 16,
+    borderBottomWidth: 0.5,
+    borderColor: colors.line
+  },
+  topicText: {
+    fontSize: 16
+  },
+  topicButton: {
+    padding: 0,
+    backgroundColor: 'transparent',
+    ...iconButton
   }
 });
+
+export default QAScreen;
