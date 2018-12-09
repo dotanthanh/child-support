@@ -3,10 +3,10 @@ import { observer } from 'mobx-react';
 import { View, StyleSheet, AlertIOS } from 'react-native';
 import { Button, Icon, FormInput } from 'react-native-elements';
 
-import { container as containerStyles } from '../styles';
-import { colors, divider } from '../styles/theme';
-import UserStore from '../stores/user';
-import FormHeader from '../custom/FormHeader';
+import { container as containerStyles } from '../../styles';
+import { colors, divider } from '../../styles/theme';
+import UserStore from '../../stores/user';
+import FormHeader from '../../custom/FormHeader';
 
 @observer
 export class SettingScreen extends React.Component {

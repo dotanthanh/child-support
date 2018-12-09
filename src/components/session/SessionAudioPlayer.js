@@ -3,8 +3,7 @@ import PropTypes from 'prop-types';
 import { StyleSheet } from 'react-native';
 import { Button } from 'react-native-elements';
 
-import { withAudioPlaying } from '../wrappers/audio';
-import { colors } from '../styles/theme';
+import { colors } from '../../styles/theme';
 
 /*
   this component is meant to used with HOC/wrapper withAudioPlaying

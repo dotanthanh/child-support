@@ -2,9 +2,9 @@ import React from 'react';
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import { Icon, Divider } from 'react-native-elements';
 
-import { container as containerStyles } from '../styles';
-import { text, divider } from '../styles/theme';
-import AppHeaderStack from '../custom/AppHeaderStack';
+import { container as containerStyles } from '../../styles';
+import { text, divider } from '../../styles/theme';
+import AppHeaderStack from '../../custom/AppHeaderStack';
 
 export class SettingScreen extends React.Component {
   
@@ -46,7 +46,7 @@ export class SettingScreen extends React.Component {
               </View>
             </TouchableOpacity>
 
-            <TouchableOpacity>
+            <TouchableOpacity onPress={this.getSettingNavigate('PrivacySetting')}>
               <View style={styles.field}>
                 <Text style={styles.fieldText}>Account privacy</Text>
                 <Icon name='chevron-right' />

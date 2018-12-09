@@ -10,8 +10,7 @@ import BottomBar from './BottomBar';
 import UserStore from '../stores/user';
 import Loading from '../custom/Loading';
 import { container as containerStyles } from '../styles';
-import { shadow, text, colors } from '../styles/theme';
-import SettingScreen from './SettingScreen';
+import { shadow, colors } from '../styles/theme';
 
 @observer
 export class ProfileScreen extends React.Component {
