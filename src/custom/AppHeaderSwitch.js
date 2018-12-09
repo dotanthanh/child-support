@@ -5,22 +5,32 @@ import PropTypes from 'prop-types';
 import { Header, Icon } from 'react-native-elements';
 
 import { header as headerStyles } from '../styles';
+import { colors } from '../styles/theme';
 
 export const AppHeaderSwitch = (props) => {
-  const { viewName, navigation: { openDrawer } } = props;
+  const {
+    viewName,
+    leftComponent,
+    rightComponent,
+    navigation: { openDrawer },
+    ...rest
+  } = props;
   
   return (
     <View style={headerStyles.container}>
       <Header
-        backgroundColor='#FA8D62'
-        leftComponent={
+        {...rest}
+        backgroundColor={colors.main}
+        leftComponent={leftComponent ||
           <Icon name='menu' onPress={openDrawer} color='white' />
         }
         centerComponent={{
           text: viewName.toUpperCase(),
           style: headerStyles.centerComponent
         }}
-        rightComponent={<Icon name='search' color='white' />}
+        rightComponent={rightComponent ||
+          <Icon name='search' color='white' />
+        }
       />
     </View>
   );

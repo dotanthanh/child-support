@@ -39,7 +39,7 @@ class SessionsScreen extends React.Component {
             />
           ))}
         </ScrollView>
-        <BottomBar currentView='SessionStack' />
+        <BottomBar currentView='Sessions' />
       </View>
     );
   }

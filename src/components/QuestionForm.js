@@ -2,14 +2,15 @@ import React from 'react';
 import { 
 	StyleSheet,
   View,
-  Text
+  Text,
+  AlertIOS
 } from 'react-native';
 import PropTypes from 'prop-types';
 import { Button, FormInput, Header } from 'react-native-elements';
 import { observer } from 'mobx-react';
 import { isEmpty } from 'lodash';
 
-import { header as headerStyles, container as containerStyles } from '../styles';
+import { header as headerStyles, container as containerStyles, formScreen } from '../styles';
 import { colors, button, text } from '../styles/theme';
 import QuestionAnswerStore from '../stores/questionanswer';
 
@@ -29,7 +30,13 @@ export class QuestionForm extends React.Component {
     const { text } = this.state;
 
     this.setState({ isSubmitting: true });
-    await QuestionAnswerStore.submitQuestion(text, topicId);
+    try {
+      await QuestionAnswerStore.submitQuestion(text, topicId);
+      AlertIOS.alert('Question submitted successfully');
+    } catch (e) {
+      AlertIOS.alert('Failed to submit question');
+      this.setState({ isSubmitting: false });
+    }
     closeForm();
   }
 
@@ -52,7 +59,7 @@ export class QuestionForm extends React.Component {
         loading
         loadingRight
         loading={isSubmitting}
-        disabled={isEmpty(text)}
+        disabled={isEmpty(questionText)}
         containerViewStyle={styles.buttonContainer}
         disabledStyle={styles.buttonDisabled}
         buttonStyle={styles.button}
@@ -105,19 +112,16 @@ const styles = StyleSheet.create({
     ...headerStyles.container
   },
   buttonContainer: {
-    marginLeft: 0,
-    marginRight: 0
+    ...formScreen.buttonContainer
   },
   button: {
-    backgroundColor: 'transparent',
-    padding: 0
+    ...formScreen.button
   },
   buttonText: {
-    fontWeight: text.bolderWeight
+    ...formScreen.button
   },
   buttonDisabled: {
-    backgroundColor: 'transparent',
-    opacity: 0.5
+    ...formScreen.buttonDisabled
   },
   inputContainer: {
     borderBottomWidth: 0

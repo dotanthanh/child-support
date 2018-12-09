@@ -48,6 +48,24 @@ export const subSection = {
   }
 };
 
+export const formScreen = {
+  buttonContainer: {
+    marginLeft: 0,
+    marginRight: 0
+  },
+  button: {
+    backgroundColor: 'transparent',
+    padding: 0
+  },
+  buttonText: {
+    fontWeight: text.bolderWeight
+  },
+  buttonDisabled: {
+    backgroundColor: 'transparent',
+    opacity: 0.5
+  },
+}
+
 // current version of the library not center the icon
 export const iconButton = {
   marginRight: 0

@@ -62,7 +62,7 @@ class SingleSessionScreen extends React.Component {
           <SessionDiary />
 
         </ScrollView>
-        <BottomBar currentView='SessionStack' />
+        <BottomBar currentView='Sessions' />
       </View>
     );
   }
@@ -131,7 +131,7 @@ const SessionReflection = observer(props => {
       {!isEmpty(SessionStore.sessionReflection) && (
         <Button
           rounded
-          icon={{ name: 'mic' }}
+          icon={{ name: 'mic', size: 24 }}
           onPress={toggleRecord}
           buttonStyle={styles.recordButton}
           textStyle={{fontWeight: '500'}}
