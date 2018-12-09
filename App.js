@@ -25,6 +25,7 @@ import TopicScreen from './src/components/TopicScreen';
 import SettingScreen from './src/components/SettingScreen';
 import NameSetting from './src/components/NameSetting';
 import PasswordSetting from './src/components/PasswordSetting';
+import PrivacySetting from './src/components/PrivacySetting';
 
 @observer
 export default class App extends React.Component {
@@ -84,7 +85,8 @@ const SettingStack = createStackNavigator(
   {
     Settings: SettingScreen,
     NameSetting: NameSetting,
-    PasswordSetting: PasswordSetting
+    PasswordSetting: PasswordSetting,
+    PrivacySetting: PrivacySetting
   },
   {
     initialRouteName: 'Settings',

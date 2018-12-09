@@ -46,7 +46,7 @@ export class SettingScreen extends React.Component {
               </View>
             </TouchableOpacity>
 
-            <TouchableOpacity>
+            <TouchableOpacity onPress={this.getSettingNavigate('PrivacySetting')}>
               <View style={styles.field}>
                 <Text style={styles.fieldText}>Account privacy</Text>
                 <Icon name='chevron-right' />

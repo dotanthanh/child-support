@@ -29,7 +29,6 @@ export const FormHeader = (props) => {
   );
   const RightButton = (
     <Button
-      loading
       loadingRight
       containerViewStyle={styles.buttonContainer}
       disabledStyle={styles.buttonDisabled}

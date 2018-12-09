@@ -9,7 +9,7 @@ import AuthStore from '../stores/auth';
 import FormHeader from '../custom/FormHeader';
 
 @observer
-export class SettingScreen extends React.Component {
+export class PasswordSetting extends React.Component {
   state = {
     currentPassword: '',
     newPassword: '',
@@ -124,4 +124,4 @@ const styles = StyleSheet.create({
   }
 });
 
-export default SettingScreen;
+export default PasswordSetting;
