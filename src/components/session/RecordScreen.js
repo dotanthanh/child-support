@@ -4,13 +4,13 @@ import { Button, Header } from 'react-native-elements';
 import PropTypes from 'prop-types';
 import { Audio, Permissions } from 'expo';
 
-import { getTimeDurationString } from '../utils';
+import { getTimeDurationString } from '../../utils';
 import {
   container as containerStyles,
-  header as headerStyles,
   iconButton as iconStyle
-} from '../styles';
-import { shadow, colors, button, text } from '../styles/theme';
+} from '../../styles';
+import { colors, button, text } from '../../styles/theme';
+import FormHeader from '../../custom/FormHeader';
 
 export class RecordScreen extends React.Component {
   state = {
@@ -156,43 +156,22 @@ export class RecordScreen extends React.Component {
     } = this.state;
     const displayedDuration = getTimeDurationString(recordingDuration);
     const displayedPlaybackTime = getTimeDurationString(soundPlayingTime);
-    
-    const CloseButton = (
-      <Button
-        containerViewStyle={styles.buttonContainer}
-        buttonStyle={styles.containerButton}
-        color={colors.black}
-        textStyle={styles.containerButtonText}
-        title="Cancel"
-        onPress={closeScreen}
-      />
-    );
-    const SaveButton = (
-      <Button
-        loading
-        loadingRight
-        loading={isSaving}
-        disabled={!loadedSound}
-        disabledStyle={styles.buttonDisabled}
-        containerViewStyle={styles.buttonContainer}
-        buttonStyle={styles.containerButton}
-        color={colors.black}
-        textStyle={styles.containerButtonText}
-        title={isSaving ? 'Saving' : 'Save'}
-        onPress={this.saveRecording}
-      />
-    );
 
     return (
       <View style={styles.container}>
-        <View style={styles.header}>
-          <Header
-            backgroundColor={colors.white}
-            leftComponent={CloseButton}
-            centerComponent={null}
-            rightComponent={SaveButton}
-          />
-        </View>
+        <FormHeader
+          rightButtonProps={{
+            title: isSaving ? 'Saving' : 'Save',
+            onPress: this.saveRecording,
+            loading: isSaving,
+            disabled: !loadedSound
+          }}
+          headerProps={{ centerComponent: null }}
+          leftButtonProps={{
+            title: 'Cancel',
+            onPress: closeScreen
+          }}
+        />
 
         {/*
           display the timer for the recording, or the timer of the playback
@@ -243,24 +222,6 @@ RecordScreen.propTypes = {
 };
 
 const styles = StyleSheet.create({
-  header: {
-    ...headerStyles.container
-  },
-  buttonContainer: {
-    marginLeft: 0,
-    marginRight: 0
-  },
-  containerButton: {
-    backgroundColor: 'transparent',
-    padding: 0
-  },
-  containerButtonText: {
-    fontWeight: text.bolderWeight
-  },
-  buttonDisabled: {
-    backgroundColor: 'transparent',
-    opacity: 0.5
-  },
   container: {
     ...containerStyles.screenContainerMenu,
     justifyContent: 'center'

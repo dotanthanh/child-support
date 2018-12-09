@@ -11,8 +11,6 @@ import HomeScreen from './src/components/HomeScreen';
 import LoginScreen from './src/components/LoginScreen';
 import DailyQuestionScreen from './src/components/DailyQuestion';
 import LogoutScreen from './src/components/Logout';
-import SingleSessionScreen from './src/components/SingleSessionScreen';
-import SessionsScreen from './src/components/SessionsScreen';
 import RegisterScreen from './src/components/RegisterScreen';
 import AdminHomeScreen from './src/components/admin/AdminScreen';
 import AdminQuestionAnswer from './src/components/admin/AdminQuestionAnswer';
@@ -22,10 +20,8 @@ import AuthStore from './src/stores/auth';
 import { shouldShowQuestion } from './src/utils/user';
 import ProfileScreen from './src/components/ProfileScreen';
 import TopicScreen from './src/components/TopicScreen';
-import SettingScreen from './src/components/SettingScreen';
-import NameSetting from './src/components/NameSetting';
-import PasswordSetting from './src/components/PasswordSetting';
-import PrivacySetting from './src/components/PrivacySetting';
+import SettingStack from './src/components/user-settings';
+import SessionStack from './src/components/session';
 
 @observer
 export default class App extends React.Component {
@@ -59,17 +55,6 @@ export default class App extends React.Component {
   }
 }
 
-const SessionStack = createStackNavigator(
-  {
-    Sessions: SessionsScreen,
-    SingleSession: SingleSessionScreen
-  },
-  {
-    headerMode: 'none',
-    initialRouteName: 'Sessions'
-  }
-);
-
 const QuestionAnswerStack = createStackNavigator(
   {
     QuestionAnswer: QAScreen,
@@ -78,19 +63,6 @@ const QuestionAnswerStack = createStackNavigator(
   {
     headerMode: 'none',
     initialRouteName: 'QuestionAnswer'
-  }
-);
-
-const SettingStack = createStackNavigator(
-  {
-    Settings: SettingScreen,
-    NameSetting: NameSetting,
-    PasswordSetting: PasswordSetting,
-    PrivacySetting: PrivacySetting
-  },
-  {
-    initialRouteName: 'Settings',
-    headerMode: 'none' 
   }
 );
 

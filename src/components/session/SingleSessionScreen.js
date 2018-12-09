@@ -5,14 +5,14 @@ import { Button, Text, Icon } from 'react-native-elements';
 import { isEmpty } from 'lodash';
 
 import RecordScreen from './RecordScreen';
-import AppHeaderStack from '../custom/AppHeaderStack';
-import BottomBar from './BottomBar';
-import Loading from '../custom/Loading';
-import SessionStore from '../stores/session';
-import { container as containerStyles, subSection as subSectionStyles } from '../styles';
-import { colors, text, shadow } from '../styles/theme';
+import AppHeaderStack from '../../custom/AppHeaderStack';
+import BottomBar from '../BottomBar';
+import Loading from '../../custom/Loading';
+import SessionStore from '../../stores/session';
+import { container as containerStyles, subSection as subSectionStyles } from '../../styles';
+import { colors, text, shadow } from '../../styles/theme';
 import AudioPlayer from './SessionAudioPlayer';
-import { withAudioPlaying } from '../wrappers/audio';
+import { withAudioPlaying } from '../../wrappers/audio';
 
 @observer
 class SingleSessionScreen extends React.Component {
