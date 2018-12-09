@@ -5,6 +5,7 @@ import {
   createDrawerNavigator
 } from 'react-navigation';
 import { observer } from 'mobx-react';
+import { Audio } from 'expo';
 
 import HomeScreen from './src/components/HomeScreen';
 import LoginScreen from './src/components/LoginScreen';
@@ -22,12 +23,21 @@ import { shouldShowQuestion } from './src/utils/user';
 import ProfileScreen from './src/components/ProfileScreen';
 import TopicScreen from './src/components/TopicScreen';
 import SettingScreen from './src/components/SettingScreen';
+import NameSetting from './src/components/NameSetting';
 
 @observer
 export default class App extends React.Component {
   state = { questionOpen: false };
 
   async componentDidMount() {
+    await Audio.setAudioModeAsync({
+      allowsRecordingIOS: true,
+      interruptionModeIOS: Audio.INTERRUPTION_MODE_IOS_DO_NOT_MIX,
+      playsInSilentModeIOS: true,
+      shouldDuckAndroid: true,
+      interruptionModeAndroid: Audio.INTERRUPTION_MODE_ANDROID_DO_NOT_MIX,
+      playThroughEarpieceAndroid: true
+    });
     const questionOpen = await shouldShowQuestion();
     this.setState({ questionOpen });
   }
@@ -69,10 +79,21 @@ const QuestionAnswerStack = createStackNavigator(
   }
 );
 
+const SettingStack = createStackNavigator(
+  {
+    Settings: SettingScreen,
+    NameSetting: NameSetting
+  },
+  {
+    initialRouteName: 'Settings',
+    headerMode: 'none' 
+  }
+);
+
 const ProfileStack = createStackNavigator(
   {
     Profile: ProfileScreen,
-    Settings: SettingScreen
+    Settings: SettingStack
   },
   {
     initialRouteName: 'Profile',

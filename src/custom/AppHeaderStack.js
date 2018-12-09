@@ -1,16 +1,23 @@
 import React from 'react';
 import { View, Text } from 'react-native';
-import { withNavigation } from 'react-navigation';
+import { withNavigation, NavigationActions } from 'react-navigation';
 import PropTypes from 'prop-types';
 import { Header, Icon } from 'react-native-elements';
 
 import { header as headerStyles } from '../styles';
 
 export const AppHeaderStack = (props) => {
-  const { viewName, navigation } = props;
+  const {
+    viewName,
+    navigation,
+    ...rest
+  } = props;
+
   const goBack = () => {
-    navigation.goBack();
+    console.log(navigation)
+    navigation.dispatch(NavigationActions.back())
   };
+
   return (
     <View style={headerStyles.container}>
       <Header
@@ -34,6 +41,7 @@ export const AppHeaderStack = (props) => {
           text: viewName,
           style: headerStyles.centerComponent
         }}
+        {...rest}
       /> 
     </View>
   );
