@@ -1,6 +1,6 @@
 import React from 'react';
 import { StyleSheet, View, KeyboardAvoidingView,
-  Keyboard, Animated, ScrollView
+  Keyboard, Animated, ScrollView, AlertIOS
 } from 'react-native';
 import { Text, FormInput, Button } from 'react-native-elements';
 import { observer } from 'mobx-react';
@@ -54,9 +54,13 @@ export default class LoginScreen extends React.Component {
     this.props.navigation.navigate('Register');
   };
 
-  onLogin = () => {
+  onLogin = async () => {
     const { email, password } = this.state;
-    auth.login(email, password);
+    try {
+      await auth.login(email, password);
+    } catch (e) {
+      AlertIOS.alert('Your email and password are wrong');
+    }
   };
 
   onChangeEmail = (email) => this.setState({ email });

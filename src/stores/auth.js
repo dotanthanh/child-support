@@ -34,13 +34,17 @@ class AuthStore {
   };
 
   @action
-  login = (email, password) => {
-    firebase
-      .auth()
-      .signInWithEmailAndPassword(email, password)
-      .then(credentials => {
-        // TODO: do something with the credentials here
-      });
+  login = async (email, password) => {
+    try {
+      await firebase
+        .auth()
+        .signInWithEmailAndPassword(email, password)
+        .then(credentials => {
+          // TODO: do something with the credentials here
+        });
+    } catch (e) {
+      throw e;
+    }
   };
 
   @action

@@ -36,6 +36,14 @@ export const calculateCurrentDay = (timestamp) => {
   return now.diff(lastMenstrual, 'days');
 };
 
+/*
+  take duedate as timestamp and calculate the supposed current week/session
+*/
+export const calculateCurrentSession = (timestamp) => {
+  const dayPassed = calculateCurrentDay(timestamp);
+  return parseInt(dayPassed / 7) + 1;
+};
+
 export const cacheQuestion = async () => {
   await AsyncStorage.setItem(
     'questionLastEncounter',
