@@ -14,7 +14,6 @@ export const AppHeaderStack = (props) => {
   } = props;
 
   const goBack = () => {
-    console.log(navigation)
     navigation.dispatch(NavigationActions.back())
   };
 

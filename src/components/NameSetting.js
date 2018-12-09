@@ -1,12 +1,12 @@
 import React from 'react';
 import { observer } from 'mobx-react';
-import { View, Text, Switch, StyleSheet, AlertIOS } from 'react-native';
-import { Button, Header, Icon, Divider, FormInput } from 'react-native-elements';
+import { View, StyleSheet, AlertIOS } from 'react-native';
+import { Button, Icon, FormInput } from 'react-native-elements';
 
-import { formScreen, container as containerStyles, header as headerStyles } from '../styles';
-import { colors, text, divider } from '../styles/theme';
-import AppHeaderStack from '../custom/AppHeaderStack';
+import { container as containerStyles } from '../styles';
+import { colors, divider } from '../styles/theme';
 import UserStore from '../stores/user';
+import FormHeader from '../custom/FormHeader';
 
 @observer
 export class SettingScreen extends React.Component {
@@ -38,35 +38,25 @@ export class SettingScreen extends React.Component {
     };
     const isChanged = name !== UserStore.userdata.name;
 
-    const SaveButton = (
-      <Button
-        loading
-        loadingRight
-        loading={isSaving}
-        disabled={!isChanged}
-        containerViewStyle={styles.buttonContainer}
-        disabledStyle={styles.buttonDisabled}
-        buttonStyle={styles.button}
-        color={colors.black}
-        textStyle={styles.buttonText}
-        title={isSaving ? '' : 'Save'}
-        onPress={this.save}
-      /> 
-    );
-
     return (
       <View style={styles.container}>
-        <AppHeaderStack
-          leftComponent={
-            <Icon
-              name='chevron-left'
-              color={colors.black}
-              onPress={goBack}
-            />
-          }
-          rightComponent={SaveButton}
-          centerComponent={{ text: 'Name', style: styles.headerText }}
-          backgroundColor={colors.white}
+        <FormHeader
+          rightButtonProps={{
+            title: isSaving ? '' : 'Save',
+            onPress: this.save,
+            loading: isSaving,
+            disabled: isChanged
+          }}
+          headerProps={{
+            leftComponent: (
+              <Icon
+                name='chevron-left'
+                color={colors.black}
+                onPress={goBack}
+              />
+            )
+          }}
+          headerName='Name'
         />
 
         <View style={styles.contentContainer}>
@@ -91,26 +81,6 @@ const styles = StyleSheet.create({
   },
   container: {
     ...containerStyles.screenContainerMenu
-  },
-  header: {
-    ...headerStyles.container
-  },
-  headerText: {
-    ...headerStyles.centerComponent,
-    color: colors.black
-  },
-  buttonContainer: {
-    ...formScreen.buttonContainer
-  },
-  button: {
-    ...formScreen.button
-  },
-  buttonText: {
-    ...formScreen.button,
-    fontWeight: text.boldWeight
-  },
-  buttonDisabled: {
-    ...formScreen.buttonDisabled
   },
   contentContainer: {
     ...containerStyles.screenContent

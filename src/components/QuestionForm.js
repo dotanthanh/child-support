@@ -2,17 +2,16 @@ import React from 'react';
 import { 
 	StyleSheet,
   View,
-  Text,
   AlertIOS
 } from 'react-native';
 import PropTypes from 'prop-types';
-import { Button, FormInput, Header } from 'react-native-elements';
+import { FormInput } from 'react-native-elements';
 import { observer } from 'mobx-react';
 import { isEmpty } from 'lodash';
 
-import { header as headerStyles, container as containerStyles, formScreen } from '../styles';
-import { colors, button, text } from '../styles/theme';
+import { container as containerStyles } from '../styles';
 import QuestionAnswerStore from '../stores/questionanswer';
+import FormHeader from '../custom/FormHeader';
 
 @observer
 export class QuestionForm extends React.Component {
@@ -44,46 +43,23 @@ export class QuestionForm extends React.Component {
     const { closeForm } = this.props;
     const { text: questionText, isSubmitting } = this.state;
 
-    const CloseButton = (
-      <Button
-        buttonStyle={styles.button}
-        color={colors.black}
-        containerViewStyle={styles.buttonContainer}
-        textStyle={styles.buttonText}
-        title="Cancel"
-        onPress={closeForm}
-      /> 
-    );
-    const SubmitButton = (
-      <Button
-        loading
-        loadingRight
-        loading={isSubmitting}
-        disabled={isEmpty(questionText)}
-        containerViewStyle={styles.buttonContainer}
-        disabledStyle={styles.buttonDisabled}
-        buttonStyle={styles.button}
-        color={colors.black}
-        textStyle={styles.buttonText}
-        title={isSubmitting ? '' : 'Submit'}
-        onPress={this.submitQuestion}
-      /> 
-    )
-
     return (
       <View style={styles.container}>
-        <View style={styles.header}>
-          <Header
-            backgroundColor={colors.white}
-            leftComponent={CloseButton}
-            centerComponent={
-              <Text style={{ color: colors.black, fontWeight: text.bolderWeight }}>
-                NEW QUESTION
-              </Text>
-            }
-            rightComponent={SubmitButton}
-          />
-        </View>
+
+        <FormHeader
+          leftButtonProps={{
+            title: 'Cancel',
+            onPress: closeForm
+          }}
+          rightButtonProps={{
+            title: isSubmitting ? '' : 'Submit',
+            onPress: this.submitQuestion,
+            loading: isSubmitting,
+            disabled: isEmpty(questionText)
+          }}
+          headerName='NEW QUESTION'
+        />
+
         <FormInput
           placeholder='What do you want to ask ?'
           onChangeText={this.onInputChange}
@@ -107,21 +83,6 @@ QuestionForm.propsTypes = {
 const styles = StyleSheet.create({
   container: {
     ...containerStyles.screenContainerMenu
-  },
-  header: {
-    ...headerStyles.container
-  },
-  buttonContainer: {
-    ...formScreen.buttonContainer
-  },
-  button: {
-    ...formScreen.button
-  },
-  buttonText: {
-    ...formScreen.button
-  },
-  buttonDisabled: {
-    ...formScreen.buttonDisabled
   },
   inputContainer: {
     borderBottomWidth: 0
