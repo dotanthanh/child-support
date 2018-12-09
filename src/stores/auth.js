@@ -51,6 +51,20 @@ class AuthStore {
   logout = () => {
     firebase.auth().signOut();
   }
+
+  @action
+  changePassword = async (currentPassword, newPassword) => {
+    try {
+      const credential = firebase.auth.EmailAuthProvider.credential(
+        this.user.email,
+        currentPassword
+      );
+      await this.user.reauthenticateWithCredential(credential);
+      await this.user.updatePassword(newPassword);
+    } catch (e) {
+      throw e;
+    }
+  }
 }
 
 export default new AuthStore();

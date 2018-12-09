@@ -1,29 +1,21 @@
 import React from 'react';
-import { View, Text, Switch, StyleSheet } from 'react-native';
-import { Button, Header, Icon, Divider } from 'react-native-elements';
+import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
+import { Icon, Divider } from 'react-native-elements';
 
-import { formScreen, container as containerStyles, header as headerStyles } from '../styles';
-import { colors, text, divider } from '../styles/theme';
+import { container as containerStyles } from '../styles';
+import { text, divider } from '../styles/theme';
 import AppHeaderStack from '../custom/AppHeaderStack';
 
 export class SettingScreen extends React.Component {
-  state = {
-    ...this.props.user
+  
+  // return a function to navigate to corresponding setting view
+  getSettingNavigate = (settingRoute) => {
+    return () => {
+      this.props.navigation.navigate(settingRoute);
+    };
   }
 
   render() {
-    const { closeForm, user } = this.props;
-
-    const CancelButton = (
-      <Button
-        buttonStyle={styles.button}
-        color={colors.black}
-        containerViewStyle={styles.buttonContainer}
-        textStyle={styles.buttonText}
-        title="Cancel"
-        onPress={closeForm}
-      /> 
-    );
 
     return (
       <View style={styles.container}>
@@ -33,23 +25,34 @@ export class SettingScreen extends React.Component {
 
           <View style={styles.section}>
             <Text style={styles.sectionText}>Profile</Text>
-            <View style={styles.field}>
-              <Text style={styles.fieldText}>Name</Text>
-              <Icon name='chevron-right' />
-            </View>
+
+            <TouchableOpacity onPress={this.getSettingNavigate('NameSetting')}>
+              <View style={styles.field}>
+                <Text style={styles.fieldText}>Name</Text>
+                <Icon name='chevron-right' />
+              </View>
+            </TouchableOpacity>
+
           </View>
           <Divider style={styles.divider} />
 
           <View style={styles.section}>
             <Text style={styles.sectionText}>Privacy and security</Text>
-            <View style={styles.field}>
-              <Text style={styles.fieldText}>Password</Text>
-              <Icon name='chevron-right' />
-            </View>
-            <View style={styles.field}>
-              <Text style={styles.fieldText}>Account privacy</Text>
-              <Icon name='chevron-right' />
-            </View>
+
+            <TouchableOpacity onPress={this.getSettingNavigate('PasswordSetting')}>
+              <View style={styles.field}>
+                <Text style={styles.fieldText}>Password</Text>
+                <Icon name='chevron-right' />
+              </View>
+            </TouchableOpacity>
+
+            <TouchableOpacity>
+              <View style={styles.field}>
+                <Text style={styles.fieldText}>Account privacy</Text>
+                <Icon name='chevron-right' />
+              </View>
+            </TouchableOpacity>
+
           </View>
         </View>
 
@@ -58,27 +61,12 @@ export class SettingScreen extends React.Component {
   }
 }
 
-const styles = {
+const styles = StyleSheet.create({
   divider: {
     ...divider
   },
   container: {
     ...containerStyles.screenContainerMenu
-  },
-  header: {
-    ...headerStyles.container
-  },
-  buttonContainer: {
-    ...formScreen.buttonContainer
-  },
-  button: {
-    ...formScreen.button
-  },
-  buttonText: {
-    ...formScreen.button
-  },
-  buttonDisabled: {
-    ...formScreen.buttonDisabled
   },
   contentContainer: {
     ...containerStyles.screenContent
@@ -101,6 +89,6 @@ const styles = {
   fieldText: {
     fontSize: 16
   }
-}
+});
 
 export default SettingScreen;
