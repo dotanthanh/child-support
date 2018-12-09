@@ -21,6 +21,7 @@ import AuthStore from './src/stores/auth';
 import { shouldShowQuestion } from './src/utils/user';
 import ProfileScreen from './src/components/ProfileScreen';
 import TopicScreen from './src/components/TopicScreen';
+import SettingScreen from './src/components/SettingScreen';
 
 @observer
 export default class App extends React.Component {
@@ -68,15 +69,27 @@ const QuestionAnswerStack = createStackNavigator(
   }
 );
 
+const ProfileStack = createStackNavigator(
+  {
+    Profile: ProfileScreen,
+    Settings: SettingScreen
+  },
+  {
+    initialRouteName: 'Profile',
+    headerMode: 'none'
+  }
+);
+
 const AppDrawer = createDrawerNavigator(
   {
     Home: HomeScreen,
     Sessions: SessionStack,
     QuestionAnswer: QuestionAnswerStack,
-    Profile: ProfileScreen,
+    Profile: ProfileStack,
     Logout: LogoutScreen
   },
-  { initialRouteName: 'Sessions' }
+  // { initialRouteName: 'Sessions' }
+  { initialRouteName: 'Profile' }
 );
 
 const AdminDrawer = createDrawerNavigator(

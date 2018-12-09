@@ -10,7 +10,7 @@ import { Button, FormInput, Header } from 'react-native-elements';
 import { observer } from 'mobx-react';
 import { isEmpty } from 'lodash';
 
-import { header as headerStyles, container as containerStyles } from '../styles';
+import { header as headerStyles, container as containerStyles, formScreen } from '../styles';
 import { colors, button, text } from '../styles/theme';
 import QuestionAnswerStore from '../stores/questionanswer';
 
@@ -112,19 +112,16 @@ const styles = StyleSheet.create({
     ...headerStyles.container
   },
   buttonContainer: {
-    marginLeft: 0,
-    marginRight: 0
+    ...formScreen.buttonContainer
   },
   button: {
-    backgroundColor: 'transparent',
-    padding: 0
+    ...formScreen.button
   },
   buttonText: {
-    fontWeight: text.bolderWeight
+    ...formScreen.button
   },
   buttonDisabled: {
-    backgroundColor: 'transparent',
-    opacity: 0.5
+    ...formScreen.buttonDisabled
   },
   inputContainer: {
     borderBottomWidth: 0

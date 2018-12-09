@@ -1,7 +1,7 @@
 import React from 'react';
 import { observer } from 'mobx-react';
 import { View, StyleSheet, Image, Dimensions, Text } from 'react-native';
-import { Button } from 'react-native-elements';
+import { Button, Icon } from 'react-native-elements';
 import { isEmpty } from 'lodash';
 import { ImagePicker, Permissions } from 'expo';
 
@@ -11,6 +11,7 @@ import UserStore from '../stores/user';
 import Loading from '../custom/Loading';
 import { container as containerStyles } from '../styles';
 import { shadow, text, colors } from '../styles/theme';
+import SettingScreen from './SettingScreen';
 
 @observer
 export class ProfileScreen extends React.Component {
@@ -52,13 +53,23 @@ export class ProfileScreen extends React.Component {
     }
   };
 
+  goToSetting = () => {
+    this.props.navigation.navigate('Settings');
+  }
+
   render() {
     const user = UserStore.userdata;
     const imageLoading = UserStore.updatingImage;
+    const SettingsButton = (
+      <Icon name='settings' color={colors.white} onPress={this.goToSetting} />
+    );
 
     return (
       <View style={styles.container}>
-        <AppHeaderSwitch viewName="Profile" />
+        <AppHeaderSwitch
+          viewName="Profile"
+          rightComponent={SettingsButton}
+        />
         <View style={styles.imageContainer}>
           {!imageLoading && (
             <Image
