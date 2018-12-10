@@ -10,61 +10,61 @@ import PropTypes from 'prop-types';
 import { Button } from 'react-native-elements';
 import { observer } from 'mobx-react';
 
-import AppHeaderSwitch from '../custom/AppHeaderSwitch';
-import BottomBar from './BottomBar';
-import { container as containerStyles, iconButton, subSection } from '../styles';
-import { colors, button, text } from '../styles/theme';
-import QuestionAnswerStore from '../stores/questionanswer';
+import AppHeaderSwitch from '../../custom/AppHeaderSwitch';
+import BottomBar from '../BottomBar';
+import { container as containerStyles, iconButton, subSection } from '../../styles';
+import { colors, button, text } from '../../styles/theme';
+import GroupStore from '../../stores/group';
 
 @observer
-export class QAScreen extends React.Component {
+export class GroupScreen extends React.Component {
   componentDidMount() {
-    QuestionAnswerStore.fetchTopics();
+    GroupStore.fetchGroups();
   }
 
-  getNavigate = (topic) => {
+  getNavigate = (group) => {
     return () => {
-      this.props.navigation.navigate('TopicQuestions', { topic });
+      this.props.navigation.navigate('SingleGroup', { group });
     };
   }
 
 	render() {
-    const topics = QuestionAnswerStore.topics;
+    const groups = GroupStore.groups;
 
     return (
       <View style={styles.container}>
-        <AppHeaderSwitch viewName="Q&A" />
+        <AppHeaderSwitch viewName="Groups" />
 
         <ScrollView style={styles.contentContainer}>
           <View>
             <View style={styles.subHeader}>
-              <Text style={styles.subHeaderText}>Topic</Text>
+              <Text style={styles.subHeaderText}>Common groups</Text>
             </View>
-            <View style={styles.topicsContainer}>
-              {topics.map(topic => (
-                <Topic
-                  key={topic.id}
-                  topic={topic}
-                  navigate={this.getNavigate(topic)}
+            <View>
+              {groups.map(group => (
+                <Group
+                  key={group.id}
+                  group={group}
+                  navigate={this.getNavigate(group)}
                 />
               ))}
             </View>
           </View>
         </ScrollView>
 
-        <BottomBar currentView='QuestionAnswer' />
+        <BottomBar currentView='Groups' />
       </View>
     );
   }
 }
 
-const Topic = (props) => {
-  const { topic, navigate  } = props;
+const Group = (props) => {
+  const { group, navigate  } = props;
 
   return (
     <TouchableOpacity onPress={navigate}>
-      <View style={styles.topic}>
-        <Text style={styles.topicText}>{topic.text}</Text>
+      <View style={styles.group}>
+        <Text style={styles.groupText}>{group.name}</Text>
         <Button
           containerViewStyle={{marginRight: 0}}
           iconRight={{
@@ -72,16 +72,16 @@ const Topic = (props) => {
             size: 25,
             style: {color: colors.black}
           }}
-          buttonStyle={styles.topicButton}
+          buttonStyle={styles.groupButton}
         />
       </View>
     </TouchableOpacity>
   );
 }
 
-Topic.propTypes = {
+Group.propTypes = {
   navigate: PropTypes.func,
-  topic: PropTypes.object
+  group: PropTypes.object
 };
 
 const styles = StyleSheet.create({
@@ -99,9 +99,7 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: text.boldWeight
   },
-  topicsContainer: {
-  },
-  topic: {
+  group: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
@@ -109,14 +107,14 @@ const styles = StyleSheet.create({
     borderBottomWidth: 0.5,
     borderColor: colors.line
   },
-  topicText: {
+  groupText: {
     fontSize: 16
   },
-  topicButton: {
+  groupButton: {
     padding: 0,
     backgroundColor: 'transparent',
     ...iconButton
   }
 });
 
-export default QAScreen;
+export default GroupScreen;
