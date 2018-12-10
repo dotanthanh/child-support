@@ -5,14 +5,12 @@ import {
   createDrawerNavigator
 } from 'react-navigation';
 import { observer } from 'mobx-react';
+import { Audio } from 'expo';
 
 import HomeScreen from './src/components/HomeScreen';
-
 import LoginScreen from './src/components/LoginScreen';
 import DailyQuestionScreen from './src/components/DailyQuestion';
 import LogoutScreen from './src/components/Logout';
-import SingleSessionScreen from './src/components/SingleSessionScreen';
-import SessionsScreen from './src/components/SessionsScreen';
 import RegisterScreen from './src/components/RegisterScreen';
 import AdminHomeScreen from './src/components/admin/AdminScreen';
 import AdminQuestionAnswer from './src/components/admin/AdminQuestionAnswer';
@@ -21,12 +19,23 @@ import QAScreen from './src/components/QAScreen';
 import AuthStore from './src/stores/auth';
 import { shouldShowQuestion } from './src/utils/user';
 import ProfileScreen from './src/components/ProfileScreen';
+import TopicScreen from './src/components/TopicScreen';
+import SettingStack from './src/components/user-settings';
+import SessionStack from './src/components/session';
 
 @observer
 export default class App extends React.Component {
   state = { questionOpen: false };
 
   async componentDidMount() {
+    await Audio.setAudioModeAsync({
+      allowsRecordingIOS: true,
+      interruptionModeIOS: Audio.INTERRUPTION_MODE_IOS_DO_NOT_MIX,
+      playsInSilentModeIOS: true,
+      shouldDuckAndroid: true,
+      interruptionModeAndroid: Audio.INTERRUPTION_MODE_ANDROID_DO_NOT_MIX,
+      playThroughEarpieceAndroid: true
+    });
     const questionOpen = await shouldShowQuestion();
     this.setState({ questionOpen });
   }
@@ -46,12 +55,24 @@ export default class App extends React.Component {
   }
 }
 
-const SessionStack = createStackNavigator(
+const QuestionAnswerStack = createStackNavigator(
   {
-    Sessions: SessionsScreen,
-    SingleSession: SingleSessionScreen
+    QuestionAnswer: QAScreen,
+    TopicQuestions: TopicScreen
   },
   {
+    headerMode: 'none',
+    initialRouteName: 'QuestionAnswer'
+  }
+);
+
+const ProfileStack = createStackNavigator(
+  {
+    Profile: ProfileScreen,
+    Settings: SettingStack
+  },
+  {
+    initialRouteName: 'Profile',
     headerMode: 'none'
   }
 );
@@ -60,13 +81,11 @@ const AppDrawer = createDrawerNavigator(
   {
     Home: HomeScreen,
     Sessions: SessionStack,
-    Profile: ProfileScreen,
-    Register: RegisterScreen,
-    Logout: LogoutScreen,
-    Register: RegisterScreen,
-    QuestionAnswer: QAScreen
+    QuestionAnswer: QuestionAnswerStack,
+    Profile: ProfileStack,
+    Logout: LogoutScreen
   },
-  // { initialRouteName: 'Home' }
+  // { initialRouteName: 'Sessions' }
   { initialRouteName: 'Profile' }
 );
 
@@ -84,6 +103,7 @@ const getUserAppStack = (shouldShowQuestion) => createSwitchNavigator(
     Home: {
       screen: AppDrawer
     },
+    Register: RegisterScreen,
     DailyQuestion: {
       screen: DailyQuestionScreen,
       navigationOptions: {

@@ -4,7 +4,7 @@ export const colors = {
   main: '#FA8D62',
   lightBlue: '#E4FAF7',
   blue: '#C4F0E5',
-  line: '#646464'
+  line: '#bfbfbf'
 }
 
 export const shadow = {
@@ -20,10 +20,21 @@ export const text = {
   bolderWeight: 'bold'
 };
 
-const theme = {
-  colors,
-  shadow,
-  text
+export const button = {
+  default: {
+    ...shadow,
+    backgroundColor: colors.main,
+    paddingHorizontal: 12,
+    paddingVertical: 12
+  }
 };
 
-export default theme;
+export const border = {
+  width: 0.5,
+  color: colors.line
+};
+
+export const divider = {
+  height: 0.5,
+  backgroundColor: colors.line
+};
