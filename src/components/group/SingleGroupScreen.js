@@ -4,25 +4,69 @@ import {
 	Text,
 	View,
   ScrollView,
-  TouchableOpacity,
   Image,
-  Dimensions
+  Dimensions,
+  AlertIOS
 } from 'react-native';
-import PropTypes from 'prop-types';
 import { Button } from 'react-native-elements';
 import { observer } from 'mobx-react';
 
 import AppHeaderStack from '../../custom/AppHeaderStack';
 import BottomBar from '../BottomBar';
-import { container as containerStyles, iconButton, subSection } from '../../styles';
+import { container as containerStyles, subSection } from '../../styles';
 import { colors, text, border } from '../../styles/theme';
+import GroupStore from '../../stores/group';
+import UserStore from '../../stores/user';
+import Member from './Member';
 
 @observer
 export class SingleGroupScreen extends React.Component {
 
+  joinGroup = async () => {
+    const { navigation: { state: { params } } } = this.props;
+    const groupId = params.groupId;
+    const group = GroupStore.groups.find(group => group.id === groupId);
+
+    try {
+      await GroupStore.joinGroup(group);
+      AlertIOS.alert('Joined');
+    } catch (e) {
+      AlertIOS.alert('Failed to join group');
+    }
+  }
+
+  leaveGroup = async () => {
+    const { navigation: { state: { params } } } = this.props;
+
+    try {
+      await GroupStore.leaveGroup(params.groupId);
+      AlertIOS.alert('Leaved');
+    } catch (e) {
+      AlertIOS.alert('Failed to leave group');
+    }
+  }
+
 	render() {
     const { navigation: { state: { params } } } = this.props;
-    const group = params.group;
+    const groupId = params.groupId;
+    const group = GroupStore.groups.find(group => group.id === groupId);
+    const isJoined = UserStore.joinedGroups.filter(g => g.id === group.id).length > 0;
+
+    const buttonStyles = StyleSheet.create({
+      button: {
+        backgroundColor: isJoined ? colors.main : colors.white,
+        borderWidth: isJoined ? 0 : border.width,
+        borderColor: colors.black,
+        paddingHorizontal: 16,
+        paddingVertical: 8,
+        alignSelf: 'flex-start'
+      },
+      text: {
+        fontWeight: text.bolderWeight,
+        fontSize: 16,
+        color: isJoined ? colors.white : colors.black
+      }
+    });
 
     return (
       <View style={styles.container}>
@@ -32,10 +76,14 @@ export class SingleGroupScreen extends React.Component {
           <View style={styles.buttonGroup}>
             <Button
               rounded
-              icon={{ name: 'add', style: { color: colors.black } }}
-              textStyle={styles.buttonText}
-              buttonStyle={styles.button}
-              title='Join'
+              icon={{
+                name: isJoined ? 'cancel' : 'add',
+                style: { color: isJoined ? colors.white : colors.black }
+              }}
+              textStyle={buttonStyles.text}
+              buttonStyle={buttonStyles.button}
+              title={isJoined ? 'Leave' : 'Join'}
+              onPress={isJoined ? this.leaveGroup : this.joinGroup}
             />
           </View>
 
@@ -44,7 +92,7 @@ export class SingleGroupScreen extends React.Component {
               <Text style={styles.subHeaderText}>{group.name}</Text>
             </View>
             <Text style={styles.content}>
-              This is a community for people with the same fear of birth.
+              {group.text}
             </Text>
           </View>
 
@@ -66,20 +114,6 @@ export class SingleGroupScreen extends React.Component {
   }
 }
 
-const Member = (props) => {
-  const { member } = props;
-
-  return (
-    <View style={styles.member}>
-      <Image
-        style={styles.memberImage}
-        source={{ uri: member.picture_url }}
-      />
-      <Text style={styles.memberName}>{member.name}</Text>
-    </View>
-  );
-}
-
 const styles = StyleSheet.create({
   container: {
     ...containerStyles.screenContainerMenu
@@ -96,19 +130,6 @@ const styles = StyleSheet.create({
     justifyContent: 'flex-end',
     alignItems: 'center'
   },
-  button: {
-    borderWidth: border.width,
-    borderColor: colors.black,
-    backgroundColor: colors.white,
-    paddingHorizontal: 16,
-    paddingVertical: 8,
-    alignSelf: 'flex-start'
-  },
-  buttonText: {
-    fontWeight: text.bolderWeight,
-    fontSize: 16,
-    color: colors.black
-  },
   subHeader: {
     backgroundColor: colors.lightBlue,
     ...subSection.header
@@ -120,19 +141,6 @@ const styles = StyleSheet.create({
   memberContainer: {
     flexDirection: 'row',
     flexWrap: 'wrap'
-  },
-  member: {
-    alignItems: 'center',
-    padding: 12,
-    width: Dimensions.get('window').width / 4,
-  },
-  memberImage: {
-    width: Dimensions.get('window').width / 4 - 12 * 2,
-    height: Dimensions.get('window').width / 4 - 12 * 2,
-    borderRadius: Dimensions.get('window').width / 8 - 12
-  },
-  memberName: {
-    paddingTop: 8
   }
 });
 

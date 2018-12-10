@@ -24,7 +24,7 @@ export class GroupScreen extends React.Component {
 
   getNavigate = (group) => {
     return () => {
-      this.props.navigation.navigate('SingleGroup', { group });
+      this.props.navigation.navigate('SingleGroup', { groupId: group.id });
     };
   }
 
