@@ -103,11 +103,6 @@ target 'child-support' do
     :podspec => "../node_modules/react-native/third-party-podspecs/glog.podspec",
     :inhibit_warnings => true
 
-
-  pod 'react-native-image-picker', :path => '../node_modules/react-native-image-picker'
-
-  pod 'RNImageCropPicker', :path => '../node_modules/react-native-image-crop-picker'
-
   post_install do |installer|
     installer.pods_project.main_group.tab_width = '2';
     installer.pods_project.main_group.indent_width = '2';

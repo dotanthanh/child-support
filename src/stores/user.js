@@ -38,14 +38,24 @@ class UserStore {
         .putFile(imgUri);
 
       const imageUrl = uploadedImage.downloadURL;
-      await this.database
-        .ref(`users/${AuthStore.user.uid}`)
-        .update({ profile_image: imageUrl });
+      await this.updateAccount({ profile_image: imageUrl });
       await this.fetchUserData();
     } catch (e) {
       console.log(e);
     }
     this.updatingImage = false;
+  }
+
+  @action
+  updateAccount = async (updateObject) => {
+    try {
+      await this.database
+        .ref(`users/${AuthStore.user.uid}`)
+        .update(updateObject);
+      await this.fetchUserData();
+    } catch (e) {
+      throw e;
+    }
   }
 }
 

@@ -194,6 +194,7 @@
 				TargetAttributes = {
 					B56386401DB9693800A0598C = {
 						CreatedOnToolsVersion = 8.0;
+						DevelopmentTeam = 9YB33VPDD3;
 						ProvisioningStyle = Automatic;
 					};
 				};
@@ -455,7 +456,7 @@
 			baseConfigurationReference = 2C1548D9E4CB1AEFA5CCAE6D /* Pods-child-support.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				DEVELOPMENT_TEAM = "";
+				DEVELOPMENT_TEAM = 9YB33VPDD3;
 				INFOPLIST_FILE = "$(SRCROOT)/child-support/Supporting/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				LIBRARY_SEARCH_PATHS = (
@@ -473,7 +474,7 @@
 			baseConfigurationReference = A47FE4D7F70906B7DC8CE39B /* Pods-child-support.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				DEVELOPMENT_TEAM = "";
+				DEVELOPMENT_TEAM = 9YB33VPDD3;
 				INFOPLIST_FILE = "$(SRCROOT)/child-support/Supporting/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				LIBRARY_SEARCH_PATHS = (

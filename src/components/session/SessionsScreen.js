@@ -2,10 +2,10 @@ import React from 'react';
 import { View, ScrollView, StyleSheet, Dimensions } from 'react-native';
 import { Button } from 'react-native-elements';
 
-import AppHeaderSwitch from '../custom/AppHeaderSwitch';
-import BottomBar from './BottomBar';
-import { container as containerStyles } from '../styles';
-import { shadow, colors, text } from '../styles/theme';
+import AppHeaderSwitch from '../../custom/AppHeaderSwitch';
+import BottomBar from '../BottomBar';
+import { container as containerStyles } from '../../styles';
+import { shadow, colors, text } from '../../styles/theme';
 
 class SessionsScreen extends React.Component {
   goToSingleSession = (sessionNumber) => {
@@ -77,5 +77,4 @@ const styles = StyleSheet.create({
   }
 });
 
-// export default withMenu(SessionsScreen, 'Sessions');
 export default SessionsScreen;
