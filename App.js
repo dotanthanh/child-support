@@ -87,8 +87,7 @@ const AppDrawer = createDrawerNavigator(
     Profile: ProfileStack,
     Logout: LogoutScreen
   },
-  // { initialRouteName: 'Sessions' }
-  { initialRouteName: 'Profile' }
+  { initialRouteName: 'Home' }
 );
 
 const AdminDrawer = createDrawerNavigator(

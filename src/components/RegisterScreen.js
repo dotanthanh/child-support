@@ -7,17 +7,16 @@ import {
 	KeyboardAvoidingView,
   ScrollView
 } from 'react-native';
-import { FormLabel, FormInput, Button } from 'react-native-elements';
-import firebase from 'react-native-firebase';
+import { FormLabel, FormInput, Button, CheckBox } from 'react-native-elements';
 import RadioForm from 'react-native-simple-radio-button';
 import DatePicker from "react-native-datepicker";
 import moment from "moment";
+import {isEmpty} from 'lodash';
 
+import { container as containerStyles } from '../styles';
 import { colors, text, shadow } from '../styles/theme';
-
+import FormHeader from '../custom/FormHeader';
 import AuthStore from '../stores/auth';
-import LandingImage from '../../assets/pregnancy.png';
-
 
 var userIsMother = [
 	{label: "Mother", value: true},
@@ -29,249 +28,225 @@ var userIsFirstTime = [
 	{label: "No", value: false}
 ];
 
-var INITIAL_STATE = {
-	    inputFocused: false,
-			// current session should be calculated based on due date
-	    current_session: 1,
-	    name: '',
-	    email: '',
-	    feelings_data: [],
-	    is_first_time: true,
-	    is_mother: true,
-	    date: moment(),
-	    password: '',
-	    error: null
+export class RegisterScreen extends React.Component {
+	state = {
+		name: '',
+		isFirstTime: true,
+		isMother: true,
+		email: '',
+		password: '',
+		passwordConfirm: '',
+		dueDate: undefined,
+		dateOfBirth: undefined
+	}
+
+	getOnChange = (type) => {
+		return (value) => {
+			this.setState({ [type]: value });
+		}
+	}
+
+	getOnCheckBox = (type) => {
+		return () => {
+			this.setState({ [type]: !this.state[type] })
+		}
 	};
-
-export default class RegisterScreen extends React.Component {
-
-
-	onChangeEmail = (email) => this.setState({ email });
-
-	onChangeIsFirstTime = (value) => this.setState({ is_first_time });
-
-	onChangeIsMother = (value) => this.setState({ is_mother });
-
-	onChangeName = (name) => this.setState({ name });
-
-	onChangePassword = (password) => this.setState({ password });
-
-  onChangePasswordTwo = (passwordTwo) => this.setState({ passwordTwo });
 
 	onCreateUser = () => {
-		const { error, inputFocused, ...rest } = this.state;
-		AuthStore.signup(rest);
+		console.log(this.state)
+		// if (this.validate && this.checkCanSend) {
+		// 	AuthStore.signup(rest);
+		// }
 	};
 
-	constructor(props) {
-		super(props);
-		this.state = { ...INITIAL_STATE };
+	validate = () => {
+		const { password, passwordConfirm, dateOfBirth, dueDate } = this.state;
+		const now = moment();
+
+		return password === passwordConfirm
+			&& now.diff(dateOfBirth) > 0
+			&& now.diff(dueDate, 'weeks') < 40;   
+	}
+
+	checkCanSend = () => {
+		const {
+			name, email, password, passwordConfirm,
+			dateOfBirth, dueDate
+		} = this.state;
+		return !isEmpty(name)
+			&& !isEmpty(email)
+			&& !isEmpty(password)
+			&& !isEmpty(passwordConfirm)
+			&& !isEmpty(dateOfBirth)
+			&& !isEmpty(dueDate);
+	}
+
+	goBack = () => {
+		this.props.navigation.navigate('Login');
 	}
 
 	render() {
-		const {
-			inputFocused,
-		  baby,
-		  current_session,
-	    email,
-	    feelings_data,
-	    is_first_time,
-	    is_mother,
-	    name,
-	    password,
-      passwordTwo,
-      date,
-	    error
-		} = this.state;
-
-    const isInvalid =
-      password !== passwordTwo ||
-      password === '' ||
-      email === '' ||
-      name === '';
-
-		const inputProps = {
-	      required: true,
-	      blurOnSubmit: false
-	    };
-	    const imageStyle = {
-	      height: 100,
-	      width: 100,
-	    };
+		const { isMother, isFirstTime, dateOfBirth, dueDate } = this.state;
+		const canSubmit = this.checkCanSend();
 
 		return (
-    <ScrollView>
-		<View style={styles.regform}>
-		<KeyboardAvoidingView style={styles.form} behavior="padding">
+			<View style={styles.container}>
+				<FormHeader
+					rightButtonProps={{
+						title: 'Submit',
+						onPress: this.onCreateUser,
+						// loading: isSaving,
+						disabled: !canSubmit
+					}}
+					leftButtonProps={{
+						title: 'Cancel',
+						onPress: this.goBack
+					}}	
+					headerName="Register"
+				/>
 
-			<View style={styles.headerContainer}>
-        <Animated.Image source={LandingImage} style={imageStyle} />
-      </View>
-
-	    <View style={styles.regform}>
-	        {this.state.errorMessage &&
-	          <Text style={{ color: 'red' }}>
-	            {this.state.errorMessage}
-	          </Text>}
-	        <FormInput
-            placeholder="Full name"
-           	{...inputProps}
-           	onChangeText={this.onChangeName}
-           	value={name}
-           	inputStyle={styles.input}
-            containerStyle={styles.inputContainer}
-            autoCapitalize="none"
-            autoCorrect={false}
-        	/>
-	        <FormInput
-	          placeholder="Email"
-	          autoCapitalize="none"
-	          inputStyle={styles.input}
-            containerStyle={styles.inputContainer}
-	          onChangeText={email => this.setState({ email })}
-	          value={this.state.email}
-	          autoCapitalize="none"
-            autoCorrect={false}
-	        />
-	        <FormLabel>Status</FormLabel>
-      			<View style={styles.container}>
-               <RadioForm
-                style={styles.radioForm}
-								containerStyle={styles.radioForm}
-								radio_props={userIsMother}
-								initial={-1}
-								onPress={(is_mother) => {this.status}}
-								flexDirection='row'
-               />
-           </View>
-           
-           <FormLabel>First time pregnancy?</FormLabel>
-           <View style={styles.container}>
-               <RadioForm
-                style={styles.radioForm}
-								radio_props={userIsFirstTime}
-								initial={-1}
-								onPress={(is_first_time) => {this.status}}
-								flexDirection='row' 
-               />
-           </View>
-
-           <FormLabel>Due date</FormLabel>
-           <View style={styles.container}>
-              <DatePicker
-                style={styles.radioForm}
-                date={this.state.date}
-                mode="date"
-                placeholder="Select date"
-                onDateChange={(date) => {this.setState({date: date})}}
-                confirmBtnText="Confirm"
-                cancelBtnText="Cancel"
-              />
-           </View>
-
-	        <FormInput
-	          secureTextEntry
-	          placeholder="Password"
-	          autoCapitalize="none"
-	          inputStyle={styles.input}
-            containerStyle={styles.inputContainer}
-	          onChangeText={password => this.setState({ password })}
-	          value={this.state.password}
-	        />
-
-          <FormInput
-            secureTextEntry
-            placeholder="Confirm password"
-            autoCapitalize="none"
-            inputStyle={styles.input}
-            containerStyle={styles.inputContainer}
-            onChangeText={passwordTwo => this.setState({ passwordTwo })}
-            value={this.state.passwordTwo}
-          />
-
-	        <View style={styles.buttonGroup}>
-		        <Button
-							rounded
-							buttonStyle={styles.button}
-							color={colors.white}
-							title="Create"
-							textStyle={styles.buttonText}
-              title="Sign Up"
-              onPress={this.onCreateUser}
-              disabled={isInvalid}
+				<ScrollView style={styles.contentContainer}>
+					{/* <KeyboardAvoidingView behavior="padding"> */}
+					<View>
+						<FormInput
+							placeholder="Your email"
+							onChangeText={this.getOnChange('email')}
+							inputStyle={styles.input}
+							autoCapitalize="none"
+							autoCorrect={false}
+						/>
+						<FormInput
+							secureTextEntry
+							placeholder="Password"
+							inputStyle={styles.input}
+							onChangeText={this.getOnChange('password')}
+							autoCapitalize="none"
+							autoCorrect={false}
+						/>
+						<FormInput
+							secureTextEntry
+							placeholder="Confirm password"
+							inputStyle={styles.input}
+							onChangeText={this.getOnChange('passwordConfirm')}
+							autoCapitalize="none"
+							autoCorrect={false}
+						/>
+						<FormInput
+							placeholder="Your name"
+							inputStyle={styles.input}
+							onChangeText={this.getOnChange('name')}
+							autoCapitalize="none"
+							autoCorrect={false}
 						/>
 
-		        <Button
-							rounded
-							buttonStyle={styles.button}
-							color={colors.white}
-							title="Create"
-							textStyle={styles.buttonText}
-							title="Back"
-							onPress={() => this.props.navigation.navigate('Login')}
-		        />
-	        </View>
-        </View>
+						<View style={styles.dateContainer}>
+							<FormLabel labelStyle={styles.label}>Date of birth</FormLabel>
+							<DatePicker
+								customStyles={{ dateInput: styles.datePicker }}
+								showIcon={false}
+								style={styles.radioForm}
+								date={this.state.date}
+								mode="date"
+								placeholder="Date of birth"
+								confirmBtnText="Confirm"
+								cancelBtnText="Cancel"
+								onDateChange={this.getOnChange('dateOfBirth')}
+								date={dateOfBirth}
+							/>
+						</View>
 
-    		</KeyboardAvoidingView>
-    		</View>
-        </ScrollView>
+						<View style={styles.dateContainer}>
+							<FormLabel labelStyle={styles.label}>Pregnancy due date</FormLabel>
+							<DatePicker
+								customStyles={{ dateInput: styles.datePicker }}
+								showIcon={false}
+								style={styles.radioForm}
+								date={this.state.date}
+								mode="date"
+								placeholder="Date of birth"
+								confirmBtnText="Confirm"
+								cancelBtnText="Cancel"
+								onDateChange={this.getOnChange('dueDate')}
+								date={dueDate}
+							/>
+						</View>
+
+						<View style={styles.checkboxField}>
+							<FormLabel labelStyle={styles.label}>Are you the mother ?</FormLabel>
+							<View style={styles.checkboxContainer}>
+								<CheckBox
+									checked={isMother}
+									containerStyle={styles.checkbox}
+									onPress={this.getOnCheckBox('isMother')}
+								/>
+							</View>
+						</View>
+
+						<View style={styles.checkboxField}>
+							<FormLabel labelStyle={styles.label}>Is this your first time ?</FormLabel>
+							<View style={styles.checkboxContainer}>
+								<CheckBox
+									checked={isFirstTime}
+									containerStyle={styles.checkbox}
+									onPress={this.getOnCheckBox('isFirstTime')}
+								/>
+							</View>
+						</View>
+
+					</View>
+	    		{/* </KeyboardAvoidingView> */}
+    		</ScrollView>
+			</View>
 		);
 	}
 };
 
 const styles = StyleSheet.create({
-  regform: {
-  	alignSelf: 'stretch',
-  	paddingLeft: 50,
-    paddingRight: 40,
-    backgroundColor: colors.lightBlue
-  },
+	container: {
+		...containerStyles.screenContainerMenu
+	},
+	contentContainer: {
+		...containerStyles.screenContent
+	},
   headerContainer: {
     paddingTop: 48,
     paddingBottom: 36,
     alignItems: 'center',
-  },
-  form: {
-    maxWidth: 300
-  },
-  textinput: {
-  	alignSelf: 'stretch',
-  	height: 20,
-  	marginBottom: 30,
-  	color: '#909b99',
-  	borderBottomWidth: 1,
-  	borderBottomColor: '#909b99'
-  },
-  radioForm: {
-  	paddingLeft: 20,
-    paddingTop: 5
-  },
-  buttonGroup: {
-    flexDirection: 'row',
-    marginVertical: 24,
-    justifyContent: 'center'
-  },
-  button: {
-    width: 100,
-    backgroundColor: colors.main,
-    paddingHorizontal: 16,
-    ...shadow
-  },
-  buttonText: {
-    fontWeight: text.bolderWeight,
-    fontSize: 12
-  },
-  inputContainer: {
-    borderBottomWidth: 0
-  },
+	},
+	label: {
+		marginLeft: 0,
+		marginRight: 0,
+		marginTop: 0,
+		marginBottom: 0,
+		fontWeight: text.bolderWeight,
+		color: colors.black
+	},
+	dateContainer: {
+		paddingHorizontal: 20,
+		paddingVertical: 12,
+		flexDirection: 'row',
+		alignItems: 'center',
+		justifyContent: 'space-between'
+	},
+	datePicker: {
+		borderRadius: 4
+	},
+	checkboxField: {
+		flexDirection: 'row',
+		justifyContent: 'space-between',
+		alignItems: 'center',
+		paddingHorizontal: 20
+	},
+	checkboxContainer: {
+		flexDirection: 'row'
+	},
+	checkbox: {
+		backgroundColor: 'transparent',
+		borderWidth: 0
+	},
   input: {
-    borderWidth: 1,
-    paddingHorizontal: 8,
-    paddingVertical: 4,
-    marginVertical: 12,
-    width: 'auto',
-    borderColor: colors.line,
-    borderRadius: 4
+		paddingVertical: 12
   }
 });
+
+export default RegisterScreen;
