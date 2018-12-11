@@ -1,32 +1,20 @@
 import React from 'react';
 import { 
+	AlertIOS,
 	StyleSheet,
-	Text,
 	View,
-	Animated,
 	KeyboardAvoidingView,
   ScrollView
 } from 'react-native';
-import { FormLabel, FormInput, Button, CheckBox } from 'react-native-elements';
-import RadioForm from 'react-native-simple-radio-button';
+import { FormLabel, FormInput, CheckBox } from 'react-native-elements';
 import DatePicker from "react-native-datepicker";
 import moment from "moment";
 import {isEmpty} from 'lodash';
 
 import { container as containerStyles } from '../styles';
-import { colors, text, shadow } from '../styles/theme';
+import { colors, text } from '../styles/theme';
 import FormHeader from '../custom/FormHeader';
 import AuthStore from '../stores/auth';
-
-var userIsMother = [
-	{label: "Mother", value: true},
-	{label: "Spouse", value: false}
-];
-
-var userIsFirstTime = [
-	{label: "Yes", value: true},
-	{label: "No", value: false}
-];
 
 export class RegisterScreen extends React.Component {
 	state = {
@@ -37,7 +25,8 @@ export class RegisterScreen extends React.Component {
 		password: '',
 		passwordConfirm: '',
 		dueDate: undefined,
-		dateOfBirth: undefined
+		dateOfBirth: undefined,
+		isSubmitting: false
 	}
 
 	getOnChange = (type) => {
@@ -52,11 +41,32 @@ export class RegisterScreen extends React.Component {
 		}
 	};
 
-	onCreateUser = () => {
-		console.log(this.state)
-		// if (this.validate && this.checkCanSend) {
-		// 	AuthStore.signup(rest);
-		// }
+	onCreateUser = async () => {
+		const {
+			name, email, password, isMother,
+			dateOfBirth, dueDate, isFirstTime
+		} = this.state;
+
+		const newUserObject = {
+			date_of_birth: dateOfBirth,
+			due_date: dueDate,
+			name,
+			email,
+			password,
+			is_mother: isMother,
+			is_first_time: isFirstTime
+		};
+		if (this.validate && this.checkCanSend) {
+      try {
+        this.setState({ isSubmitting: true });
+        await AuthStore.signup(newUserObject);
+        this.props.navigation.navigate('AuthGateway');
+      } catch (e) {
+        AlertIOS.alert('Failed to register');
+      }
+		} else {
+      AlertIOS.alert('Form is not valid. Text fields should not be empty, and the dates should be sensible');
+    }
 	};
 
 	validate = () => {
@@ -86,7 +96,7 @@ export class RegisterScreen extends React.Component {
 	}
 
 	render() {
-		const { isMother, isFirstTime, dateOfBirth, dueDate } = this.state;
+		const { isMother, isFirstTime, dateOfBirth, dueDate, isSubmitting } = this.state;
 		const canSubmit = this.checkCanSend();
 
 		return (
@@ -95,7 +105,7 @@ export class RegisterScreen extends React.Component {
 					rightButtonProps={{
 						title: 'Submit',
 						onPress: this.onCreateUser,
-						// loading: isSaving,
+						loading: isSubmitting,
 						disabled: !canSubmit
 					}}
 					leftButtonProps={{
@@ -163,7 +173,7 @@ export class RegisterScreen extends React.Component {
 								style={styles.radioForm}
 								date={this.state.date}
 								mode="date"
-								placeholder="Date of birth"
+								placeholder="Due date"
 								confirmBtnText="Confirm"
 								cancelBtnText="Cancel"
 								onDateChange={this.getOnChange('dueDate')}
@@ -207,11 +217,6 @@ const styles = StyleSheet.create({
 	},
 	contentContainer: {
 		...containerStyles.screenContent
-	},
-  headerContainer: {
-    paddingTop: 48,
-    paddingBottom: 36,
-    alignItems: 'center',
 	},
 	label: {
 		marginLeft: 0,

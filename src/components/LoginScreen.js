@@ -58,6 +58,7 @@ export default class LoginScreen extends React.Component {
     const { email, password } = this.state;
     try {
       await auth.login(email, password);
+      this.props.navigation.navigate('AuthGateway');
     } catch (e) {
       AlertIOS.alert('Your email and password are wrong');
     }

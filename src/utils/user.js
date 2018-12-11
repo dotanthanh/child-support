@@ -9,7 +9,8 @@ import { PREGNANCY_MILISEC } from '../contants';
   function arguments: 
     - timestamp: timestamp of the due date
 */
-export const calculatePregTime = (timestamp) => {
+export const calculatePregTime = (date) => {
+  const timestamp = moment(date).unix() * 1000;
   // round down the timestamps to the same anchor hour of the day (12 am)
   const dueDate = moment(timestamp).startOf('day');
   const now = moment().startOf('day');
@@ -28,7 +29,8 @@ export const calculatePregTime = (timestamp) => {
   take one argument of the timestamp of the pregnancy's duedate
   and return how many days have passed
 */
-export const calculateCurrentDay = (timestamp) => {
+export const calculateCurrentDay = (date) => {
+  const timestamp = moment(date).unix() * 1000;
   // round down the timestamps to the same anchor hour of the day (12 am)
   const dueDate = moment(timestamp).startOf('day');
   const now = moment().startOf('day');
@@ -39,7 +41,8 @@ export const calculateCurrentDay = (timestamp) => {
 /*
   take duedate as timestamp and calculate the supposed current week/session
 */
-export const calculateCurrentSession = (timestamp) => {
+export const calculateCurrentSession = () => {
+  const timestamp = moment(date).unix()  * 1000;
   const dayPassed = calculateCurrentDay(timestamp);
   return parseInt(dayPassed / 7) + 1;
 };

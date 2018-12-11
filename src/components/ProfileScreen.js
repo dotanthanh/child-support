@@ -99,8 +99,8 @@ export class ProfileScreen extends React.Component {
         </View>
         <View style={styles.infoContainer}>
           <View style={styles.infoSection}>
-            <Text style={styles.infoTag}>Age</Text>
-            <Text style={styles.infoText}>{user.age}</Text>
+            <Text style={styles.infoTag}>Date of birth</Text>
+            <Text style={styles.infoText}>{user.date_of_birth}</Text>
           </View>
           <View style={styles.infoSection}>
             <Text style={styles.infoTag}>Partner</Text>

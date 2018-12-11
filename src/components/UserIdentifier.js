@@ -1,4 +1,5 @@
 import React from 'react';
+import { View, StyleSheet } from 'react-native';
 import { observer } from 'mobx-react';
 import { isEmpty } from 'lodash';
 
@@ -27,13 +28,23 @@ export class UserIdentifier extends React.Component {
   }
 
   render() {
-    const isLoading = isEmpty(this.props.user.values)
+    const isLoading = isEmpty(this.props.user.values);
     
     return (
-      <Loading animating={isLoading} />
+      <View style={styles.container}>
+        <Loading animating={isLoading} />
+      </View>
     );
   }
 }
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    height: '100%',
+    justifyContent: 'center'
+  }
+});
 
 /*
   by passing Mobx store as props to component, we can use lifecycle methods
