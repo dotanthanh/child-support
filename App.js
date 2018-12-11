@@ -22,6 +22,7 @@ import ProfileScreen from './src/components/ProfileScreen';
 import TopicScreen from './src/components/TopicScreen';
 import SettingStack from './src/components/user-settings';
 import SessionStack from './src/components/session';
+import GroupStack from './src/components/group';
 
 @observer
 export default class App extends React.Component {
@@ -82,6 +83,7 @@ const AppDrawer = createDrawerNavigator(
     Home: HomeScreen,
     Sessions: SessionStack,
     QuestionAnswer: QuestionAnswerStack,
+    Groups: GroupStack,
     Profile: ProfileStack,
     Logout: LogoutScreen
   },

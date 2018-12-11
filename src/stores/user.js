@@ -8,6 +8,7 @@ class UserStore {
   @observable userdata = {};
   @observable babydata = {};
   @observable feelings_data = [];
+  @observable joinedGroups = [];
   @observable updatingImage = false;
 
   @action
@@ -19,6 +20,7 @@ class UserStore {
         .once('value', (userSnapshot) => {
           this.userdata = userSnapshot.val();
           this.feelings_data = userSnapshot.child('feelings_data').val() || [];
+          this.joinedGroups = userSnapshot.child('joined_groups').val() || [];
           this.database
             .ref(this.userdata.baby)
             .once('value', (babySnapshot) => {

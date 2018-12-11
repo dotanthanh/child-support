@@ -22,8 +22,10 @@ export class QAScreen extends React.Component {
     QuestionAnswerStore.fetchTopics();
   }
 
-  navigate = (topic) => {
-    this.props.navigation.navigate('TopicQuestions', { topic });
+  getNavigate = (topic) => {
+    return () => {
+      this.props.navigation.navigate('TopicQuestions', { topic });
+    };
   }
 
 	render() {
@@ -43,7 +45,7 @@ export class QAScreen extends React.Component {
                 <Topic
                   key={topic.id}
                   topic={topic}
-                  navigate={() => this.navigate(topic)}
+                  navigate={this.getNavigate(topic)}
                 />
               ))}
             </View>
