@@ -56,12 +56,13 @@ export class RegisterScreen extends React.Component {
 			is_mother: isMother,
 			is_first_time: isFirstTime
 		};
-		if (this.validate && this.checkCanSend) {
+		if (this.validate() && this.checkCanSend()) {
       try {
         this.setState({ isSubmitting: true });
         await AuthStore.signup(newUserObject);
         this.props.navigation.navigate('AuthGateway');
       } catch (e) {
+        this.setState({ isSubmitting: false });
         AlertIOS.alert('Failed to register');
       }
 		} else {
@@ -103,7 +104,7 @@ export class RegisterScreen extends React.Component {
 			<View style={styles.container}>
 				<FormHeader
 					rightButtonProps={{
-						title: 'Submit',
+						title: isSubmitting ? '' : 'Submit',
 						onPress: this.onCreateUser,
 						loading: isSubmitting,
 						disabled: !canSubmit

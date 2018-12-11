@@ -10,31 +10,36 @@ class AuthStore {
   @observable user = firebase.auth().currentUser;
 
   @action
-  signup = (userdata) => {
+  signup = async (userdata) => {
     const { email, password, due_date, ...rest } = userdata;
-    firebase.auth().createUserWithEmailAndPassword(email, password)
-      .then(credentials => {
-        let babyId = ''
-        const babyref = firebase.database().ref('babies/').push({
-          activity: [],
-          due_date: due_date
-        });
-        babyref.once('value', (snapshot) => {
-          babyId = snapshot.key;
-          const data = {
-            ...rest,
-            email,
-            is_admin: false,
-            profile_visible: true,
-            profile_image: 'https://www.qualiscare.com/wp-content/uploads/2017/08/default-user.png',
-            feelings_data: [],
-            joined_groups: [],
-            baby: `babies/${babyId}`
-          };
-          const userRef = firebase.database().ref().child(`users`);
-          userRef.child(credentials.user.uid).set(data)
-        })
-      })
+    
+    try {
+      const credentials = await firebase.auth().createUserWithEmailAndPassword(email, password)
+      
+      let babyId = ''
+      const babyref = await firebase.database().ref('babies/').push({
+        activity: [],
+        due_date: due_date
+      });
+      await babyref.once('value', (snapshot) => {
+        babyId = snapshot.key;
+      });
+      const data = {
+        ...rest,
+        email,
+        is_admin: false,
+        profile_visible: true,
+        profile_image: 'https://www.qualiscare.com/wp-content/uploads/2017/08/default-user.png',
+        feelings_data: [],
+        joined_groups: [],
+        baby: `babies/${babyId}`
+      };
+      await firebase.database()
+        .ref(`users/${credentials.user.uid}`)
+        .set(data);
+    } catch (e) {
+      throw e;
+    }
   };
 
   @action

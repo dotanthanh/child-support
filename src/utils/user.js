@@ -42,7 +42,7 @@ export const calculateCurrentDay = (date) => {
   take duedate as timestamp and calculate the supposed current week/session
 */
 export const calculateCurrentSession = () => {
-  const timestamp = moment(date).unix()  * 1000;
+  const timestamp = moment().unix()  * 1000;
   const dayPassed = calculateCurrentDay(timestamp);
   return parseInt(dayPassed / 7) + 1;
 };
